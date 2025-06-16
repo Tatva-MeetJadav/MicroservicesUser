@@ -41,6 +41,36 @@
             &copy; 2025 - MicroservicesUser - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var successMessage = '@TempData["SuccessMessage"]';
+            var errorMessage = '@TempData["ErrorMessage"]';
+            var warningMessage = '@TempData["WarningMessage"]';
+            var infoMessage = '@TempData["InfoMessage"]';
+
+            if (successMessage) {
+                toastr.success(successMessage);
+            }
+            if (errorMessage) {
+                toastr.error(errorMessage);
+            }
+            if (warningMessage) {
+                toastr.warning(warningMessage);
+            }
+            if (infoMessage) {
+                toastr.info(infoMessage);
+            }
+        });
+    </script>
+    <script>
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "4000"
+        };
+    </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

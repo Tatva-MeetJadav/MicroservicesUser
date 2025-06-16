@@ -1,9 +1,78 @@
+using Microservices.Common.AutoMapperProfiles;
+using MicroservicesUser.BusinessLogic.Implementations;
+using MicroservicesUser.BusinessLogic.Interfaces;
+using MicroservicesUser.DataAccess.Data;
+using MicroservicesUser.DataAccess.Repository.Implementations;
+using MicroservicesUser.DataAccess.Repository.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-var app = builder.Build();
+//Setting up DbContext
+string connection = builder.Configuration.GetConnectionString("DefaultConnection")??string.Empty;
+builder.Services.AddDbContext<MicroservicesUserDbContext>(options =>
+options.UseNpgsql(connection, npgsqlOptions => npgsqlOptions.MigrationsAssembly("MicroservicesUser.Migrations")));
+
+//Setting up automapper profiles
+builder.Services.AddAutoMapper(typeof(UserProfile).Assembly);
+
+//Setting up Repositories
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+
+//Setting up business services
+builder.Services.AddScoped<IJwtServices, JwtServices>();
+builder.Services.AddScoped<IAuthenticationServices, AuthenticationServices>();
+
+
+//Setting up JWT Authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+   .AddJwtBearer(options =>
+   {
+       options.RequireHttpsMetadata = false;
+       options.SaveToken = true;
+       options.TokenValidationParameters = new TokenValidationParameters
+       {
+           ValidateIssuer = false,
+           ValidateAudience = true,
+           ValidateLifetime = true,
+           ValidateIssuerSigningKey = true,
+           ValidIssuer = builder.Configuration["Jwt:Issuer"],
+           ValidAudience = builder.Configuration["Jwt:Audience"],
+           IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]??string.Empty)),
+       };
+       options.Events = new JwtBearerEvents
+       {
+           OnMessageReceived = context =>
+           {
+               var token = context.Request.Cookies["AuthToken"];
+               if (!string.IsNullOrEmpty(token))
+               {
+                   context.Token = token;
+               }
+               return Task.CompletedTask;
+           },
+           OnChallenge = context =>
+           {
+               context.Response.Cookies.Delete("AuthToken");
+               context.HandleResponse();
+               context.Response.Redirect("/Authentication/Login");
+               return Task.CompletedTask;
+           }
+       };
+   });
+
+WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

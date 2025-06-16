@@ -3,22 +3,22 @@
     Layout = "_AuthLayout";
 }
 <link rel="stylesheet" href="~/css/authentication.css" asp-append-version="true">
-
+@model LoginVM
 <div class="container d-flex flex-column justify-content-center vh-100">
     <div class="row justify-content-center">
         <div class="col-md-4">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h3 class="card-title auth-page-title text-center mb-4">Login</h3>
-                    <form asp-action="Login" method="post">
+                    <form asp-action="Login" asp-controller="Authentication" method="post">
                         <div class="mb-3">
                             <label class="form-label">Email</label>
-                            <input class="form-control" type="email" required />
+                            <input class="form-control" type="email" asp-for="Email" />
                             <span class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Password</label>
-                            <input class="form-control" type="password" required />
+                            <input class="form-control" type="password" asp-for="Password" />
                             <span class="text-danger"></span>
                         </div>
                         <div class="my-3 text-end text-small">
