@@ -1,0 +1,45 @@
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,398;1,398&display=swap");
+:root {
+  --primaryBackgroundColor: #ffe4c4;
+  --primaryButtonColor: #f4a460;
+  --primaryTextColor: #f4a460;
+  --primaryTextDarkColor: #e18c36;
+  --primaryButtonDarkColor: #e18c36;
+  --primaryBoxShadowColor: #e18b365f;
+  --primaryBorderColor: #e18c36;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 398;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+  background: #ffffff;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(209, 177, 130, 1) 100%
+  );
+}
+.btn-primary {
+  background-color: var(--primaryButtonColor) !important;
+  border-color: var(--primaryButtonColor) !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--primaryButtonDarkColor) !important;
+  border-color: var(--primaryButtonDarkColor) !important;
+}
+.btn-primary:focus {
+  box-shadow: 0 0 0 !important;
+}
+
+.form-control:focus {
+  border-color: var(--primaryBorderColor);
+  box-shadow: 0 0 0 0.25rem var(--primaryBoxShadowColor);
+}
+
+.text-small {
+  font-size: small;
+}
