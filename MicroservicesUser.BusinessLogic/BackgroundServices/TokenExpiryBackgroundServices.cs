@@ -23,8 +23,7 @@ public class TokenExpiryBackgroundService : BackgroundService
             var tokensToLogout = expiredTokens.Concat(nullOrEmptyTokens);
             foreach (var tokenInfo in tokensToLogout)
             {
-                await _hubContext.Clients.All.SendAsync("ForceLogout", cancellationToken: stoppingToken);
-
+                await _hubContext.Clients.User(tokenInfo.userId).SendAsync("ForceLogout", cancellationToken: stoppingToken);
                 _tokenStore.RemoveToken(tokenInfo.token);
             }
 
