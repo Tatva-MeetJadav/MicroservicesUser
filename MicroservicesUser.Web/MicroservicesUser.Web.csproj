@@ -16,9 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Microservices.BusinessLogic\MicroservicesUser.BusinessLogic.csproj" />
-    <ProjectReference Include="..\Microservices.Common\Microservices.Common.csproj" />
-    <ProjectReference Include="..\MicroservicesUser.Migrations\MicroservicesUser.Migrations.csproj" />
+    <ProjectReference Include="..\MicroservicesUser.BusinessLogic\MicroservicesUser.BusinessLogic.csproj" />
   </ItemGroup>
 
 </Project>

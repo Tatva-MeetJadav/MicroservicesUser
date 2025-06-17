@@ -1,5 +1,5 @@
-using Microservices.Common.ResourcesFiles;
 using MicroservicesUser.BusinessLogic.Interfaces;
+using MicroservicesUser.Common.ResourcesFiles;
 using MicroservicesUser.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,17 +42,54 @@ namespace MicroservicesUser.Web.Controllers
                 return RedirectToAction("Index", "Dashboard");
             }
         }
-
         public IActionResult ForgotPassword()
         {
             return View();
         }
 
-        public IActionResult ResetPassword()
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(LoginVM loginVM)
         {
+            string result = await _authenticationServices.ForgotPassword(loginVM.Email);
+            if (result == Messages.SuccessMessage)
+            {
+                TempData["SuccessMessage"] = "Email sent successfully.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Incorrect email address!";
+            }
             return View();
         }
 
+        public async Task<IActionResult> ResetPassword()
+        {
+            string token = HttpContext.Request.Query["token"].ToString();
+            string result = await _authenticationServices.ValidatePasswordResetToken(token);
+            if (result == Messages.SuccessMessage)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("ResetPasswordExpired", "Error");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordVM resetPasswordVM)
+        {
+            string result = await _authenticationServices.ResetPassword(resetPasswordVM);
+            if (result == Messages.SuccessMessage)
+            {
+                TempData["SuccessMessage"] = "Password reset successfully.";
+                return RedirectToAction("Login", "Authentication");
+            }
+            else
+            {
+                return View();
+            }
+        }
 
         public IActionResult Register()
         {

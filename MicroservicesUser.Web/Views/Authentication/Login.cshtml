@@ -14,12 +14,12 @@
                         <div class="mb-3">
                             <label class="form-label">Email</label>
                             <input class="form-control" type="email" asp-for="Email" />
-                            <span class="text-danger"></span>
+                            <span class="text-danger" asp-validation-for="Email"></span>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Password</label>
                             <input class="form-control" type="password" asp-for="Password" />
-                            <span class="text-danger"></span>
+                            <span class="text-danger" asp-validation-for="Password"></span>
                         </div>
                         <div class="my-3 text-end text-small">
                             <a asp-action="ForgotPassword">forgot password?</a>

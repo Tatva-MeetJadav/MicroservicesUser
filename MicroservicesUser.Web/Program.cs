@@ -1,3 +1,5 @@
+using Microservices.BusinessLogic.Implementations;
+using Microservices.BusinessLogic.Interfaces;
 using Microservices.Common.AutoMapperProfiles;
 using MicroservicesUser.BusinessLogic.Implementations;
 using MicroservicesUser.BusinessLogic.Interfaces;
@@ -15,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 //Setting up DbContext
-string connection = builder.Configuration.GetConnectionString("DefaultConnection")??string.Empty;
+string connection = builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
 builder.Services.AddDbContext<MicroservicesUserDbContext>(options =>
 options.UseNpgsql(connection, npgsqlOptions => npgsqlOptions.MigrationsAssembly("MicroservicesUser.Migrations")));
 
@@ -28,6 +30,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 //Setting up business services
 builder.Services.AddScoped<IJwtServices, JwtServices>();
+builder.Services.AddScoped<IEmailServices, EmailServices>();
 builder.Services.AddScoped<IAuthenticationServices, AuthenticationServices>();
 
 
@@ -49,7 +52,7 @@ builder.Services.AddAuthentication(options =>
            ValidateIssuerSigningKey = true,
            ValidIssuer = builder.Configuration["Jwt:Issuer"],
            ValidAudience = builder.Configuration["Jwt:Audience"],
-           IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]??string.Empty)),
+           IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? string.Empty)),
        };
        options.Events = new JwtBearerEvents
        {
