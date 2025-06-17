@@ -7,6 +7,8 @@ using MicroservicesUser.Models.ViewModels;
 using Microservices.BusinessLogic.Utilities;
 using Microservices.BusinessLogic.Interfaces;
 using MicroservicesUser.Common.ResourcesFiles;
+using MicroservicesUser.BusinessLogic.ServerStorage.Interfaces;
+using Microsoft.Extensions.Configuration;
 
 namespace MicroservicesUser.BusinessLogic.Implementations
 {
@@ -16,12 +18,16 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         private readonly IUserRepository _userRepository;
         private readonly IJwtServices _jwtServices;
         private readonly IEmailServices _emailServices;
-        public AuthenticationServices(IMapper mapper, IUserRepository userRepository, IJwtServices jwtServices, IEmailServices emailServices)
+        private readonly ITokenStore _tokenStore;
+        private readonly IConfiguration _configuration;
+        public AuthenticationServices(IMapper mapper, IUserRepository userRepository, IJwtServices jwtServices, IEmailServices emailServices, ITokenStore tokenStore, IConfiguration configuration)
         {
             _mapper = mapper;
             _userRepository = userRepository;
             _jwtServices = jwtServices;
             _emailServices = emailServices;
+            _tokenStore = tokenStore;
+            _configuration = configuration;
         }
         public async Task<string> RegisterUser(RegisterVM registerVM)
         {
@@ -48,9 +54,11 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                 string dbPassword = user.PasswordHash;
                 if (EncryptDecrypt.VerifyPassword(loginVM.Password, dbPassword))
                 {
-                    string token = _jwtServices.GenerateJwtToken(loginVM.Email);
+                    string token = _jwtServices.GenerateJwtToken(user.Id);
+                    double hours = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Hours"]);
+                    DateTime expiresAt = DateTime.Now.AddHours(hours);
+                    _tokenStore.AddToken(user.Id.ToString(), token, expiresAt);
                     return token;
-
                 }
                 else
                 {

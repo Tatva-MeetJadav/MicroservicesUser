@@ -14,15 +14,16 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         {
             _configuration = configuration;
         }
-        public string GenerateJwtToken(string Email)
+        public string GenerateJwtToken(int id)
         {
             SymmetricSecurityKey securityKey = new(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? string.Empty));
             SigningCredentials credentials = new(securityKey, SecurityAlgorithms.HmacSha256);
             List<Claim> claims = new()
             {
-                new Claim(ClaimTypes.Email, Email)
+                new Claim(ClaimTypes.NameIdentifier, id.ToString()),
             };
-            DateTime time = DateTime.UtcNow.AddHours(1);
+            double hours = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Hours"]);
+            DateTime time = DateTime.UtcNow.AddHours(hours);
             JwtSecurityToken token = new(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],

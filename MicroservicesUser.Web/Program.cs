@@ -3,6 +3,8 @@ using Microservices.BusinessLogic.Interfaces;
 using Microservices.Common.AutoMapperProfiles;
 using MicroservicesUser.BusinessLogic.Implementations;
 using MicroservicesUser.BusinessLogic.Interfaces;
+using MicroservicesUser.BusinessLogic.ServerStorage.Interfaces;
+using MicroservicesUser.BusinessLogic.SignalRHubs;
 using MicroservicesUser.DataAccess.Data;
 using MicroservicesUser.DataAccess.Repository.Implementations;
 using MicroservicesUser.DataAccess.Repository.Interfaces;
@@ -20,6 +22,15 @@ builder.Services.AddControllersWithViews();
 string connection = builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
 builder.Services.AddDbContext<MicroservicesUserDbContext>(options =>
 options.UseNpgsql(connection, npgsqlOptions => npgsqlOptions.MigrationsAssembly("MicroservicesUser.Migrations")));
+
+//Adding SignalR
+builder.Services.AddSignalR();
+
+//Adding Token store
+builder.Services.AddSingleton<ITokenStore, InMemoryTokenStore>();
+
+//Adding background services
+builder.Services.AddHostedService<TokenExpiryBackgroundService>();
 
 //Setting up automapper profiles
 builder.Services.AddAutoMapper(typeof(UserProfile).Assembly);
@@ -76,7 +87,7 @@ builder.Services.AddAuthentication(options =>
    });
 
 WebApplication app = builder.Build();
-
+app.MapHub<LogoutHub>("/logouthub");
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

@@ -8,9 +8,11 @@ namespace MicroservicesUser.Web.Controllers
     public class AuthenticationController : Controller
     {
         private readonly IAuthenticationServices _authenticationServices;
-        public AuthenticationController(IAuthenticationServices authenticationServices)
+        private readonly IConfiguration _configuration;
+        public AuthenticationController(IAuthenticationServices authenticationServices, IConfiguration configuration)
         {
             _authenticationServices = authenticationServices;
+            _configuration = configuration;
         }
         public IActionResult Login()
         {
@@ -32,10 +34,12 @@ namespace MicroservicesUser.Web.Controllers
             }
             else
             {
-                CookieOptions cookieOptions = new CookieOptions
+                double hours = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Hours"]);
+                DateTime expiresAt = DateTime.Now.AddHours(hours);
+                CookieOptions cookieOptions = new()
                 {
                     HttpOnly = true,
-                    Expires = DateTime.UtcNow.AddHours(1)
+                    Expires = expiresAt,
                 };
                 Response.Cookies.Append("AuthToken", token, cookieOptions);
                 TempData["SuccessMessage"] = "Logged in successful.";
