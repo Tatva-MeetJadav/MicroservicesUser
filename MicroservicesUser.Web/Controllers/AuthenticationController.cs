@@ -14,9 +14,9 @@ namespace MicroservicesUser.Web.Controllers
         }
         public IActionResult Login()
         {
-            if(User.Identity?.IsAuthenticated ?? false)
+            if (User.Identity?.IsAuthenticated ?? false)
             {
-                return RedirectToAction("Dashboard","Index");
+                return RedirectToAction("Index", "Dashboard");
             }
             return View();
         }
@@ -25,7 +25,7 @@ namespace MicroservicesUser.Web.Controllers
         public async Task<IActionResult> Login(LoginVM loginVM)
         {
             string token = await _authenticationServices.LoginUser(loginVM);
-            if(token == Messages.AuthenticationFailed)
+            if (token == Messages.AuthenticationFailed)
             {
                 TempData["ErrorMessage"] = "Incorrect email or password, please try again.";
                 return View(loginVM);
@@ -38,9 +38,9 @@ namespace MicroservicesUser.Web.Controllers
                     Expires = DateTime.UtcNow.AddHours(1)
                 };
                 Response.Cookies.Append("AuthToken", token, cookieOptions);
-                return RedirectToAction("Dashboard","Index");
+                TempData["SuccessMessage"] = "Logged in successful.";
+                return RedirectToAction("Index", "Dashboard");
             }
-            
         }
 
         public IActionResult ForgotPassword()

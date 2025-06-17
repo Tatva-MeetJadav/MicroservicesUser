@@ -13,7 +13,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
         private readonly IJwtServices _jwtServices;
-        public AuthenticationServices(IMapper mapper, IUserRepository userRepository,IJwtServices jwtServices)
+        public AuthenticationServices(IMapper mapper, IUserRepository userRepository, IJwtServices jwtServices)
         {
             _mapper = mapper;
             _userRepository = userRepository;
@@ -38,13 +38,12 @@ namespace MicroservicesUser.BusinessLogic.Implementations
 
         public async Task<string> LoginUser(LoginVM loginVM)
         {
-            string hashedPassword = EncryptDecrypt.EncryptPassword(loginVM.Password);
             User? user = await _userRepository.GetByEmailAsync(loginVM.Email);
-            if(user != null)
+            if (user != null)
             {
                 string dbPassword = user.PasswordHash;
-                if(EncryptDecrypt.VerifyPassword(dbPassword,hashedPassword))
-                { 
+                if (EncryptDecrypt.VerifyPassword(loginVM.Password, dbPassword))
+                {
                     string token = _jwtServices.GenerateJwtToken(loginVM.Email);
                     return token;
 
