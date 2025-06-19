@@ -4,9 +4,13 @@ a:hover {
 }
 
 .auth-page-title {
-  color: var(--primaryTextDarkColor) !important;
+  color: var(--primaryTextColor) !important;
   font-weight: bolder;
 }
 .card {
-  background-color: #fafafa;
+  background-color: white;
+}
+
+.img-logo {
+  height: 70px;
 }

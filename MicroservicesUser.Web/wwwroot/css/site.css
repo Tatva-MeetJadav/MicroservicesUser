@@ -1,26 +1,21 @@
-@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,398;1,398&display=swap");
+﻿@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,398;1,398&display=swap");
+
 :root {
-  --primaryBackgroundColor: #ffe4c4;
-  --primaryButtonColor: #f4a460;
-  --primaryTextColor: #f4a460;
-  --primaryTextDarkColor: #e18c36;
-  --primaryButtonDarkColor: #e18c36;
-  --primaryBoxShadowColor: #e18b365f;
-  --primaryBorderColor: #e18c36;
+  --primaryBackgroundColor: #0b6060;
+  --primaryButtonColor: #0b6060;
+  --primaryTextColor: #0b6060;
+  --primaryTextDarkColor: #095454;
+  --primaryButtonDarkColor: #084444;
+  --primaryBorderColor: #095454;
 }
 
-body {
+.auth-body {
   font-family: "Roboto", sans-serif;
   font-optical-sizing: auto;
   font-weight: 398;
   font-style: normal;
   font-variation-settings: "wdth" 100;
-  background: #ffffff;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 1) 0%,
-    rgba(209, 177, 130, 1) 100%
-  );
+  background: linear-gradient(135deg, #063333 0%, #0b6060 50%, #20b2aa 100%);
 }
 .toast-success {
   background-color: #51a351 !important;
@@ -46,22 +41,21 @@ body {
   background-color: var(--primaryButtonDarkColor) !important;
   border-color: var(--primaryButtonDarkColor) !important;
 }
-.btn-primary:focus {
+.btn-primary:focus,
+.btn-secondary:focus {
   box-shadow: 0 0 0 !important;
 }
 
 .form-control:focus {
+  border: 2px solid;
   border-color: var(--primaryBorderColor);
-  box-shadow: 0 0 0 0.25rem var(--primaryBoxShadowColor);
+  box-shadow: 0 0 0;
 }
 
 .text-small {
   font-size: small;
 }
 
-.bg-white-subtle {
-  background-color: #fafafa;
-}
 .btn-outline-primary {
   border-color: var(--primaryBorderColor) !important;
   color: var(--primaryTextColor);
@@ -73,4 +67,32 @@ body {
 }
 .text-primary {
   color: var(--primaryTextColor) !important;
+}
+.navbar-logo {
+  height: 50px;
+}
+.bg-primary {
+  background-color: var(--primaryBackgroundColor) !important;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+}
+.dropdown-item.active,
+.dropdown-item:active {
+  color: #fff;
+  text-decoration: none;
+  background-color: var(--primaryBackgroundColor);
+}
+
+.btn-close:focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(11, 96, 96, 0.38);
+  opacity: 1;
+}
+.border-primary {
+  border-color: var(--primaryBorderColor) !important;
 }

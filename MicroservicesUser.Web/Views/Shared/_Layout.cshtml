@@ -13,9 +13,12 @@
 </head>
 
 <body>
-    <div class="d-flex justify-content-end p-2 bg-white-subtle">
-        <div class="dropdown">
-            <a class="btn btn-primary dropdown-toggle"
+    <div class="d-flex justify-content-between align-items-center p-2 bg-primary">
+        <div class="text-center">
+            <img src="~/images/logo/new-logo.png" alt="App Logo" class="navbar-logo bg-white rounded-2" />
+        </div>
+        <div class="dropdown pe-3">
+            <a class="dropdown-toggle text-white text-decoration-none"
                role="button"
                id="dropdownMenuLink"
                data-bs-toggle="dropdown"
@@ -42,7 +45,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <form asp-action="Logout" asp-controller="Authentication" method="post">
-                    <div class="modal-header">
+                    <div class="modal-header border-0">
                         <h1 class="modal-title fs-5 fw-bold">Logout</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -52,7 +55,7 @@
                             <span class="fs-5">Are you sure you want to logout?</span>
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer border-0 d-flex justify-content-center">
                         <button type="submit" class="btn btn-primary">Yes</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
                     </div>
@@ -61,9 +64,9 @@
         </div>
     </div>
  
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - MicroservicesUser - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="border-top footer bg-primary">
+        <div class="container text-white">
+            &copy; 2025 - Company
         </div>
     </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
