@@ -116,5 +116,11 @@ namespace MicroservicesUser.Web.Controllers
             }
             return View();
         }
+
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("AuthToken");
+            return RedirectToAction("Login","Authentication");
+        }
     }
 }

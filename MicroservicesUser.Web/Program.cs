@@ -86,7 +86,6 @@ builder.Services.AddAuthentication(options =>
            }
        };
    });
-Console.WriteLine("Content Root Path:" + builder.Environment.ContentRootPath);
 
 WebApplication app = builder.Build();
 app.MapHub<LogoutHub>("/logouthub");
