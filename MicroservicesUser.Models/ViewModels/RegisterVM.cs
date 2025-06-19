@@ -13,12 +13,15 @@ namespace MicroservicesUser.Models.ViewModels
         ErrorMessage = "Password should be at least 8 characters long, must contain at least one uppercase letter, one digit, and one special character.")]
         public string Password { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "ConfirmPassword is required.")]
-        [Compare(nameof(Password), ErrorMessage = "Password and ConfirmPassword should be same.")]
+        [Required(ErrorMessage = "Confirm password is required.")]
+        [Compare(nameof(Password), ErrorMessage = "Password and confirm password should be same.")]
         public string ConfirmPassword { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Username is required.")]
-        [RegularExpression(@"^(?![\s\-\(\)\[\]&'/\+,]*$)(?=.*[A-Za-z0-9À-ÿ])([A-Za-z0-9À-ÿ\s\-\(\)\[\]&'/\+,.]+)$", ErrorMessage = "Username is not valid.")]
-        public string Username { get; set; } = string.Empty;
+        [Required(ErrorMessage = "First name is required.")]
+        [RegularExpression(@"^(?![\s\-\(\)\[\]&'/\+,]*$)(?=.*[A-Za-z0-9À-ÿ])([A-Za-z0-9À-ÿ\s\-\(\)\[\]&'/\+,.]+)$", ErrorMessage = "First name is not valid.")]
+        public string FirstName { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Last name is required.")]
+        [RegularExpression(@"^(?![\s\-\(\)\[\]&'/\+,]*$)(?=.*[A-Za-z0-9À-ÿ])([A-Za-z0-9À-ÿ\s\-\(\)\[\]&'/\+,.]+)$", ErrorMessage = "Last name is not valid.")]
+        public string LastName { get; set; } = string.Empty;
     }
 }

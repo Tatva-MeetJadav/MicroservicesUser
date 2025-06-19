@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -43,6 +43,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IJwtServices, JwtServices>();
 builder.Services.AddScoped<IEmailServices, EmailServices>();
 builder.Services.AddScoped<IAuthenticationServices, AuthenticationServices>();
+builder.Services.AddScoped<IDashboardServices, DashboardServices>();
 
 
 //Setting up JWT Authentication
@@ -69,7 +70,7 @@ builder.Services.AddAuthentication(options =>
        {
            OnMessageReceived = context =>
            {
-               var token = context.Request.Cookies["AuthToken"];
+               string token = context.Request.Cookies["AuthToken"] ?? string.Empty;
                if (!string.IsNullOrEmpty(token))
                {
                    context.Token = token;
@@ -85,6 +86,7 @@ builder.Services.AddAuthentication(options =>
            }
        };
    });
+Console.WriteLine("Content Root Path:" + builder.Environment.ContentRootPath);
 
 WebApplication app = builder.Build();
 app.MapHub<LogoutHub>("/logouthub");

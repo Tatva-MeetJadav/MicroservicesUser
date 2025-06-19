@@ -79,11 +79,29 @@ namespace MicroservicesUser.Common.ResourcesFiles {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to failed.
+        /// </summary>
+        public static string Failed {
+            get {
+                return ResourceManager.GetString("Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Operation Successful..
         /// </summary>
         public static string SuccessMessage {
             get {
                 return ResourceManager.GetString("SuccessMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current password is wrong.
+        /// </summary>
+        public static string WrongPassword {
+            get {
+                return ResourceManager.GetString("WrongPassword", resourceCulture);
             }
         }
     }

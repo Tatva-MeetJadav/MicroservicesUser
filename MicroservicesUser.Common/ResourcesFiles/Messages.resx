@@ -123,7 +123,13 @@
   <data name="DuplicateValue" xml:space="preserve">
     <value>Duplicate value found.</value>
   </data>
+  <data name="Failed" xml:space="preserve">
+    <value>failed</value>
+  </data>
   <data name="SuccessMessage" xml:space="preserve">
     <value>Operation Successful.</value>
+  </data>
+  <data name="WrongPassword" xml:space="preserve">
+    <value>Current password is wrong</value>
   </data>
 </root>

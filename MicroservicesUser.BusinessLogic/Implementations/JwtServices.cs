@@ -33,6 +33,12 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             );
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        public int GetUserId(string token)
+        {
+            int id = Convert.ToInt32(new JwtSecurityTokenHandler().ReadJwtToken(token).Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value);
+            return id;
+        }
     }
 
 }

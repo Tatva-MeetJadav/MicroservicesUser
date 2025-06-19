@@ -1,0 +1,9 @@
+.profile-img-container img {
+  height: 90px;
+  width: 90px;
+  border: 2px solid var(--primaryBorderColor);
+  border-radius: 50%;
+}
+.form-label {
+  margin: 0;
+}

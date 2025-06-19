@@ -3,6 +3,7 @@ using System;
 using MicroservicesUser.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MicroservicesUser.Migrations.Migrations
 {
     [DbContext(typeof(MicroservicesUserDbContext))]
-    partial class MicroservicesUserDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250618042207_AddingFieldsForUserProfile")]
+    partial class AddingFieldsForUserProfile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,12 +67,14 @@ namespace MicroservicesUser.Migrations.Migrations
                     b.Property<DateTime?>("PasswordResetTokenExpiry")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("ProfilePhotoGeneratedName")
-                        .HasColumnType("text");
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 #pragma warning restore 612, 618
         }

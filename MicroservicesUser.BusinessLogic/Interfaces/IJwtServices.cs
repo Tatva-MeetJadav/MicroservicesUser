@@ -3,5 +3,6 @@
     public interface IJwtServices
     {
         string GenerateJwtToken(int id);
+        int GetUserId(string token);
     }
 }

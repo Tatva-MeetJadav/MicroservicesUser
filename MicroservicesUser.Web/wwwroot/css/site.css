@@ -23,19 +23,19 @@ body {
   );
 }
 .toast-success {
-    background-color: #51a351 !important;
+  background-color: #51a351 !important;
 }
 
 .toast-error {
-    background-color: #bd362f !important;
+  background-color: #bd362f !important;
 }
 
 .toast-warning {
-    background-color: #f89406 !important;
+  background-color: #f89406 !important;
 }
 
 .toast-info {
-    background-color: #2f96b4 !important;
+  background-color: #2f96b4 !important;
 }
 .btn-primary {
   background-color: var(--primaryButtonColor) !important;
@@ -57,4 +57,20 @@ body {
 
 .text-small {
   font-size: small;
+}
+
+.bg-white-subtle {
+  background-color: #fafafa;
+}
+.btn-outline-primary {
+  border-color: var(--primaryBorderColor) !important;
+  color: var(--primaryTextColor);
+}
+.btn-outline-primary:hover {
+  background-color: var(--primaryBorderColor);
+  border-color: var(--primaryBorderColor) !important;
+  color: white;
+}
+.text-primary {
+  color: var(--primaryTextColor) !important;
 }
