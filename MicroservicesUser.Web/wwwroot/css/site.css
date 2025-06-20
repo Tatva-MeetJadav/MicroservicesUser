@@ -1,0 +1,101 @@
+﻿@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,398;1,398&display=swap");
+
+:root {
+  --primaryBackgroundColor: #0b6060;
+  --primaryButtonColor: #0b6060;
+  --primaryTextColor: #0b6060;
+  --primaryTextDarkColor: #095454;
+  --primaryButtonDarkColor: #084444;
+  --primaryBorderColor: #095454;
+}
+
+.auth-body {
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 398;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+  background: linear-gradient(135deg, #063333 0%, #0b6060 50%, #20b2aa 100%);
+}
+.toast-success {
+  background-color: #51a351 !important;
+}
+
+.toast-error {
+  background-color: #bd362f !important;
+}
+
+.toast-warning {
+  background-color: #f89406 !important;
+}
+
+.toast-info {
+  background-color: #2f96b4 !important;
+}
+.btn-primary {
+  background-color: var(--primaryButtonColor) !important;
+  border-color: var(--primaryButtonColor) !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--primaryButtonDarkColor) !important;
+  border-color: var(--primaryButtonDarkColor) !important;
+}
+.btn-primary:focus,
+.btn-secondary:focus {
+  box-shadow: 0 0 0 !important;
+}
+
+.form-control:focus {
+  border: 2px solid;
+  border-color: var(--primaryBorderColor);
+  box-shadow: 0 0 0;
+}
+
+.text-small {
+  font-size: small;
+}
+
+.btn-outline-primary {
+  border-color: var(--primaryBorderColor) !important;
+  color: var(--primaryTextColor);
+}
+.btn-outline-primary:hover {
+  background-color: var(--primaryBorderColor);
+  border-color: var(--primaryBorderColor) !important;
+  color: white;
+}
+.text-primary {
+  color: var(--primaryTextColor) !important;
+}
+.navbar-logo {
+  height: 50px;
+}
+.bg-primary {
+  background-color: var(--primaryBackgroundColor) !important;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+}
+.dropdown-item.active,
+.dropdown-item:active {
+  color: #fff;
+  text-decoration: none;
+  background-color: var(--primaryBackgroundColor);
+}
+
+.btn-close:focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(11, 96, 96, 0.38);
+  opacity: 1;
+}
+.border-primary {
+  border-color: var(--primaryBorderColor) !important;
+}
+.fw-600 {
+  font-weight: 600;
+}

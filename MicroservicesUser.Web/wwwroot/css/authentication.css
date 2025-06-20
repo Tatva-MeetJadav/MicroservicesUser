@@ -1,0 +1,16 @@
+a,
+a:hover {
+  color: var(--primaryTextColor);
+}
+
+.auth-page-title {
+  color: var(--primaryTextColor) !important;
+  font-weight: bolder;
+}
+.card {
+  background-color: white;
+}
+
+.img-logo {
+  height: 70px;
+}

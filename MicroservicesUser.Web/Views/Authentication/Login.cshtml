@@ -1,0 +1,41 @@
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_AuthLayout";
+}
+<link rel="stylesheet" href="~/css/authentication.css" asp-append-version="true">
+@model LoginVM
+<div class="container d-flex flex-column justify-content-center vh-100">
+    <div class="row justify-content-center">
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <img src="~/images/logo/new-logo.png" alt="App Logo" class="img-logo" />
+                    </div>
+                    <h3 class="card-title auth-page-title text-center mb-4">Login</h3>
+                    <form asp-action="Login" asp-controller="Authentication" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input class="form-control" type="email" asp-for="Email" />
+                            <span class="text-danger" asp-validation-for="Email"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input class="form-control" type="password" asp-for="Password" />
+                            <span class="text-danger" asp-validation-for="Password"></span>
+                        </div>
+                        <div class="my-3 text-end text-small">
+                            <a asp-action="ForgotPassword">forgot password?</a>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary w-100">Login</button>
+                        </div>
+                        <div class="my-3 text-center">
+                            <a asp-action="Register">Register here</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
