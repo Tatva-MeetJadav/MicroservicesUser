@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
-<body>
+<body class="min-vh-100">
     <div class="d-flex justify-content-between align-items-center p-2 bg-primary">
         <div class="text-center">
             <img src="~/images/logo/new-logo.png" alt="App Logo" class="navbar-logo bg-white rounded-2" />
@@ -45,7 +45,7 @@
             <div class="modal-content">
                 <form asp-action="Logout" asp-controller="Authentication" method="post">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5 fw-bold">Logout</h1>
+                        <h1 class="modal-title fs-5 fw-bold text-primary">Logout</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -62,12 +62,7 @@
             </div>
         </div>
     </div>
- 
-    <footer class="border-top footer bg-primary">
-        <div class="container text-white">
-            &copy; 2025 - Company
-        </div>
-    </footer>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
