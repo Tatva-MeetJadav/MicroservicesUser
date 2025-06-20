@@ -44,7 +44,11 @@ builder.Services.AddScoped<IJwtServices, JwtServices>();
 builder.Services.AddScoped<IEmailServices, EmailServices>();
 builder.Services.AddScoped<IAuthenticationServices, AuthenticationServices>();
 builder.Services.AddScoped<IDashboardServices, DashboardServices>();
+builder.Services.AddScoped<IEmailVerificationServices, EmailVerificationServices>();
+builder.Services.AddScoped<IGenericAPIClientServices, GenericAPIClientServices>();
 
+//Injecting HttpClientService
+builder.Services.AddHttpClient<GenericAPIClientServices>();
 
 //Setting up JWT Authentication
 builder.Services.AddAuthentication(options =>

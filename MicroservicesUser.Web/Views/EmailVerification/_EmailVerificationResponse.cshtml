@@ -1,0 +1,217 @@
+@using MicroservicesUser.Models.ViewModels.EmailVerification
+
+@model EmailVerificationResponseVM
+<div class="row">
+    <div class="col-4">
+        <div class="table-email-verification table-responsive mt-3 border border-1 rounded-2 border-black">
+            <table class="table">
+                <thead class="table-primary">
+                    <th scope="col" class="text-white">property</th>
+                    <th scope="col" class="text-white">value</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Valid</td>
+                        <td>@Model.Valid</td>
+                    </tr>
+                    <tr>
+                        <td>TimedOut</td>
+                        <td>@Model.TimedOut</td>
+                    </tr>
+                    <tr>
+                        <td>Disposable</td>
+                        <td>@Model.Disposable</td>
+                    </tr>
+                    <tr>
+                        <td>FirstName</td>
+                        <td>@Model.FirstName</td>
+                    </tr>
+                    <tr>
+                        <td>Generic</td>
+                        <td>@Model.Generic</td>
+                    </tr>
+                    <tr>
+                        <td>Common</td>
+                        <td>@Model.Common</td>
+                    </tr>
+                    <tr>
+                        <td>SuggestedDomain</td>
+                        <td>@Model.SuggestedDomain</td>
+                    </tr>
+                    <tr>
+                        <td>SanitizedEmail</td>
+                        <td>@Model.SanitizedEmail</td>
+                    </tr>
+                    <tr>
+                        <td>RequestId</td>
+                        <td>@Model.RequestId</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="table-email-verification table-responsive mt-3 border border-1 rounded-2 border-black">
+            <table class="table">
+                <thead class="table-primary">
+                    <th scope="col" class="text-white">value</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Deliverability</td>
+                        <td>@Model.Deliverability</td>
+                    </tr>
+                    <tr>
+                        <td>SmtpScore</td>
+                        <td>@Model.SmtpScore</td>
+                    </tr>
+                    <tr>
+                        <td>OverallScore</td>
+                        <td>@Model.OverallScore</td>
+                    </tr>
+                    <tr>
+                        <td>CatchAll</td>
+                        <td>@Model.CatchAll</td>
+                    </tr>
+                    <tr>
+                        <td>DnsValid</td>
+                        <td>@Model.DnsValid</td>
+                    </tr>
+                    <tr>
+                        <td>Honeypot</td>
+                        <td>@Model.Honeypot</td>
+                    </tr>
+                    <tr>
+                        <td>FrequentComplainer</td>
+                        <td>@Model.FrequentComplainer</td>
+                    </tr>
+                    <tr>
+                        <td>Suspect</td>
+                        <td>@Model.Suspect</td>
+                    </tr>
+                    <tr>
+                        <td>RecentAbuse</td>
+                        <td>@Model.RecentAbuse</td>
+                    </tr>
+                    <tr>
+                        <td>FraudScore</td>
+                        <td>@Model.FraudScore</td>
+                    </tr>
+                    <tr>
+                        <td>Leaked</td>
+                        <td>@Model.Leaked</td>
+                    </tr>
+                    <tr>
+                        <td>DomainVelocity</td>
+                        <td>@Model.DomainVelocity</td></tr>
+                    <tr><td>DomainTrust</td><td>@Model.DomainTrust</td>
+                        </tr>
+                    <tr>
+                        <td>UserActivity</td>
+                        <td>@Model.UserActivity</td>
+                    </tr>
+                    <tr>
+                        <td>Success</td>
+                        <td>@Model.Success</td>
+                    </tr>
+                    <tr>
+                        <td>SpamTrapScore</td>
+                        <td>@Model.SpamTrapScore</td>
+                    </tr>
+                    <tr>
+                        <td>RiskyTld</td>
+                        <td>@Model.RiskyTld</td>
+                    </tr>
+                    <tr>
+                        <td>SpfRecord</td>
+                        <td>@Model.SpfRecord</td>
+                    </tr>
+                    <tr>
+                        <td>DmarcRecord</td>
+                        <td>@Model.DmarcRecord</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="table-email-verification table-responsive mt-3 border border-1 rounded-2 border-black">
+            <table class="table">
+                <thead class="table-primary">
+                    <th scope="col" class="text-white">property</th>
+                    <th scope="col" class="text-white">value</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>AssociatedNames - Status</td>
+                        <td>@Model.AssociatedNames?.Status</td>
+                    </tr>
+                    <tr>
+                        <td>AssociatedNames - Names</td>
+                        <td>@(Model.AssociatedNames?.Names != null ? string.Join(", ", Model.AssociatedNames.Names) : null)</td>
+                    </tr>
+                    <tr>
+                        <td>AssociatedPhoneNumbers - Status</td>
+                        <td>@Model.AssociatedPhoneNumbers?.Status</td>
+                    </tr>
+                    <tr>
+                        <td>AssociatedPhoneNumbers - PhoneNumbers</td>
+                        <td>@(Model.AssociatedPhoneNumbers?.PhoneNumbers != null ? string.Join(", ", Model.AssociatedPhoneNumbers.PhoneNumbers) : null)</td>
+                    </tr>
+                    <tr>
+                        <td>FirstSeen - Human</td>
+                        <td>@Model.FirstSeen?.Human</td>
+                    </tr>
+                    <tr>
+                        <td>FirstSeen - Timestamp</td>
+                        <td>@Model.FirstSeen?.Timestamp</td>
+                    </tr>
+                    <tr>
+                        <td>FirstSeen - Iso</td>
+                        <td>@Model.FirstSeen?.Iso</td>
+                    </tr>
+                    <tr>
+                        <td>DomainAge - Human</td>
+                        <td>@Model.DomainAge?.Human</td>
+                    </tr>
+                    <tr>
+                        <td>DomainAge - Timestamp</td>
+                        <td>@Model.DomainAge?.Timestamp</td>
+                    </tr>
+                    <tr>
+                        <td>DomainAge - Iso</td>
+                        <td>@Model.DomainAge?.Iso</td>
+                    </tr>
+                    <tr>
+                        <td>MX Records</td>
+                        <td>
+                            @if (Model.MxRecords != null)
+                            {
+                                <ul>
+                                    @foreach (var mx in Model.MxRecords)
+                                    {
+                                        <li>@mx</li>
+                                    }
+                                </ul>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>A Records</td>
+                        <td>
+                            @if (Model.ARecords != null)
+                            {
+                                <ul>
+                                    @foreach (var a in Model.ARecords)
+                                    {
+                                        <li>@a</li>
+                                    }
+                                </ul>
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

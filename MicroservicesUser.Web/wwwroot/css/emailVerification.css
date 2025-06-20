@@ -1,0 +1,9 @@
+.input-email-verify {
+  min-width: 20vw;
+}
+.table-email-verification table {
+  margin: 0;
+}
+.table-email-verification tr {
+  border-bottom: white;
+}

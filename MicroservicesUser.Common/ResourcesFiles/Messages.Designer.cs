@@ -88,7 +88,7 @@ namespace MicroservicesUser.Common.ResourcesFiles {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Operation Successful..
+        ///   Looks up a localized string similar to success.
         /// </summary>
         public static string SuccessMessage {
             get {
@@ -97,7 +97,7 @@ namespace MicroservicesUser.Common.ResourcesFiles {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Current password is wrong.
+        ///   Looks up a localized string similar to wrongPassword.
         /// </summary>
         public static string WrongPassword {
             get {

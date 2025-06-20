@@ -127,9 +127,9 @@
     <value>failed</value>
   </data>
   <data name="SuccessMessage" xml:space="preserve">
-    <value>Operation Successful.</value>
+    <value>success</value>
   </data>
   <data name="WrongPassword" xml:space="preserve">
-    <value>Current password is wrong</value>
+    <value>wrongPassword</value>
   </data>
 </root>

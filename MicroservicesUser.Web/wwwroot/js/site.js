@@ -12,12 +12,12 @@ connection.on("ForceLogout", function () {
 });
 
 $('#changePasswordModal').on('show.bs.modal', function () {
-    var form = $('.changePasswordForm');
+    var form = $('.change-password-form');
     form[0].reset();
     form.find('.text-danger').text('');
 });
 
-$(document).on('submit', '.changePasswordForm', function (e) {
+$(document).on('submit', '.change-password-form', function (e) {
     e.preventDefault();
     var formData = $(this).serialize();
     $.ajax({

@@ -50,11 +50,11 @@ namespace MicroservicesUser.Web.Controllers
             string result = await _dashboardServices.ChangePassword(changePasswordVM, token);
             if (result == Messages.SuccessMessage)
             {
-                return Json("success");
+                return Json(Messages.SuccessMessage);
             }
             else if (result == Messages.WrongPassword)
             {
-                return Json("wrongPassword");
+                return Json(Messages.WrongPassword);
             }
             else
             {

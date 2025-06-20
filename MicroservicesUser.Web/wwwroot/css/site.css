@@ -9,12 +9,15 @@
   --primaryBorderColor: #095454;
 }
 
-.auth-body {
+body {
   font-family: "Roboto", sans-serif;
   font-optical-sizing: auto;
   font-weight: 398;
   font-style: normal;
   font-variation-settings: "wdth" 100;
+}
+
+.auth-body {
   background: linear-gradient(135deg, #063333 0%, #0b6060 50%, #20b2aa 100%);
 }
 .toast-success {
@@ -98,4 +101,16 @@
 }
 .fw-600 {
   font-weight: 600;
+}
+.border-right {
+  border-right: 1px solid teal;
+}
+.sidebar-link:hover {
+  background-color: var(--primaryBackgroundColor);
+  color: white !important;
+}
+
+.table-primary {
+  --bs-table-bg: var(--primaryBackgroundColor);
+  --bs-table-border-color: var(--primaryBorderColor);
 }

@@ -1,42 +1,68 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+}
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - MicroservicesUser</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
-<body class="min-vh-100">
-    <div class="d-flex justify-content-between align-items-center p-2 bg-primary">
-        <div class="text-center">
-            <img src="~/images/logo/new-logo.png" alt="App Logo" class="navbar-logo bg-white rounded-2" />
+<body>
+    <div class="row m-0 min-vh-100">
+        <div class="col-2 px-0 border-right">
+            <div>
+                <div class="text-center py-1">
+                    <img src="~/images/logo/new-logo.png" alt="App Logo" class="navbar-logo bg-white rounded-2" />
+                </div>
+                <aside class="mt-3 px-1 d-flex flex-column gap-2">
+                    <a class="px-2 py-1 sidebar-link text-center @(currentController == "Dashboard" ? "bg-primary text-white" : "text-black") rounded-1 text-decoration-none" role="button" asp-action="Index" asp-controller="Dashboard">
+                        Dashboard
+                    </a>
+                    <a class="px-2 py-1 sidebar-link text-center @(currentController == "EmailVerification" ? "bg-primary text-white" : "text-black") rounded-1 text-black text-decoration-none" role="button" asp-action="Index" asp-controller="EmailVerification">
+                        Email Verification
+                    </a>
+                    <a class="px-2 py-1 sidebar-link text-center @(currentController == "History" ? "bg-primary text-white" : "text-black") rounded-1 text-decoration-none" role="button">
+                        History
+                    </a>
+                </aside>
+            </div>
         </div>
-        <div class="dropdown pe-3">
-            <a class="dropdown-toggle text-white text-decoration-none"
-               role="button"
-               id="dropdownMenuLink"
-               data-bs-toggle="dropdown"
-               aria-expanded="false">
-                Account
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <li><a class="dropdown-item" asp-action="UserProfile" asp-controller="Dashboard">My profile</a></li>
-                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#changePasswordModal" role="button">Change password</a></li>
-                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logoutModal" role="button">Logout</a></li>
-            </ul>
+        <div class="col-10 px-0">
+            <div class="d-flex justify-content-end py-3 align-items-center p-2 bg-primary">
+                <div class="dropdown pe-3">
+                    <a class="dropdown-toggle text-white text-decoration-none"
+                       role="button"
+                       id="dropdownMenuLink"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        Account
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <li><a class="dropdown-item" asp-action="UserProfile" asp-controller="Dashboard">My profile</a></li>
+                        <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#changePasswordModal" role="button">Change password</a></li>
+                        <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logoutModal" role="button">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="container">
+                <main role="main" class="pb-3">
+                    @RenderBody()
+                </main>
+            </div>
         </div>
     </div>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
+    
+    
+    
     <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
         @await Html.PartialAsync("_ChangePassword",new ChangePasswordVM())
     </div>
