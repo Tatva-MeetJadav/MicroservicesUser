@@ -18,7 +18,7 @@ namespace MicroservicesUser.Models.ViewModels.EmailVerification
         public string? FirstName { get; set; }
 
         [JsonProperty("deliverability")]
-        public DeliverabilityEnum Deliverability { get; set; }
+        public string? Deliverability { get; set; }
 
         [JsonProperty("smtpScore")]
         public int SmtpScore { get; set; }
@@ -60,13 +60,13 @@ namespace MicroservicesUser.Models.ViewModels.EmailVerification
         public string? SuggestedDomain { get; set; }
 
         [JsonProperty("domainVelocity")]
-        public DomainVelocityEnum? DomainVelocity { get; set; }
+        public int DomainVelocity { get; set; }
 
         [JsonProperty("domainTrust")]
-        public DomainTrustEnum? DomainTrust { get; set; }
+        public int DomainTrust { get; set; }
 
         [JsonProperty("userActivity")]
-        public UserActivityEnum? UserActivity { get; set; }
+        public int UserActivity { get; set; }
 
         [JsonProperty("associatedNames")]
         public AssociatedNamesDTO? AssociatedNames { get; set; }
@@ -84,7 +84,7 @@ namespace MicroservicesUser.Models.ViewModels.EmailVerification
         public bool Success { get; set; }
 
         [JsonProperty("spamTrapScore")]
-        public SpamTrapScoreEnum? SpamTrapScore { get; set; }
+        public string? SpamTrapScore { get; set; }
 
         [JsonProperty("riskyTld")]
         public bool RiskyTld { get; set; }
@@ -136,97 +136,5 @@ namespace MicroservicesUser.Models.ViewModels.EmailVerification
 
         [JsonProperty("iso")]
         public string? Iso { get; set; }
-    }
-
-    [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-    public enum DeliverabilityEnum
-    {
-        [EnumMember(Value = "high")]
-        High = 1,
-
-        [EnumMember(Value = "medium")]
-        Medium = 2,
-
-        [EnumMember(Value = "low")]
-        Low = 3
-    }
-
-    [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-    public enum DomainVelocityEnum
-    {
-        [EnumMember(Value = "high")]
-        High = 1,
-
-        [EnumMember(Value = "medium")]
-        Medium = 2,
-
-        [EnumMember(Value = "low")]
-        Low = 3,
-
-        [EnumMember(Value = "none")]
-        None = 4,
-
-        [EnumMember(Value = "Enterprise Mini or higher required.")]
-        Upgrade = 5
-    }
-
-    [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-    public enum DomainTrustEnum
-    {
-        [EnumMember(Value = "trusted")]
-        Trusted = 1,
-
-        [EnumMember(Value = "positive")]
-        Positive = 2,
-
-        [EnumMember(Value = "neutral")]
-        Neutral = 3,
-
-        [EnumMember(Value = "suspicious")]
-        Suspicious = 4,
-
-        [EnumMember(Value = "malicious")]
-        Malicious = 5,
-
-        [EnumMember(Value = "notRated")]
-        NotRated = 6,
-
-        [EnumMember(Value = "Upgraded plan required.")]
-        Upgrade = 7
-    }
-
-    [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-    public enum UserActivityEnum
-    {
-        [EnumMember(Value = "high")]
-        High = 1,
-
-        [EnumMember(Value = "medium")]
-        Medium = 2,
-
-        [EnumMember(Value = "low")]
-        Low = 3,
-
-        [EnumMember(Value = "none")]
-        None = 4,
-
-        [EnumMember(Value = "Enterprise L4+ required.")]
-        Upgrade = 5
-    }
-
-    [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-    public enum SpamTrapScoreEnum
-    {
-        [EnumMember(Value = "high")]
-        High = 1,
-
-        [EnumMember(Value = "medium")]
-        Medium = 2,
-
-        [EnumMember(Value = "low")]
-        Low = 3,
-
-        [EnumMember(Value = "none")]
-        None = 4
     }
 }

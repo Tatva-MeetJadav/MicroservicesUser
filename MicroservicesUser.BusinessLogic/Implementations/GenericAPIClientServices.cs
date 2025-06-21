@@ -16,22 +16,42 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             try
             {
                 string json = JsonSerializer.Serialize(request);
-                StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                using var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 // Send POST request
-                using HttpResponseMessage response = await _httpClient.PostAsync(baseUrl, content);
+                using var response = await _httpClient.PostAsync(baseUrl, content);
                 response.EnsureSuccessStatusCode();
 
                 // Read and deserialize the response content
-                Stream responseStream = await response.Content.ReadAsStreamAsync();
-                TResponse? result = await JsonSerializer.DeserializeAsync<TResponse>(responseStream);
-                return result ?? Activator.CreateInstance<TResponse>();
+                await using var responseStream = await response.Content.ReadAsStreamAsync();
+                var result = await JsonSerializer.DeserializeAsync<TResponse>(responseStream, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+                if (result == null)
+                {
+                    throw new InvalidOperationException("Deserialized response was null.");
+                }
+
+                return result;
             }
-            catch(Exception ex)
+            catch (HttpRequestException httpEx)
             {
-                throw new Exception("Something went wrong!",ex.InnerException);
+                // Handle request-level errors (connection issues, 4xx, 5xx)
+                throw new InvalidOperationException($"HTTP request failed: {httpEx.Message}", httpEx);
             }
-            
+            catch (JsonException jsonEx)
+            {
+                // Handle deserialization issues
+                throw new InvalidOperationException($"Failed to deserialize response: {jsonEx.Message}", jsonEx);
+            }
+            catch (Exception ex)
+            {
+                // Catch-all for other issues
+                throw new InvalidOperationException("Unexpected error during API call.", ex);
+            }
         }
+
     }
 }
