@@ -50,7 +50,7 @@ body {
 }
 
 .form-control:focus {
-  border: 2px solid;
+  border: 1px solid;
   border-color: var(--primaryBorderColor);
   box-shadow: 0 0 0;
 }
