@@ -1,5 +1,4 @@
-﻿using System.Runtime.Serialization;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace MicroservicesUser.Models.ViewModels.EmailVerification
 {
@@ -69,16 +68,16 @@ namespace MicroservicesUser.Models.ViewModels.EmailVerification
         public int UserActivity { get; set; }
 
         [JsonProperty("associatedNames")]
-        public AssociatedNamesDTO? AssociatedNames { get; set; }
+        public AssociatedNamesVM? AssociatedNames { get; set; }
 
         [JsonProperty("associatedPhoneNumbers")]
-        public AssociatedPhoneNumbersDTO? AssociatedPhoneNumbers { get; set; }
+        public AssociatedPhoneNumbersVM? AssociatedPhoneNumbers { get; set; }
 
         [JsonProperty("firstSeen")]
-        public TimeInfoDTO? FirstSeen { get; set; }
+        public TimeInfoVM? FirstSeen { get; set; }
 
         [JsonProperty("domainAge")]
-        public TimeInfoDTO? DomainAge { get; set; }
+        public TimeInfoVM? DomainAge { get; set; }
 
         [JsonProperty("success")]
         public bool Success { get; set; }
@@ -108,7 +107,7 @@ namespace MicroservicesUser.Models.ViewModels.EmailVerification
         public List<string>? ARecords { get; set; }
     }
 
-    public class AssociatedNamesDTO
+    public class AssociatedNamesVM
     {
         [JsonProperty("status")]
         public string? Status { get; set; }
@@ -117,7 +116,7 @@ namespace MicroservicesUser.Models.ViewModels.EmailVerification
         public List<string>? Names { get; set; }
     }
 
-    public class AssociatedPhoneNumbersDTO
+    public class AssociatedPhoneNumbersVM
     {
         [JsonProperty("status")]
         public string? Status { get; set; }
@@ -126,7 +125,7 @@ namespace MicroservicesUser.Models.ViewModels.EmailVerification
         public List<string>? PhoneNumbers { get; set; }
     }
 
-    public class TimeInfoDTO
+    public class TimeInfoVM
     {
         [JsonProperty("human")]
         public string? Human { get; set; }

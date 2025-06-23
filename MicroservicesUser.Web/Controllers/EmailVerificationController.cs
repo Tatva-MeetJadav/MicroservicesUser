@@ -20,8 +20,16 @@ namespace MicroservicesUser.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(EmailVerificationRequestVM emailVerificationVM)
         {
-            EmailVerificationResponseVM result = await _emailVerificationServices.VerifyEmail(emailVerificationVM);
-            return PartialView("_EmailVerificationResponse", result);
+            try
+            {
+                string token = Request.Cookies["AuthToken"] ?? string.Empty;
+                EmailVerificationResponseVM result = await _emailVerificationServices.VerifyEmail(emailVerificationVM, token);
+                return PartialView("_EmailVerificationResponse", result);
+            }
+            catch
+            {
+                return StatusCode(500, new { result = "failed" });
+            }
         }
     }
 }

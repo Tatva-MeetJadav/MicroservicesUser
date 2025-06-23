@@ -15,7 +15,10 @@ namespace MicroservicesUser.Models.Models
 
         public required JsonDocument EmailResponseParam { get; set; }
 
-        public required User User { get; set; }
+        [Column(TypeName = "timestamp without time zone")]
+        public required DateTime CreatedAt { get; set; }
+
+        public User? User { get; set; }
 
         public int UserId { get; set; }
     }

@@ -1,5 +1,8 @@
 ﻿<link rel="stylesheet" href="~/css/emailVerification.css" asp-append-version="true">
 @using MicroservicesUser.Models.ViewModels.EmailVerification
+@{
+    ViewData["Title"] = "Email Verification";
+}
 @model EmailVerificationRequestVM
 <div class="d-flex justify-content-center mt-4">
     <div class="text-primary fs-2 fw-bold">Email Verification</div>
@@ -10,14 +13,22 @@
             <div>
                 <input type="text" class="form-control input-email-verify" asp-for="@Model.Email"
                     placeholder="Please enter email to verify">
+
             </div>
             <button type="submit" class="btn btn-primary">Verify</button>
         </div>
+        <span asp-validation-for="@Model.Email" class="text-danger"></span>
     </form>
 </div>
-<div class="append-email-verification-result px-3">
-    
+<div class="container mt-2 border border-black border-1 rounded-1 bg-white">
+    <div class="append-email-verification-result overflow-y-scroll px-3">
+        <div class="d-flex justify-content-center align-items-center h-100 fw-bold text-primary fs-2">
+            <span class="email-result-text">The result will be shown here.</span>
+        </div>
+
+    </div>
 </div>
+
 
 @section Scripts
 {

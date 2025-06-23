@@ -4,8 +4,8 @@
     string propertyResultName = "Value";
 }
 @model EmailVerificationResponseVM
-<div class="row">
-    <div class="col-4">
+<div class="row mb-3">
+    <div class="col-6">
         <div class="table-email-verification table-responsive mt-3 table-shadow-custom">
             <table class="table table-bordered table-striped">
                 <thead class="table-primary border-black">
@@ -65,12 +65,76 @@
                         <td>CatchAll</td>
                         <td>@Model.CatchAll</td>
                     </tr>
-                    
+
                 </tbody>
             </table>
         </div>
     </div>
-    <div class="col-4">
+    <div class="col-6">
+        <div class="table-email-verification table-responsive mt-3 table-shadow-custom">
+            <table class="table table table-bordered table-striped">
+                <thead class="table-primary border-black">
+                    <th scope="col" class="text-white">@propertyName</th>
+                    <th scope="col" class="text-white">@propertyResultName</th>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td>SpfRecord</td>
+                        <td>@Model.SpfRecord</td>
+                    </tr>
+                    <tr>
+                        <td>DmarcRecord</td>
+                        <td>@Model.DmarcRecord</td>
+                    </tr>
+                    <tr>
+                        <td>AssociatedNames - Status</td>
+                        <td>@Model.AssociatedNames?.Status</td>
+                    </tr>
+                    <tr>
+                        <td>AssociatedNames - Names</td>
+                        <td>@(Model.AssociatedNames?.Names != null ? string.Join(", ", Model.AssociatedNames.Names) :
+                                                        null)</td>
+                    </tr>
+                    <tr>
+                        <td>AssociatedPhoneNumbers - Status</td>
+                        <td>@Model.AssociatedPhoneNumbers?.Status</td>
+                    </tr>
+                    <tr>
+                        <td>AssociatedPhoneNumbers - PhoneNumbers</td>
+                        <td>@(Model.AssociatedPhoneNumbers?.PhoneNumbers != null ? string.Join(", ",
+                                                        Model.AssociatedPhoneNumbers.PhoneNumbers) : null)</td>
+                    </tr>
+                    <tr>
+                        <td>FirstSeen - Human</td>
+                        <td>@Model.FirstSeen?.Human</td>
+                    </tr>
+                    <tr>
+                        <td>FirstSeen - Timestamp</td>
+                        <td>@Model.FirstSeen?.Timestamp</td>
+                    </tr>
+                    <tr>
+                        <td>FirstSeen - Iso</td>
+                        <td>@Model.FirstSeen?.Iso</td>
+                    </tr>
+                    <tr>
+                        <td>DomainAge - Human</td>
+                        <td>@Model.DomainAge?.Human</td>
+                    </tr>
+                    <tr>
+                        <td>DomainAge - Timestamp</td>
+                        <td>@Model.DomainAge?.Timestamp</td>
+                    </tr>
+                    <tr>
+                        <td>DomainAge - Iso</td>
+                        <td>@Model.DomainAge?.Iso</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-5">
         <div class="table-email-verification table-responsive mt-3 table-shadow-custom">
             <table class="table table table-bordered table-striped">
                 <thead class="table-primary border-black">
@@ -108,9 +172,12 @@
                     </tr>
                     <tr>
                         <td>DomainVelocity</td>
-                        <td>@Model.DomainVelocity</td></tr>
-                    <tr><td>DomainTrust</td><td>@Model.DomainTrust</td>
-                        </tr>
+                        <td>@Model.DomainVelocity</td>
+                    </tr>
+                    <tr>
+                        <td>DomainTrust</td>
+                        <td>@Model.DomainTrust</td>
+                    </tr>
                     <tr>
                         <td>UserActivity</td>
                         <td>@Model.UserActivity</td>
@@ -131,74 +198,13 @@
             </table>
         </div>
     </div>
-    <div class="col-4">
+
+    <div class="col-7">
         <div class="table-email-verification table-responsive mt-3 table-shadow-custom">
             <table class="table table table-bordered table-striped">
                 <thead class="table-primary border-black">
                     <th scope="col" class="text-white">@propertyName</th>
                     <th scope="col" class="text-white">@propertyResultName</th>
-                </thead>
-                <tbody>
-                   
-                    <tr>
-                        <td>SpfRecord</td>
-                        <td>@Model.SpfRecord</td>
-                    </tr>
-                    <tr>
-                        <td>DmarcRecord</td>
-                        <td>@Model.DmarcRecord</td>
-                    </tr>
-                    <tr>
-                        <td>AssociatedNames - Status</td>
-                        <td>@Model.AssociatedNames?.Status</td>
-                    </tr>
-                    <tr>
-                        <td>AssociatedNames - Names</td>
-                        <td>@(Model.AssociatedNames?.Names != null ? string.Join(", ", Model.AssociatedNames.Names) : null)</td>
-                    </tr>
-                    <tr>
-                        <td>AssociatedPhoneNumbers - Status</td>
-                        <td>@Model.AssociatedPhoneNumbers?.Status</td>
-                    </tr>
-                    <tr>
-                        <td>AssociatedPhoneNumbers - PhoneNumbers</td>
-                        <td>@(Model.AssociatedPhoneNumbers?.PhoneNumbers != null ? string.Join(", ", Model.AssociatedPhoneNumbers.PhoneNumbers) : null)</td>
-                    </tr>
-                    <tr>
-                        <td>FirstSeen - Human</td>
-                        <td>@Model.FirstSeen?.Human</td>
-                    </tr>
-                    <tr>
-                        <td>FirstSeen - Timestamp</td>
-                        <td>@Model.FirstSeen?.Timestamp</td>
-                    </tr>
-                    <tr>
-                        <td>FirstSeen - Iso</td>
-                        <td>@Model.FirstSeen?.Iso</td>
-                    </tr>
-                    <tr>
-                        <td>DomainAge - Human</td>
-                        <td>@Model.DomainAge?.Human</td>
-                    </tr>
-                    <tr>
-                        <td>DomainAge - Timestamp</td>
-                        <td>@Model.DomainAge?.Timestamp</td>
-                    </tr>
-                    <tr>
-                        <td>DomainAge - Iso</td>
-                        <td>@Model.DomainAge?.Iso</td>
-                    </tr>
-                    
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="col-8">
-        <div class="table-email-verification table-responsive mt-3 table-shadow-custom">
-            <table class="table table table-bordered table-striped">
-                <thead class="table-primary border-black">
-                <th scope="col" class="text-white">@propertyName</th>
-                <th scope="col" class="text-white">@propertyResultName</th>
                 </thead>
                 <tbody>
                     <tr>

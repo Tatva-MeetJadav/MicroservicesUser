@@ -37,6 +37,7 @@ builder.Services.AddAutoMapper(typeof(UserProfile).Assembly);
 
 //Setting up Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IEmailVerificationRepository, EmailVerificationRepository>();
 
 
 //Setting up business services
@@ -46,6 +47,7 @@ builder.Services.AddScoped<IAuthenticationServices, AuthenticationServices>();
 builder.Services.AddScoped<IDashboardServices, DashboardServices>();
 builder.Services.AddScoped<IEmailVerificationServices, EmailVerificationServices>();
 builder.Services.AddScoped<IGenericAPIClientServices, GenericAPIClientServices>();
+
 
 //Injecting HttpClientService
 builder.Services.AddHttpClient<GenericAPIClientServices>();

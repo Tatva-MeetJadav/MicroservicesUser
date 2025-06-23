@@ -12,3 +12,5 @@ namespace MicroservicesUser.DataAccess.Data
         public DbSet<EmailVerification> EmailVerifications { get; set; }
     }
 }
+//Add-Migration InitialCreate -Project MicroservicesUser.Migrations -StartupProject MicroservicesUser.Web -Context MicroservicesUserDbContext
+//Update-Database -Project MicroservicesUser.Migrations -StartupProject MicroservicesUser.Web -Context MicroservicesUserDbContext

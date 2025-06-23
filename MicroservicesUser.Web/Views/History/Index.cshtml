@@ -1,0 +1,25 @@
+﻿@using MicroservicesUser.Models.ViewModels.History
+@{
+    ViewData["Title"] = "History";
+}
+<div class="d-flex justify-content-center mt-4">
+    <div class="text-primary fs-2 fw-bold">History</div>
+</div>
+<link rel="stylesheet" href="~/css/history.css" asp-append-version="true">
+<ul class="nav nav-pills">
+    <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">Email Verification</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-black">Other</a>
+    </li>
+</ul>
+<hr>
+
+<div class="load-history-table">
+</div>
+
+@section Scripts
+{
+    <script src="~/js/emailVerificationHistory.js"></script>
+}

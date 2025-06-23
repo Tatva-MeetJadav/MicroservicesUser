@@ -114,3 +114,27 @@ body {
   --bs-table-bg: var(--primaryBackgroundColor);
   --bs-table-border-color: var(--primaryBorderColor);
 }
+
+.table {
+  --bs-table-border-color: black !important;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+  --bs-table-bg-type: rgb(255, 255, 255);
+}
+table td {
+  font-weight: bold;
+}
+.table-shadow-custom {
+  box-shadow: 0px 0.1rem 0.25rem 0px rgb(0 0 0 / 65%) !important;
+}
+
+.form-select:focus {
+  border-color: var(--primaryBorderColor);
+  box-shadow: none;
+}
+
+.btn.disabled {
+  pointer-events: auto !important;
+  cursor: not-allowed !important;
+}

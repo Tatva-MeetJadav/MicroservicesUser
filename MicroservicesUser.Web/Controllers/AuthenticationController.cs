@@ -14,6 +14,7 @@ namespace MicroservicesUser.Web.Controllers
             _authenticationServices = authenticationServices;
             _configuration = configuration;
         }
+
         public IActionResult Login()
         {
             if (User.Identity?.IsAuthenticated ?? false)
