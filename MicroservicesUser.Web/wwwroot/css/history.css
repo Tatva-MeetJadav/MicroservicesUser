@@ -2,3 +2,37 @@
 .nav-pills .show > .nav-link {
   background-color: var(--primaryBackgroundColor);
 }
+
+.view-history {
+  cursor: pointer;
+}
+
+.history-table {
+  max-height: 50vh;
+}
+
+.active > .page-link,
+.page-link.active,
+.active > .page-link:focus,
+.page-link.active:focus,
+.active > .page-link:hover,
+.page-link.active:hover {
+  z-index: 3;
+  color: white;
+  background-color: var(--primaryBackgroundColor);
+  border-color: var(--primaryBorderColor);
+  box-shadow: 0 0 0;
+}
+
+.page-link,
+.page-link:hover {
+  color: var(--primaryTextColor);
+}
+
+.sort-filter {
+  cursor: pointer;
+}
+.form-check-input {
+  height: 1.5em;
+  width: 3em !important;
+}

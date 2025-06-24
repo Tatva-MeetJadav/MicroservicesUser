@@ -4,6 +4,7 @@ using MicroservicesUser.BusinessLogic.Interfaces;
 using MicroservicesUser.DataAccess.Repository.Interfaces;
 using MicroservicesUser.Models.DTO;
 using MicroservicesUser.Models.Models;
+using MicroservicesUser.Models.ViewModels;
 using MicroservicesUser.Models.ViewModels.EmailVerification;
 using MicroservicesUser.Models.ViewModels.History;
 using Microsoft.Extensions.Configuration;
@@ -27,10 +28,10 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             _mapper = mapper;
         }
 
-        public async Task<EmailVerificationListHistoryVM> GetEmailVerificationListHistory(int page, int pageSize, string searchQuery, string token)
+        public async Task<EmailVerificationListHistoryVM> GetEmailVerificationListHistory(PaginationVM paginationVM, string token)
         {
             int id = _jwtServices.GetUserId(token);
-            (List<EmailVerification> emailVerifications, int count) = await _emailVerificationRepository.GetListByUserId(id, page, pageSize, searchQuery);
+            (List<EmailVerification> emailVerifications, int count) = await _emailVerificationRepository.GetListByUserId(id, paginationVM);
 
             List<EmailVerificationHistoryVM> emailVerificationHistoryListVMs = emailVerifications.Select(ev =>
             {
@@ -39,7 +40,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
 
                 EmailVerificationRequestVM requestVM = ev?.EmailRequestParam.RootElement.Deserialize<EmailVerificationRequestVM>() ?? new EmailVerificationRequestVM();
 
-                EmailVerificationHistoryVM emailVerificationHistoryVM = new EmailVerificationHistoryVM
+                EmailVerificationHistoryVM emailVerificationHistoryVM = new()
                 {
 
                     Valid = responseVm.Valid,
@@ -54,8 +55,8 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             return new EmailVerificationListHistoryVM
             {
                 EmailVerificationHistoryListVM = emailVerificationHistoryListVMs,
-                PageSize = pageSize,
-                CurrentPage = page,
+                PageSize = paginationVM.PageSize,
+                CurrentPage = paginationVM.CurrentPage,
                 TotalItems = count
             };
         }

@@ -2,6 +2,7 @@ using System.Text.Json;
 using MicroservicesUser.DataAccess.Data;
 using MicroservicesUser.DataAccess.Repository.Interfaces;
 using MicroservicesUser.Models.Models;
+using MicroservicesUser.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace MicroservicesUser.DataAccess.Repository.Implementations
@@ -19,21 +20,44 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<(List<EmailVerification>, int)> GetListByUserId(int userId, int page, int pageSize, string searchQuery)
+        public async Task<(List<EmailVerification>, int)> GetListByUserId(int userId, PaginationVM paginationVM)
         {
             List<EmailVerification>? result = await _dbContext.EmailVerifications
             .Where(x => x.UserId == userId)
             .OrderBy(x => x.Id)
             .ToListAsync();
 
-            result = result
-            .Where(x => x.EmailRequestParam.RootElement.GetProperty("Email").GetString() == searchQuery || string.IsNullOrEmpty(searchQuery)).ToList();
+            if (!string.IsNullOrEmpty(paginationVM.SearchQuery) && !string.IsNullOrWhiteSpace(paginationVM.SearchQuery))
+            {
+                result = result.Where(x => x.EmailRequestParam.RootElement.GetProperty("Email").GetString()!.ToLower().Contains(paginationVM.SearchQuery.ToLower())).ToList();
+            }
+
+            if (paginationVM.ColumnNameForFilter == "Valid" && paginationVM.FilterValue)
+            {
+                result = result.Where(u =>
+                u.EmailResponseParam.RootElement.TryGetProperty("valid", out var validProp) &&
+                validProp.GetBoolean()).ToList();
+            }
 
             int count = result.Count;
             result = result
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
+            .Skip((paginationVM.CurrentPage - 1) * paginationVM.PageSize)
+            .Take(paginationVM.PageSize)
             .ToList();
+
+            if (paginationVM.ColumnNameForSorting == "CreatedAt")
+            {
+                if (paginationVM.OrderOfSorting == "asc")
+                {
+                    result = result.OrderBy(x => x.CreatedAt).ToList();
+                }
+                else
+                {
+                    result = result.OrderByDescending(x => x.CreatedAt).ToList();
+                }
+            }
+
+
             return (result, count);
         }
     }
