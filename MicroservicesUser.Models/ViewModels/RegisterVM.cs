@@ -18,10 +18,11 @@ namespace MicroservicesUser.Models.ViewModels
         public string ConfirmPassword { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "First name is required.")]
-        [RegularExpression(@"^(?![\s\-\(\)\[\]&'/\+,]*$)(?=.*[A-Za-z0-9À-ÿ])([A-Za-z0-9À-ÿ\s\-\(\)\[\]&'/\+,.]+)$", ErrorMessage = "First name is not valid.")]
+        [RegularExpression(@"^[A-Za-z]+$", ErrorMessage = "First name is not valid.")]
         public string FirstName { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "Last name is required.")]
-        [RegularExpression(@"^(?![\s\-\(\)\[\]&'/\+,]*$)(?=.*[A-Za-z0-9À-ÿ])([A-Za-z0-9À-ÿ\s\-\(\)\[\]&'/\+,.]+)$", ErrorMessage = "Last name is not valid.")]
+        [RegularExpression(@"^[A-Za-z]+$", ErrorMessage = "Last name is not valid.")]
         public string LastName { get; set; } = string.Empty;
     }
 }
