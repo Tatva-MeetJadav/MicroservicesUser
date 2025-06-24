@@ -2,10 +2,12 @@
 using MicroservicesUser.BusinessLogic.Interfaces;
 using MicroservicesUser.Models.ViewModels;
 using MicroservicesUser.Models.ViewModels.History;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MicroservicesUser.Web.Controllers
 {
+    [Authorize]
     public class HistoryController : Controller
     {
         private readonly IEmailVerificationServices _emailVerificationServices;

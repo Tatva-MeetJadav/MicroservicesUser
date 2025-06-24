@@ -36,3 +36,18 @@
   height: 1.5em;
   width: 3em !important;
 }
+
+.form-check-input,
+.form-check-input:focus {
+  cursor: pointer;
+  box-shadow: 0 0 0 !important;
+  border-color: var(--primaryBorderColor);
+  --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%230b6060'/%3e%3c/svg%3e") !important;
+}
+
+.form-check-input:checked {
+  background-color: var(--primaryBackgroundColor);
+  border-color: var(--primaryBorderColor);
+  box-shadow: 0 0 0;
+  --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e") !important;
+}

@@ -1,9 +1,11 @@
 ﻿using MicroservicesUser.BusinessLogic.Interfaces;
 using MicroservicesUser.Models.ViewModels.EmailVerification;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MicroservicesUser.Web.Controllers
 {
+    [Authorize]
     public class EmailVerificationController : Controller
     {
         private readonly IEmailVerificationServices _emailVerificationServices;
