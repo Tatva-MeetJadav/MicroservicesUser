@@ -18,13 +18,15 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IConfiguration _configuration;
-        public DashboardServices(IUserRepository userRepository, IJwtServices jwtServices, IMapper mapper, IWebHostEnvironment webHostEnvironment, IConfiguration configuration)
+        private readonly IEncryptDecryptServices _encryptDecryptServices;
+        public DashboardServices(IUserRepository userRepository, IJwtServices jwtServices, IMapper mapper, IWebHostEnvironment webHostEnvironment, IConfiguration configuration, IEncryptDecryptServices encryptDecryptServices)
         {
             _userRepository = userRepository;
             _jwtServices = jwtServices;
             _mapper = mapper;
             _webHostEnvironment = webHostEnvironment;
             _configuration = configuration;
+            _encryptDecryptServices = encryptDecryptServices;
         }
 
         public async Task<ProfileVM> GetUserProfile(string token)
@@ -64,9 +66,9 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             User? user = await _userRepository.GetByIdAsync(id);
             if (user != null)
             {
-                if (EncryptDecrypt.VerifyPassword(changePasswordVM.CurrentPassword, user.PasswordHash))
+                if (_encryptDecryptServices.VerifyPassword(changePasswordVM.CurrentPassword, user.PasswordHash))
                 {
-                    string hashedPassword = EncryptDecrypt.EncryptPassword(changePasswordVM.NewPassword);
+                    string hashedPassword = _encryptDecryptServices.EncryptPassword(changePasswordVM.NewPassword);
                     user.PasswordHash = hashedPassword;
                     await _userRepository.UpdateAsync(user);
                     return Messages.SuccessMessage;

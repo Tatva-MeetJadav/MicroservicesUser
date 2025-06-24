@@ -13,7 +13,8 @@
             <th scope="col" class="text-white">Sr No.</th>
             <th scope="col" class="text-white">Email</th>
             <th scope="col" class="text-white">Valid</th>
-            <th scope="col" class="text-white sort-filter" data-column="CreatedAt" title="Click to sort by CreatedAt">CreatedAt</th>
+            <th scope="col" class="text-white sort-filter" data-column="CreatedAt" title="Click to sort by CreatedAt">
+                CreatedAt</th>
             <th scope="col" class="text-white">Deliverability</th>
             <th scope="col" class="text-white">OverAllScore</th>
             <th scope="col" class="text-white">View Detail</th>
@@ -33,9 +34,10 @@
                             <td>@item.Deliverability</td>
                             <td>@item.OverAllScore</td>
                             <td>
-                                <div class="ps-2">
-                                    <i class="bi bi-eye view-history"></i>
-                                </div>
+                                <a asp-action="EmailVerificationDetailedHistory" asp-controller="History" asp-route-id="@item.Id"
+                                    class="ps-2 text-decoration-none">
+                                    <i class="bi bi-eye view-history text-black"></i>
+                                </a>
                             </td>
                         </tr>
                         serialNumber = serialNumber + 1;

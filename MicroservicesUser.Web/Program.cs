@@ -47,6 +47,7 @@ builder.Services.AddScoped<IAuthenticationServices, AuthenticationServices>();
 builder.Services.AddScoped<IDashboardServices, DashboardServices>();
 builder.Services.AddScoped<IEmailVerificationServices, EmailVerificationServices>();
 builder.Services.AddScoped<IGenericAPIClientServices, GenericAPIClientServices>();
+builder.Services.AddScoped<IEncryptDecryptServices, EncryptDecryptServices>();
 
 
 //Injecting HttpClientService

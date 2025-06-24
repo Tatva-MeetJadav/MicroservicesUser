@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using AutoMapper;
 using MicroservicesUser.BusinessLogic.Interfaces;
 using MicroservicesUser.DataAccess.Repository.Interfaces;
 using MicroservicesUser.Models.DTO;
@@ -18,36 +17,38 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         private readonly IConfiguration _configuration;
         private readonly IEmailVerificationRepository _emailVerificationRepository;
         private readonly IJwtServices _jwtServices;
-        private readonly IMapper _mapper;
-        public EmailVerificationServices(IGenericAPIClientServices apiClient, IConfiguration configuration, IEmailVerificationRepository emailVerificationRepository, IJwtServices jwtServices, IMapper mapper)
+        private readonly IEncryptDecryptServices _encryptDecryptServices;
+
+        public EmailVerificationServices(IGenericAPIClientServices apiClient, IConfiguration configuration, IEmailVerificationRepository emailVerificationRepository, IJwtServices jwtServices, IEncryptDecryptServices encryptDecryptServices)
         {
             _apiClient = apiClient;
             _configuration = configuration;
             _emailVerificationRepository = emailVerificationRepository;
             _jwtServices = jwtServices;
-            _mapper = mapper;
+            _encryptDecryptServices = encryptDecryptServices;
         }
 
         public async Task<EmailVerificationListHistoryVM> GetEmailVerificationListHistory(PaginationVM paginationVM, string token)
         {
             int id = _jwtServices.GetUserId(token);
+            byte[] key = Convert.FromBase64String(_configuration["EncryptId:Key"] ?? string.Empty);
+            byte[] iv = Convert.FromBase64String(_configuration["EncryptId:IV"] ?? string.Empty);
             (List<EmailVerification> emailVerifications, int count) = await _emailVerificationRepository.GetListByUserId(id, paginationVM);
 
             List<EmailVerificationHistoryVM> emailVerificationHistoryListVMs = emailVerifications.Select(ev =>
             {
-                EmailVerificationResponseVM responseVm = JsonConvert.DeserializeObject<EmailVerificationResponseVM>(
+                EmailVerificationResponseVM responseVM = JsonConvert.DeserializeObject<EmailVerificationResponseVM>(
                 ev.EmailResponseParam.RootElement.GetRawText()) ?? new EmailVerificationResponseVM();
 
                 EmailVerificationRequestVM requestVM = ev?.EmailRequestParam.RootElement.Deserialize<EmailVerificationRequestVM>() ?? new EmailVerificationRequestVM();
-
                 EmailVerificationHistoryVM emailVerificationHistoryVM = new()
                 {
-
-                    Valid = responseVm.Valid,
+                    Id = _encryptDecryptServices.EncryptId(ev?.Id ?? 0),
+                    Valid = responseVM.Valid,
                     Email = requestVM.Email ?? string.Empty,
                     VerifiedAt = ev?.CreatedAt,
-                    Deliverability = responseVm.Deliverability ?? string.Empty,
-                    OverAllScore = responseVm.OverallScore
+                    Deliverability = responseVM.Deliverability ?? string.Empty,
+                    OverAllScore = responseVM.OverallScore
                 };
                 return emailVerificationHistoryVM;
             }).ToList();
@@ -81,6 +82,23 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             {
                 throw new Exception("email is null or empty");
             }
+        }
+
+        public async Task<EmailVerificationDetailVM> GetEmailDetailedHistory(string id)
+        {
+            int originalId = _encryptDecryptServices.DecryptId(id);
+            EmailVerification emailVerification = await _emailVerificationRepository.GetAsync(originalId);
+
+            //Deserialization
+            EmailVerificationResponseVM responseVM = JsonConvert.DeserializeObject<EmailVerificationResponseVM>(emailVerification.EmailResponseParam.RootElement.GetRawText()) ?? new EmailVerificationResponseVM();
+            EmailVerificationRequestVM requestVM = emailVerification?.EmailRequestParam.RootElement.Deserialize<EmailVerificationRequestVM>() ?? new EmailVerificationRequestVM();
+
+            return new EmailVerificationDetailVM
+            {
+                RequestVM = requestVM,
+                ResponseVM = responseVM,
+                CreatedAt = emailVerification!.CreatedAt
+            };
         }
     }
 }

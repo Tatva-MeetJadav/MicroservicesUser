@@ -27,5 +27,11 @@ namespace MicroservicesUser.Web.Controllers
             return PartialView("_EmailVerificationHistory", result);
         }
 
+        public async Task<IActionResult> EmailVerificationDetailedHistory(string id)
+        {
+            EmailVerificationDetailVM result = await _emailVerificationServices.GetEmailDetailedHistory(id);
+            return View(result);
+        }
+
     }
 }

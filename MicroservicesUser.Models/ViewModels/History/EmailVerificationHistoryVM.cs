@@ -2,6 +2,7 @@ namespace MicroservicesUser.Models.ViewModels.History
 {
     public class EmailVerificationHistoryVM
     {
+        public string? Id { get; set; }
         public string Email { get; set; } = string.Empty;
         public bool Valid { get; set; }
         public DateTime? VerifiedAt { get; set; }

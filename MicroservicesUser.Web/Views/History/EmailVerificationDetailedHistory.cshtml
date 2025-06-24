@@ -1,0 +1,266 @@
+@using MicroservicesUser.Models.ViewModels.EmailVerification
+@using MicroservicesUser.Models.ViewModels.History
+@{
+    string propertyName = "Property";
+    string propertyResultName = "Value";
+    EmailVerificationResponseVM response = Model?.ResponseVM ?? new EmailVerificationResponseVM();
+}
+<link rel="stylesheet" href="~/css/history.css" asp-append-version="true">
+@model EmailVerificationDetailVM;
+<div class="d-flex justify-content-center mt-4">
+    <div class="text-primary fs-2 fw-bold">Detailed History</div>
+</div>
+<div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex justify-content-start align-items-center gap-2">
+        <div class="p-2 bg-primary text-white rounded-2"><span>@Model?.RequestVM?.Email</span></div>
+
+        <div class="p-2 bg-secondary text-white fw-semibold rounded-2">
+            <span>@Model?.CreatedAt</span>
+        </div>
+    </div>
+    <div>
+        <a class="btn btn-primary rounded-1 back px-2" asp-action="Index" asp-controller="History"><i
+                class="bi bi-chevron-compact-left"></i>Back</a>
+    </div>
+</div>
+
+
+<div class="container mt-2 border border-black border-1 rounded-1 bg-white email-verification-detailed-history">
+    <div class="row mb-3">
+        <div class="col-6">
+            <div class="table-email-verification table-responsive mt-3 table-shadow-custom">
+                <table class="table table-bordered table-striped">
+                    <thead class="table-primary border-black">
+                        <th scope="col" class="text-white border-black">@propertyName</th>
+                        <th scope="col" class="text-white">@propertyResultName</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Valid</td>
+                            <td>@response.Valid</td>
+                        </tr>
+                        <tr>
+                            <td>TimedOut</td>
+                            <td>@response.TimedOut</td>
+                        </tr>
+                        <tr>
+                            <td>Disposable</td>
+                            <td>@response.Disposable</td>
+                        </tr>
+                        <tr>
+                            <td>FirstName</td>
+                            <td>@response.FirstName</td>
+                        </tr>
+                        <tr>
+                            <td>Generic</td>
+                            <td>@response.Generic</td>
+                        </tr>
+                        <tr>
+                            <td>Common</td>
+                            <td>@response.Common</td>
+                        </tr>
+                        <tr>
+                            <td>SuggestedDomain</td>
+                            <td>@response.SuggestedDomain</td>
+                        </tr>
+                        <tr>
+                            <td>SanitizedEmail</td>
+                            <td>@response.SanitizedEmail</td>
+                        </tr>
+                        <tr>
+                            <td>RequestId</td>
+                            <td>@response.RequestId</td>
+                        </tr>
+                        <tr>
+                            <td>Deliverability</td>
+                            <td>@response.Deliverability</td>
+                        </tr>
+                        <tr>
+                            <td>SmtpScore</td>
+                            <td>@response.SmtpScore</td>
+                        </tr>
+                        <tr>
+                            <td>OverallScore</td>
+                            <td>@response.OverallScore</td>
+                        </tr>
+                        <tr>
+                            <td>CatchAll</td>
+                            <td>@response.CatchAll</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="table-email-verification table-responsive mt-3 table-shadow-custom">
+                <table class="table table table-bordered table-striped">
+                    <thead class="table-primary border-black">
+                        <th scope="col" class="text-white">@propertyName</th>
+                        <th scope="col" class="text-white">@propertyResultName</th>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>SpfRecord</td>
+                            <td>@response.SpfRecord</td>
+                        </tr>
+                        <tr>
+                            <td>DmarcRecord</td>
+                            <td>@response.DmarcRecord</td>
+                        </tr>
+                        <tr>
+                            <td>AssociatedNames - Status</td>
+                            <td>@response.AssociatedNames?.Status</td>
+                        </tr>
+                        <tr>
+                            <td>AssociatedNames - Names</td>
+                            <td>@(response.AssociatedNames?.Names != null ? string.Join(", ",
+                                                                response.AssociatedNames.Names) :
+                                                                null)</td>
+                        </tr>
+                        <tr>
+                            <td>AssociatedPhoneNumbers - Status</td>
+                            <td>@response.AssociatedPhoneNumbers?.Status</td>
+                        </tr>
+                        <tr>
+                            <td>AssociatedPhoneNumbers - PhoneNumbers</td>
+                            <td>@(response.AssociatedPhoneNumbers?.PhoneNumbers != null ? string.Join(", ",
+                                                                response.AssociatedPhoneNumbers.PhoneNumbers) : null)</td>
+                        </tr>
+                        <tr>
+                            <td>FirstSeen - Human</td>
+                            <td>@response.FirstSeen?.Human</td>
+                        </tr>
+                        <tr>
+                            <td>FirstSeen - Timestamp</td>
+                            <td>@response.FirstSeen?.Timestamp</td>
+                        </tr>
+                        <tr>
+                            <td>FirstSeen - Iso</td>
+                            <td>@response.FirstSeen?.Iso</td>
+                        </tr>
+                        <tr>
+                            <td>DomainAge - Human</td>
+                            <td>@response.DomainAge?.Human</td>
+                        </tr>
+                        <tr>
+                            <td>DomainAge - Timestamp</td>
+                            <td>@response.DomainAge?.Timestamp</td>
+                        </tr>
+                        <tr>
+                            <td>DomainAge - Iso</td>
+                            <td>@response.DomainAge?.Iso</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-5">
+            <div class="table-email-verification table-responsive mt-3 table-shadow-custom">
+                <table class="table table table-bordered table-striped">
+                    <thead class="table-primary border-black">
+                        <th scope="col" class="text-white">@propertyName</th>
+                        <th scope="col" class="text-white">@propertyResultName</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>DnsValid</td>
+                            <td>@response.DnsValid</td>
+                        </tr>
+                        <tr>
+                            <td>Honeypot</td>
+                            <td>@response.Honeypot</td>
+                        </tr>
+                        <tr>
+                            <td>FrequentComplainer</td>
+                            <td>@response.FrequentComplainer</td>
+                        </tr>
+                        <tr>
+                            <td>Suspect</td>
+                            <td>@response.Suspect</td>
+                        </tr>
+                        <tr>
+                            <td>RecentAbuse</td>
+                            <td>@response.RecentAbuse</td>
+                        </tr>
+                        <tr>
+                            <td>FraudScore</td>
+                            <td>@response.FraudScore</td>
+                        </tr>
+                        <tr>
+                            <td>Leaked</td>
+                            <td>@response.Leaked</td>
+                        </tr>
+                        <tr>
+                            <td>DomainVelocity</td>
+                            <td>@response.DomainVelocity</td>
+                        </tr>
+                        <tr>
+                            <td>DomainTrust</td>
+                            <td>@response.DomainTrust</td>
+                        </tr>
+                        <tr>
+                            <td>UserActivity</td>
+                            <td>@response.UserActivity</td>
+                        </tr>
+                        <tr>
+                            <td>Success</td>
+                            <td>@response.Success</td>
+                        </tr>
+                        <tr>
+                            <td>SpamTrapScore</td>
+                            <td>@response.SpamTrapScore</td>
+                        </tr>
+                        <tr>
+                            <td>RiskyTld</td>
+                            <td>@response.RiskyTld</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-7">
+            <div class="table-email-verification table-responsive mt-3 table-shadow-custom">
+                <table class="table table table-bordered table-striped">
+                    <thead class="table-primary border-black">
+                        <th scope="col" class="text-white">@propertyName</th>
+                        <th scope="col" class="text-white">@propertyResultName</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>MX Records</td>
+                            <td>
+                                @if (response.MxRecords != null)
+                                {
+                                    <ul>
+                                        @foreach (var mx in response.MxRecords)
+                                        {
+                                            <li>@mx</li>
+                                        }
+                                    </ul>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>A Records</td>
+                            <td>
+                                @if (response.ARecords != null)
+                                {
+                                    <ul>
+                                        @foreach (var a in response.ARecords)
+                                        {
+                                            <li>@a</li>
+                                        }
+                                    </ul>
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

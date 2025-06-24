@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MicroservicesUser.BusinessLogic.Interfaces;
-using MicroservicesUser.BusinessLogic.Utilities;
 using MicroservicesUser.DataAccess.Repository.Interfaces;
 using MicroservicesUser.Models.Models;
 using MicroservicesUser.Models.ViewModels;
@@ -20,7 +19,8 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         private readonly IEmailServices _emailServices;
         private readonly ITokenStore _tokenStore;
         private readonly IConfiguration _configuration;
-        public AuthenticationServices(IMapper mapper, IUserRepository userRepository, IJwtServices jwtServices, IEmailServices emailServices, ITokenStore tokenStore, IConfiguration configuration)
+        private readonly IEncryptDecryptServices _encryptDecryptServices;
+        public AuthenticationServices(IMapper mapper, IUserRepository userRepository, IJwtServices jwtServices, IEmailServices emailServices, ITokenStore tokenStore, IConfiguration configuration, IEncryptDecryptServices encryptDecryptServices)
         {
             _mapper = mapper;
             _userRepository = userRepository;
@@ -28,13 +28,14 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             _emailServices = emailServices;
             _tokenStore = tokenStore;
             _configuration = configuration;
+            _encryptDecryptServices = encryptDecryptServices;
         }
         public async Task<string> RegisterUser(RegisterVM registerVM)
         {
             User? ifAlreadyExist = await _userRepository.GetByEmailAsync(registerVM.Email);
             if (ifAlreadyExist == null)
             {
-                string passwordHash = EncryptDecrypt.EncryptPassword(registerVM.Password);
+                string passwordHash = _encryptDecryptServices.EncryptPassword(registerVM.Password);
                 registerVM.Password = passwordHash;
                 User user = _mapper.Map<User>(registerVM);
                 await _userRepository.AddAsync(user);
@@ -52,7 +53,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             if (user != null)
             {
                 string dbPassword = user.PasswordHash;
-                if (EncryptDecrypt.VerifyPassword(loginVM.Password, dbPassword))
+                if (_encryptDecryptServices.VerifyPassword(loginVM.Password, dbPassword))
                 {
                     string token = _jwtServices.GenerateJwtToken(user.Id);
                     double hours = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Hours"]);
@@ -106,7 +107,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             User? user = await _userRepository.GetByPasswordResetToken(resetPasswordVM.Token);
             if (user != null && !string.IsNullOrEmpty(resetPasswordVM.Token))
             {
-                string hashedPassword = EncryptDecrypt.EncryptPassword(resetPasswordVM.NewPassword);
+                string hashedPassword = _encryptDecryptServices.EncryptPassword(resetPasswordVM.NewPassword);
                 user.PasswordHash = hashedPassword;
                 user.PasswordResetToken = string.Empty;
                 user.PasswordResetTokenExpiry = DateTime.MinValue;

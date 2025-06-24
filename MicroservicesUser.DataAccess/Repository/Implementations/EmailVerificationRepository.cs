@@ -20,6 +20,12 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task<EmailVerification> GetAsync(int id)
+        {
+            EmailVerification? result = await _dbContext.EmailVerifications.FirstOrDefaultAsync(x => x.Id == id);
+            return result!;
+        }
+
         public async Task<(List<EmailVerification>, int)> GetListByUserId(int userId, PaginationVM paginationVM)
         {
             List<EmailVerification>? result = await _dbContext.EmailVerifications
@@ -56,8 +62,6 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                     result = result.OrderByDescending(x => x.CreatedAt).ToList();
                 }
             }
-
-
             return (result, count);
         }
     }

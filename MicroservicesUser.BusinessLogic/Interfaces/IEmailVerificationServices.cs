@@ -8,5 +8,6 @@ namespace MicroservicesUser.BusinessLogic.Interfaces
     {
         Task<EmailVerificationResponseVM> VerifyEmail(EmailVerificationRequestVM requestVM, string token);
         Task<EmailVerificationListHistoryVM> GetEmailVerificationListHistory(PaginationVM paginationVM, string token);
+        Task<EmailVerificationDetailVM> GetEmailDetailedHistory(string id);
     }
 }
