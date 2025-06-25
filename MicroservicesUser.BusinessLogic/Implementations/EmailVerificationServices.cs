@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using MicroservicesUser.BusinessLogic.Interfaces;
+using MicroservicesUser.Common.ResourcesFiles;
 using MicroservicesUser.DataAccess.Repository.Interfaces;
 using MicroservicesUser.Models.DTO;
 using MicroservicesUser.Models.Models;
@@ -48,7 +49,8 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                     Email = requestVM.Email ?? string.Empty,
                     VerifiedAt = ev?.CreatedAt,
                     Deliverability = responseVM.Deliverability ?? string.Empty,
-                    OverAllScore = responseVM.OverallScore
+                    OverAllScore = responseVM.OverallScore,
+                    ResponseStatus = ev?.Status.ToString() ?? string.Empty,
                 };
                 return emailVerificationHistoryVM;
             }).ToList();
@@ -67,20 +69,39 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             int id = _jwtServices.GetUserId(token);
             if (!string.IsNullOrEmpty(requestVM?.Email))
             {
-                APIResponse<EmailVerificationResponseVM> responseVM = await _apiClient.PostAsync<EmailVerificationRequestVM, APIResponse<EmailVerificationResponseVM>>(requestVM, _configuration["EmailVerificationAPI:Url"] ?? string.Empty);
-                EmailVerification emailVerification = new()
+                APIResponse<EmailVerificationResponseVM> responseVM;
+                EmailVerification emailVerification;
+                try
+                {
+                    responseVM = await _apiClient.PostAsync<EmailVerificationRequestVM, APIResponse<EmailVerificationResponseVM>>(requestVM, _configuration["EmailVerificationAPI:Url"] ?? string.Empty);
+                }
+                catch (Exception ex)
+                {
+                    emailVerification = new()
+                    {
+                        UserId = id,
+                        CreatedAt = DateTime.UtcNow.ToLocalTime(),
+                        EmailRequestParam = JsonDocument.Parse(JsonConvert.SerializeObject(requestVM)),
+                        EmailResponseParam = JsonDocument.Parse("{}"),
+                        Status = Status.Failed
+                    };
+                    await _emailVerificationRepository.AddAsync(emailVerification);
+                    throw new Exception(Messages.Failed, ex);
+                }
+                emailVerification = new()
                 {
                     UserId = id,
                     CreatedAt = DateTime.UtcNow.ToLocalTime(),
                     EmailRequestParam = JsonDocument.Parse(JsonConvert.SerializeObject(requestVM)),
-                    EmailResponseParam = JsonDocument.Parse(JsonConvert.SerializeObject(responseVM.Result))
+                    EmailResponseParam = JsonDocument.Parse(JsonConvert.SerializeObject(responseVM.Result)),
+                    Status = Status.Success,
                 };
                 await _emailVerificationRepository.AddAsync(emailVerification);
                 return responseVM.Result ?? new EmailVerificationResponseVM();
             }
             else
             {
-                throw new Exception("email is null or empty");
+                throw new Exception("email is null or empty!");
             }
         }
 

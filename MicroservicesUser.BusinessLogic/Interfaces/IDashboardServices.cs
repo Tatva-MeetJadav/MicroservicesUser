@@ -1,5 +1,5 @@
-using MicroservicesUser.Models.Models;
 using MicroservicesUser.Models.ViewModels;
+using MicroservicesUser.Models.ViewModels.Dashboard;
 using Microsoft.AspNetCore.Http;
 
 namespace MicroservicesUser.BusinessLogic.Interfaces
@@ -9,5 +9,6 @@ namespace MicroservicesUser.BusinessLogic.Interfaces
         Task<ProfileVM> GetUserProfile(string token);
         Task<string> EditUserProfile(ProfileVM profileVM, IFormFile file);
         Task<string> ChangePassword(ChangePasswordVM changePasswordVM, string token);
+        Task<EmailVerificationDashboardVM> GetEmailVerificationDashboard(string token);
     }
 }

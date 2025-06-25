@@ -5,6 +5,11 @@ using System.Text.Json;
 
 namespace MicroservicesUser.Models.Models
 {
+    public enum Status
+    {
+        Success,
+        Failed
+    }
     public class EmailVerification
     {
         [Key]
@@ -21,6 +26,9 @@ namespace MicroservicesUser.Models.Models
         public User? User { get; set; }
 
         public int UserId { get; set; }
+
+        [Column(TypeName = "varchar(20)")]
+        public Status Status { get; set; }
     }
 }
 

@@ -5,6 +5,7 @@ using MicroservicesUser.Common.ResourcesFiles;
 using MicroservicesUser.DataAccess.Repository.Interfaces;
 using MicroservicesUser.Models.Models;
 using MicroservicesUser.Models.ViewModels;
+using MicroservicesUser.Models.ViewModels.Dashboard;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -19,7 +20,8 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IConfiguration _configuration;
         private readonly IEncryptDecryptServices _encryptDecryptServices;
-        public DashboardServices(IUserRepository userRepository, IJwtServices jwtServices, IMapper mapper, IWebHostEnvironment webHostEnvironment, IConfiguration configuration, IEncryptDecryptServices encryptDecryptServices)
+        private readonly IEmailVerificationRepository _emailVerificationRepository;
+        public DashboardServices(IUserRepository userRepository, IJwtServices jwtServices, IMapper mapper, IWebHostEnvironment webHostEnvironment, IConfiguration configuration, IEncryptDecryptServices encryptDecryptServices, IEmailVerificationRepository emailVerificationRepository)
         {
             _userRepository = userRepository;
             _jwtServices = jwtServices;
@@ -27,6 +29,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             _webHostEnvironment = webHostEnvironment;
             _configuration = configuration;
             _encryptDecryptServices = encryptDecryptServices;
+            _emailVerificationRepository = emailVerificationRepository;
         }
 
         public async Task<ProfileVM> GetUserProfile(string token)
@@ -82,6 +85,19 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             {
                 return string.Empty;
             }
+        }
+
+        public async Task<EmailVerificationDashboardVM> GetEmailVerificationDashboard(string token)
+        {
+            int id = _jwtServices.GetUserId(token);
+            int totalCount = await _emailVerificationRepository.GetCountByUserId(id);
+            int todayCount = await _emailVerificationRepository.GetCountBetweenDate(id, DateTime.Today, DateTime.Today);
+            int validCount = await _emailVerificationRepository.GetCountOfValidEmails(id);
+
+            return new EmailVerificationDashboardVM
+            {
+
+            };
         }
     }
 }

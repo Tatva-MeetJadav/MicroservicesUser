@@ -1,3 +1,17 @@
 ﻿@{
     ViewData["Title"] = "Dashboard";
 }
+<link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true">
+<div class="d-flex justify-content-center mt-4">
+    <div class="text-primary fs-2 fw-bold">Dashboard</div>
+</div>
+
+<div class="container mt-2">
+    @await Html.PartialAsync("_EmailVerificationDashboard")
+</div>
+
+@section Scripts
+{
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/js/dashboard.js"></script>
+}

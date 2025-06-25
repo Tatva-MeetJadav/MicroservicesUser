@@ -64,5 +64,26 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             }
             return (result, count);
         }
+
+        public async Task<int> GetCountByUserId(int userId)
+        {
+            int count = await _dbContext.EmailVerifications.Where(u => u.UserId == userId).CountAsync();
+            return count;
+        }
+
+        public async Task<int> GetCountBetweenDate(int userId, DateTime fromDate, DateTime toDate)
+        {
+            int count = await _dbContext.EmailVerifications.Where(u => u.CreatedAt >= fromDate && u.CreatedAt <= toDate && u.UserId == userId).CountAsync();
+            return count;
+        }
+
+        public async Task<int> GetCountOfValidEmails(int userId)
+        {
+            int count = await _dbContext.EmailVerifications
+            .Where(u => u.UserId == userId && EF.Functions.JsonContains(u.EmailResponseParam, "{\"valid\": true}")
+            )
+            .CountAsync();
+            return count;
+        }
     }
 }

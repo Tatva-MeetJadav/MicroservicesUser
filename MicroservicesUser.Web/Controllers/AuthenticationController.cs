@@ -49,6 +49,10 @@ namespace MicroservicesUser.Web.Controllers
         }
         public IActionResult ForgotPassword()
         {
+            if (User.Identity?.IsAuthenticated ?? false)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
             return View();
         }
 
@@ -121,7 +125,7 @@ namespace MicroservicesUser.Web.Controllers
         public IActionResult Logout()
         {
             Response.Cookies.Delete("AuthToken");
-            return RedirectToAction("Login","Authentication");
+            return RedirectToAction("Login", "Authentication");
         }
     }
 }
