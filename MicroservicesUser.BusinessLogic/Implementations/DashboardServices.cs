@@ -3,6 +3,7 @@ using MicroservicesUser.BusinessLogic.Interfaces;
 using MicroservicesUser.BusinessLogic.Utilities;
 using MicroservicesUser.Common.ResourcesFiles;
 using MicroservicesUser.DataAccess.Repository.Interfaces;
+using MicroservicesUser.Models.DTO;
 using MicroservicesUser.Models.Models;
 using MicroservicesUser.Models.ViewModels;
 using MicroservicesUser.Models.ViewModels.Dashboard;
@@ -21,7 +22,8 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         private readonly IConfiguration _configuration;
         private readonly IEncryptDecryptServices _encryptDecryptServices;
         private readonly IEmailVerificationRepository _emailVerificationRepository;
-        public DashboardServices(IUserRepository userRepository, IJwtServices jwtServices, IMapper mapper, IWebHostEnvironment webHostEnvironment, IConfiguration configuration, IEncryptDecryptServices encryptDecryptServices, IEmailVerificationRepository emailVerificationRepository)
+        private readonly IDashboardRepository _dashboardRepository;
+        public DashboardServices(IUserRepository userRepository, IJwtServices jwtServices, IMapper mapper, IWebHostEnvironment webHostEnvironment, IConfiguration configuration, IEncryptDecryptServices encryptDecryptServices, IEmailVerificationRepository emailVerificationRepository, IDashboardRepository dashboardRepository)
         {
             _userRepository = userRepository;
             _jwtServices = jwtServices;
@@ -30,6 +32,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             _configuration = configuration;
             _encryptDecryptServices = encryptDecryptServices;
             _emailVerificationRepository = emailVerificationRepository;
+            _dashboardRepository = dashboardRepository;
         }
 
         public async Task<ProfileVM> GetUserProfile(string token)
@@ -90,14 +93,16 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         public async Task<EmailVerificationDashboardVM> GetEmailVerificationDashboard(string token)
         {
             int id = _jwtServices.GetUserId(token);
-            int totalCount = await _emailVerificationRepository.GetCountByUserId(id);
-            int todayCount = await _emailVerificationRepository.GetCountBetweenDate(id, DateTime.Today, DateTime.Today);
-            int validCount = await _emailVerificationRepository.GetCountOfValidEmails(id);
+            DashboardDTO dashboardDTO = await _dashboardRepository.GetDashboardAsync(id);
+            EmailVerificationDashboardVM dashboardVM = _mapper.Map<EmailVerificationDashboardVM>(dashboardDTO);
+            return dashboardVM;
+        }
 
-            return new EmailVerificationDashboardVM
-            {
-
-            };
+        public async Task<string> GetProfilePhoto(string token)
+        {
+            int id = _jwtServices.GetUserId(token);
+            User? user = await _userRepository.GetByIdAsync(id);
+            return user?.ProfilePhotoGeneratedName ?? string.Empty;
         }
     }
 }

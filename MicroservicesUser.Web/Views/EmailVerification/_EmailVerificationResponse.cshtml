@@ -1,243 +1,178 @@
 @using MicroservicesUser.Models.ViewModels.EmailVerification
-@{
-    string propertyName = "Property";
-    string propertyResultName = "Value";
-}
 @model EmailVerificationResponseVM
 
-<div class="row mb-3">
-    <div class="col-6">
-        <div class="table-email-verification table-responsive mt-3 table-shadow-custom">
-            <table class="table table-bordered table-striped">
-                <thead class="table-primary border-black">
-                    <th scope="col" class="text-white border-black">@propertyName</th>
-                    <th scope="col" class="text-white">@propertyResultName</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Valid</td>
-                        <td>@Model.Valid</td>
-                    </tr>
-                    <tr>
-                        <td>TimedOut</td>
-                        <td>@Model.TimedOut</td>
-                    </tr>
-                    <tr>
-                        <td>Disposable</td>
-                        <td>@Model.Disposable</td>
-                    </tr>
-                    <tr>
-                        <td>FirstName</td>
-                        <td>@Model.FirstName</td>
-                    </tr>
-                    <tr>
-                        <td>Generic</td>
-                        <td>@Model.Generic</td>
-                    </tr>
-                    <tr>
-                        <td>Common</td>
-                        <td>@Model.Common</td>
-                    </tr>
-                    <tr>
-                        <td>SuggestedDomain</td>
-                        <td>@Model.SuggestedDomain</td>
-                    </tr>
-                    <tr>
-                        <td>SanitizedEmail</td>
-                        <td>@Model.SanitizedEmail</td>
-                    </tr>
-                    <tr>
-                        <td>RequestId</td>
-                        <td>@Model.RequestId</td>
-                    </tr>
-                    <tr>
-                        <td>Deliverability</td>
-                        <td>@Model.Deliverability</td>
-                    </tr>
-                    <tr>
-                        <td>SmtpScore</td>
-                        <td>@Model.SmtpScore</td>
-                    </tr>
-                    <tr>
-                        <td>OverallScore</td>
-                        <td>@Model.OverallScore</td>
-                    </tr>
-                    <tr>
-                        <td>CatchAll</td>
-                        <td>@Model.CatchAll</td>
-                    </tr>
+@{
+    // Helper for status icons
+    Func<bool?, string> statusIcon = status => status == true
+    ? "<i class='bi bi-check-circle-fill text-success'></i>"
+    : status == false
+    ? "<i class='bi bi-x-circle-fill text-danger'></i>"
+    : "<i class='bi bi-question-circle-fill text-secondary'></i>";
+}
 
-                </tbody>
-            </table>
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-5 mb-3">
+            <div class="card shadow-sm bg-light">
+                <div class="card-header fw-bold fs-5 bg-primary text-white">
+                    Email Verification Status
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Is Valid Email?
+                            <span>@Html.Raw(statusIcon(Model.Valid))</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Timed Out?
+                            <span>@Html.Raw(statusIcon(Model.TimedOut))</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Is Disposable Email?
+                            <span>@Html.Raw(statusIcon(Model.Disposable))</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Is Generic?
+                            <span>@Html.Raw(statusIcon(Model.Generic))</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Is Common Domain?
+                            <span>@Html.Raw(statusIcon(Model.Common))</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Is Catch-all Domain?
+                            <span>@Html.Raw(statusIcon(Model.CatchAll))</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            SMTP Score
+                            <span>@Model.SmtpScore</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Overall Score
+                            <span>@Model.OverallScore</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Deliverability
+                            <span>@Model.Deliverability</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Fraud Score
+                            <span>@Model.FraudScore</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Spam Trap Score
+                            <span>@Model.SpamTrapScore</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="col-6">
-        <div class="table-email-verification table-responsive mt-3 table-shadow-custom">
-            <table class="table table table-bordered table-striped">
-                <thead class="table-primary border-black">
-                    <th scope="col" class="text-white">@propertyName</th>
-                    <th scope="col" class="text-white">@propertyResultName</th>
-                </thead>
-                <tbody>
 
-                    <tr>
-                        <td>SpfRecord</td>
-                        <td>@Model.SpfRecord</td>
-                    </tr>
-                    <tr>
-                        <td>DmarcRecord</td>
-                        <td>@Model.DmarcRecord</td>
-                    </tr>
-                    <tr>
-                        <td>AssociatedNames - Status</td>
-                        <td>@Model.AssociatedNames?.Status</td>
-                    </tr>
-                    <tr>
-                        <td>AssociatedNames - Names</td>
-                        <td>@(Model.AssociatedNames?.Names != null ? string.Join(", ", Model.AssociatedNames.Names) :
-                                                        null)</td>
-                    </tr>
-                    <tr>
-                        <td>AssociatedPhoneNumbers - Status</td>
-                        <td>@Model.AssociatedPhoneNumbers?.Status</td>
-                    </tr>
-                    <tr>
-                        <td>AssociatedPhoneNumbers - PhoneNumbers</td>
-                        <td>@(Model.AssociatedPhoneNumbers?.PhoneNumbers != null ? string.Join(", ",
-                                                        Model.AssociatedPhoneNumbers.PhoneNumbers) : null)</td>
-                    </tr>
-                    <tr>
-                        <td>FirstSeen - Human</td>
-                        <td>@Model.FirstSeen?.Human</td>
-                    </tr>
-                    <tr>
-                        <td>FirstSeen - Timestamp</td>
-                        <td>@Model.FirstSeen?.Timestamp</td>
-                    </tr>
-                    <tr>
-                        <td>FirstSeen - Iso</td>
-                        <td>@Model.FirstSeen?.Iso</td>
-                    </tr>
-                    <tr>
-                        <td>DomainAge - Human</td>
-                        <td>@Model.DomainAge?.Human</td>
-                    </tr>
-                    <tr>
-                        <td>DomainAge - Timestamp</td>
-                        <td>@Model.DomainAge?.Timestamp</td>
-                    </tr>
-                    <tr>
-                        <td>DomainAge - Iso</td>
-                        <td>@Model.DomainAge?.Iso</td>
-                    </tr>
+        <div class="col-md-7 mb-3">
+            <div class="card shadow-sm bg-light">
+                <div class="card-header fw-bold fs-5 bg-primary text-white">
+                    Email Details
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-5">Sanitized Email</dt>
+                        <dd class="col-sm-7">@Model.SanitizedEmail</dd>
 
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="col-5">
-        <div class="table-email-verification table-responsive mt-3 table-shadow-custom">
-            <table class="table table table-bordered table-striped">
-                <thead class="table-primary border-black">
-                    <th scope="col" class="text-white">@propertyName</th>
-                    <th scope="col" class="text-white">@propertyResultName</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>DnsValid</td>
-                        <td>@Model.DnsValid</td>
-                    </tr>
-                    <tr>
-                        <td>Honeypot</td>
-                        <td>@Model.Honeypot</td>
-                    </tr>
-                    <tr>
-                        <td>FrequentComplainer</td>
-                        <td>@Model.FrequentComplainer</td>
-                    </tr>
-                    <tr>
-                        <td>Suspect</td>
-                        <td>@Model.Suspect</td>
-                    </tr>
-                    <tr>
-                        <td>RecentAbuse</td>
-                        <td>@Model.RecentAbuse</td>
-                    </tr>
-                    <tr>
-                        <td>FraudScore</td>
-                        <td>@Model.FraudScore</td>
-                    </tr>
-                    <tr>
-                        <td>Leaked</td>
-                        <td>@Model.Leaked</td>
-                    </tr>
-                    <tr>
-                        <td>DomainVelocity</td>
-                        <td>@Model.DomainVelocity</td>
-                    </tr>
-                    <tr>
-                        <td>DomainTrust</td>
-                        <td>@Model.DomainTrust</td>
-                    </tr>
-                    <tr>
-                        <td>UserActivity</td>
-                        <td>@Model.UserActivity</td>
-                    </tr>
-                    <tr>
-                        <td>Success</td>
-                        <td>@Model.Success</td>
-                    </tr>
-                    <tr>
-                        <td>SpamTrapScore</td>
-                        <td>@Model.SpamTrapScore</td>
-                    </tr>
-                    <tr>
-                        <td>RiskyTld</td>
-                        <td>@Model.RiskyTld</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+                        <dt class="col-sm-5">Suggested Domain</dt>
+                        <dd class="col-sm-7">@Model.SuggestedDomain</dd>
 
-    <div class="col-7">
-        <div class="table-email-verification table-responsive mt-3 table-shadow-custom">
-            <table class="table table table-bordered table-striped">
-                <thead class="table-primary border-black">
-                    <th scope="col" class="text-white">@propertyName</th>
-                    <th scope="col" class="text-white">@propertyResultName</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>MX Records</td>
-                        <td>
+                        <dt class="col-sm-5">First Name</dt>
+                        <dd class="col-sm-7">@Model.FirstName</dd>
+
+                        <dt class="col-sm-5">SPF Record</dt>
+                        <dd class="col-sm-7">@Model.SpfRecord</dd>
+
+                        <dt class="col-sm-5">DMARC Record</dt>
+                        <dd class="col-sm-7">@Model.DmarcRecord</dd>
+
+                        <dt class="col-sm-5">MX Records</dt>
+                        <dd class="col-sm-7">
                             @if (Model.MxRecords != null)
                             {
-                                <ul>
+                                <ul class="mb-0">
                                     @foreach (var mx in Model.MxRecords)
                                     {
                                         <li>@mx</li>
                                     }
                                 </ul>
                             }
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>A Records</td>
-                        <td>
+                        </dd>
+
+                        <dt class="col-sm-5">A Records</dt>
+                        <dd class="col-sm-7">
                             @if (Model.ARecords != null)
                             {
-                                <ul>
+                                <ul class="mb-0">
                                     @foreach (var a in Model.ARecords)
                                     {
                                         <li>@a</li>
                                     }
                                 </ul>
                             }
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tertiary Details: Timeline -->
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <div class="card bg-light shadow-sm">
+                <div class="card-header bg-info text-white">First Seen</div>
+                <div class="card-body">
+                    <p>Human: @Model.FirstSeen?.Human</p>
+                    <p>ISO: @Model.FirstSeen?.Iso</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card bg-light shadow-sm">
+                <div class="card-header bg-info text-white">Domain Age</div>
+                <div class="card-body">
+                    <p>Human: @Model.DomainAge?.Human</p>
+                    <p>ISO: @Model.DomainAge?.Iso</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security & Risk Info -->
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            <div class="card bg-light shadow-sm">
+                <div class="card-header bg-danger text-white">Security & Risk</div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">DNS Valid</dt>
+                        <dd class="col-sm-8">@Html.Raw(statusIcon(Model.DnsValid))</dd>
+
+                        <dt class="col-sm-4">Honeypot</dt>
+                        <dd class="col-sm-8">@Html.Raw(statusIcon(Model.Honeypot))</dd>
+
+                        <dt class="col-sm-4">Frequent Complainer</dt>
+                        <dd class="col-sm-8">@Html.Raw(statusIcon(Model.FrequentComplainer))</dd>
+
+                        <dt class="col-sm-4">Suspect</dt>
+                        <dd class="col-sm-8">@Html.Raw(statusIcon(Model.Suspect))</dd>
+
+                        <dt class="col-sm-4">Recent Abuse</dt>
+                        <dd class="col-sm-8">@Html.Raw(statusIcon(Model.RecentAbuse))</dd>
+
+                        <dt class="col-sm-4">Leaked</dt>
+                        <dd class="col-sm-8">@Html.Raw(statusIcon(Model.Leaked))</dd>
+
+                        <dt class="col-sm-4">Risky TLD</dt>
+                        <dd class="col-sm-8">@Html.Raw(statusIcon(Model.RiskyTld))</dd>
+                    </dl>
+                </div>
+            </div>
         </div>
     </div>
 </div>

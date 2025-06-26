@@ -19,6 +19,7 @@ namespace MicroservicesUser.Web.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Index(EmailVerificationRequestVM emailVerificationVM)
         {

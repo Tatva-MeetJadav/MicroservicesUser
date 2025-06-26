@@ -67,12 +67,6 @@ namespace MicroservicesUser.Models.ViewModels.EmailVerification
         [JsonProperty("userActivity")]
         public int UserActivity { get; set; }
 
-        [JsonProperty("associatedNames")]
-        public AssociatedNamesVM? AssociatedNames { get; set; }
-
-        [JsonProperty("associatedPhoneNumbers")]
-        public AssociatedPhoneNumbersVM? AssociatedPhoneNumbers { get; set; }
-
         [JsonProperty("firstSeen")]
         public TimeInfoVM? FirstSeen { get; set; }
 
@@ -100,38 +94,14 @@ namespace MicroservicesUser.Models.ViewModels.EmailVerification
         [JsonProperty("mxRecords")]
         public List<string>? MxRecords { get; set; }
 
-        [JsonProperty("requestId")]
-        public string? RequestId { get; set; }
-
         [JsonProperty("aRecords")]
         public List<string>? ARecords { get; set; }
-    }
-
-    public class AssociatedNamesVM
-    {
-        [JsonProperty("status")]
-        public string? Status { get; set; }
-
-        [JsonProperty("names")]
-        public List<string>? Names { get; set; }
-    }
-
-    public class AssociatedPhoneNumbersVM
-    {
-        [JsonProperty("status")]
-        public string? Status { get; set; }
-
-        [JsonProperty("phoneNumbers")]
-        public List<string>? PhoneNumbers { get; set; }
     }
 
     public class TimeInfoVM
     {
         [JsonProperty("human")]
         public string? Human { get; set; }
-
-        [JsonProperty("timestamp")]
-        public long Timestamp { get; set; }
 
         [JsonProperty("iso")]
         public string? Iso { get; set; }

@@ -69,11 +69,11 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             int id = _jwtServices.GetUserId(token);
             if (!string.IsNullOrEmpty(requestVM?.Email))
             {
-                APIResponse<EmailVerificationResponseVM> responseVM;
+                APIResponseDTO<EmailVerificationResponseVM> responseVM;
                 EmailVerification emailVerification;
                 try
                 {
-                    responseVM = await _apiClient.PostAsync<EmailVerificationRequestVM, APIResponse<EmailVerificationResponseVM>>(requestVM, _configuration["EmailVerificationAPI:Url"] ?? string.Empty);
+                    responseVM = await _apiClient.PostAsync<EmailVerificationRequestVM, APIResponseDTO<EmailVerificationResponseVM>>(requestVM, _configuration["EmailVerificationAPI:Url"] ?? string.Empty);
                 }
                 catch (Exception ex)
                 {

@@ -5,6 +5,7 @@ using MicroservicesUser.BusinessLogic.Implementations;
 using MicroservicesUser.BusinessLogic.Interfaces;
 using MicroservicesUser.BusinessLogic.ServerStorage.Interfaces;
 using MicroservicesUser.BusinessLogic.SignalRHubs;
+using MicroservicesUser.Common.AutoMapperProfiles;
 using MicroservicesUser.DataAccess.Data;
 using MicroservicesUser.DataAccess.Repository.Implementations;
 using MicroservicesUser.DataAccess.Repository.Interfaces;
@@ -34,10 +35,12 @@ builder.Services.AddHostedService<TokenExpiryBackgroundService>();
 
 //Setting up automapper profiles
 builder.Services.AddAutoMapper(typeof(UserProfile).Assembly);
+builder.Services.AddAutoMapper(typeof(DashboardProfile).Assembly);
 
 //Setting up Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IEmailVerificationRepository, EmailVerificationRepository>();
+builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 
 
 //Setting up business services
@@ -48,6 +51,7 @@ builder.Services.AddScoped<IDashboardServices, DashboardServices>();
 builder.Services.AddScoped<IEmailVerificationServices, EmailVerificationServices>();
 builder.Services.AddScoped<IGenericAPIClientServices, GenericAPIClientServices>();
 builder.Services.AddScoped<IEncryptDecryptServices, EncryptDecryptServices>();
+
 
 
 //Injecting HttpClientService

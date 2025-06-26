@@ -1,7 +1,6 @@
 .profile-img-container img {
-  height: 90px;
-  width: 90px;
-  border: 2px solid var(--primaryBorderColor);
+  height: 130px;
+  width: 130px;
   border-radius: 50%;
 }
 .form-label {
@@ -13,7 +12,15 @@
   background-color: var(--primaryBackgroundColor);
 }
 .email-verification-bar-chart {
-  height: 325px !important;
+  height: 350px !important;
   width: 100% !important;
   display: block;
 }
+
+.main-content {
+  background-color: #ededed;
+}
+.recent-look-ups {
+  height: 350px;
+}
+

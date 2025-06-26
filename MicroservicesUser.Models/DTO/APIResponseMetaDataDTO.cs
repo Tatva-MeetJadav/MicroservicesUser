@@ -2,7 +2,7 @@
 
 namespace MicroservicesUser.Models.DTO
 {
-    public class APIResponseMetaData
+    public class APIResponseMetaDataDTO
     {
         [JsonProperty("success")]
         public bool Success { get; set; }

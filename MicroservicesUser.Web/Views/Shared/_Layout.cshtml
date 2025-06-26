@@ -43,15 +43,15 @@
             </div>
         }
         
-        <div class="@(currentAction != "UserProfile" ? "col-10" : "col-12") col-10 px-0 bg-secondary-subtle">
-            <div class="d-flex justify-content-end align-items-center py-3 px-2 bg-primary">
+        <div class="@(currentAction != "UserProfile" ? "col-10" : "col-12") col-10 px-0 main-content">
+            <div class="d-flex justify-content-end align-items-center py-3 px-2 bg-primary position-sticky top-0 navbar-content">
                 <div class="dropdown pe-3">
                     <a class="dropdown-toggle text-white text-decoration-none"
-                       role="button"
-                       id="dropdownMenuLink"
-                       data-bs-toggle="dropdown"
-                       aria-expanded="false">
-                        Account
+                    role="button"
+                    id="dropdownMenuLink"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                        <img src="~/images/profile/default.jpg" alt="" class="profile-image">
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                         <li><a class="dropdown-item" asp-action="UserProfile" asp-controller="Dashboard">My profile</a></li>
@@ -61,15 +61,13 @@
                     </ul>
                 </div>
             </div>
-            <div class="container">
+            <div class="container-fluid">
                 <main role="main" class="pb-3">
                     @RenderBody()
                 </main>
             </div>
         </div>
     </div>
-    
-    
     
     <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
         @await Html.PartialAsync("_ChangePassword",new ChangePasswordVM())

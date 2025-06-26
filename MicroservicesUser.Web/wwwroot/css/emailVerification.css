@@ -10,3 +10,7 @@
   height: 70vh;
   scrollbar-gutter: auto;
 }
+
+.main-content {
+  background-color: #ededed;
+}

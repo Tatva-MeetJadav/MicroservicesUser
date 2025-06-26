@@ -38,3 +38,19 @@ $(document).on('submit', '.change-password-form', function (e) {
         },
     });
 });
+
+$(document).ready(function () {
+    $.ajax({
+        url: '/Dashboard/GetProfilePhoto',
+        method: 'GET',
+        success: function (data) {
+            let profilePhoto = data;
+            let imagePath = "/images/profile/" + profilePhoto;
+            $('.profile-image').attr('src', imagePath);
+        },
+    });
+});
+
+$(function () {
+    $('[data-bs-toggle="popover"]').popover();
+});

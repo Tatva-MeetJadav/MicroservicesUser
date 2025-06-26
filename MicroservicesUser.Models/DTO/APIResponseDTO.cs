@@ -2,10 +2,10 @@
 
 namespace MicroservicesUser.Models.DTO
 {
-    public class APIResponse<T>
+    public class APIResponseDTO<T>
     {
         [JsonProperty("apiResponse")]
-        public APIResponseMetaData? apiResponseMetaData { get; set; }
+        public APIResponseMetaDataDTO? apiResponseMetaData { get; set; }
 
         [JsonProperty("result")]
         public T? Result { get; set; }

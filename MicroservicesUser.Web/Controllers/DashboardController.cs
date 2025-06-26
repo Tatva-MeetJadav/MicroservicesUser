@@ -1,6 +1,7 @@
 ﻿using MicroservicesUser.BusinessLogic.Interfaces;
 using MicroservicesUser.Common.ResourcesFiles;
 using MicroservicesUser.Models.ViewModels;
+using MicroservicesUser.Models.ViewModels.Dashboard;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,9 +15,11 @@ namespace MicroservicesUser.Web.Controllers
         {
             _dashboardServices = dashboardServices;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            string token = Request.Cookies["AuthToken"] ?? string.Empty;
+            EmailVerificationDashboardVM dashboardVM = await _dashboardServices.GetEmailVerificationDashboard(token);
+            return View(dashboardVM);
         }
 
         [HttpGet]
@@ -60,6 +63,14 @@ namespace MicroservicesUser.Web.Controllers
             {
                 return Json(Messages.Failed);
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProfilePhoto()
+        {
+            string token = Request.Cookies["AuthToken"] ?? string.Empty;
+            string profilePhotoUrl = await _dashboardServices.GetProfilePhoto(token);
+            return Json(profilePhotoUrl);
         }
     }
 }
