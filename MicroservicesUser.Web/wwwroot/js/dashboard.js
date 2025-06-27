@@ -11,37 +11,60 @@ $('.profilePhotoInput').on('change', function () {
 });
 
 $(document).ready(function () {
-    var labels = [
-        "08:00", "09:00", "10:00", "11:00", "12:00", "13:00"
-    ];
-    var data = {
-        labels: labels,
-        datasets: [{
-            label: 'Email Verifications',
-            data: [12, 18, 9, 15, 22, 17], // Replace with your real data
-            backgroundColor: '#0b6060',
-            borderColor: '#0b6060',
-            borderWidth: 1
-        }]
-    };
-    var config = {
-        type: 'bar',
-        data: data,
-        options: {
-            plugins: {
-                legend: { display: false }
-            },
-            scales: {
-                x: {
-                    title: { display: true, text: 'Time' }
+    var chartCanvas = $('.email-verification-bar-chart');
+    var chartInstance = null;
+
+    function renderChart(labels, scans) {
+        if (chartInstance) {
+            chartInstance.destroy();
+        }
+        var data = {
+            labels: labels,
+            datasets: [{
+                label: 'Email Verifications',
+                data: scans,
+                backgroundColor: '0b6060',
+                borderColor: '#0b6060',
+                borderWidth: 1
+            }]
+        };
+        var config = {
+            type: 'bar',
+            data: data,
+            options: {
+                plugins: {
+                    legend: { display: false }
                 },
-                y: {
-                    title: { display: true, text: 'Email Verifications' },
-                    beginAtZero: true
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Time' }
+                    },
+                    y: {
+                        title: { display: true, text: 'Scans' },
+                        beginAtZero: true
+                    }
                 }
             }
-        }
-    };
-    var chartCanvas = document.querySelector('.email-verification-bar-chart');
-    new Chart(chartCanvas, config);
-})
+        };
+        chartInstance = new Chart(chartCanvas[0], config);
+    }
+
+    // Initial chart render
+    var chartDataDiv = $('.chart-data');
+    var labels = JSON.parse(chartDataDiv.attr('data-labels'));
+    var scans = JSON.parse(chartDataDiv.attr('data-scans'));
+    renderChart(labels, scans);
+
+    // Handle dropdown change
+    $('.chart-time-filter').on('change', function () {
+        var range = $(this).val();
+        $.ajax({
+            url: '/Dashboard/GetChartData',
+            data: { range: range },
+            type: 'GET',
+            success: function (data) {
+                renderChart(data.labels, data.scans);
+            }
+        });
+    });
+});

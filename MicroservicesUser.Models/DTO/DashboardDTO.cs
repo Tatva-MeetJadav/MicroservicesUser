@@ -1,4 +1,3 @@
-
 namespace MicroservicesUser.Models.DTO
 {
     public class DashboardDTO
@@ -7,8 +6,8 @@ namespace MicroservicesUser.Models.DTO
         public int TodayCount { get; set; }
         public double SuccessRate { get; set; }
         public int ValidCount { get; set; }
-        public List<string>? Labels { get; set; }
-        public List<int>? Scans { get; set; }
+        public ChartDTO? ChartData { get; set; }
         public List<EmailVerificationDTO>? EmailVerificationList { get; set; }
     }
+
 }

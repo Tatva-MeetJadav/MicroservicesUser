@@ -72,5 +72,13 @@ namespace MicroservicesUser.Web.Controllers
             string profilePhotoUrl = await _dashboardServices.GetProfilePhoto(token);
             return Json(profilePhotoUrl);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetChartData(string range)
+        {
+            string token = Request.Cookies["AuthToken"] ?? string.Empty;
+            EmailVerificationChart result = await _dashboardServices.GetChartData(token, range);
+            return Json(result);
+        }
     }
 }

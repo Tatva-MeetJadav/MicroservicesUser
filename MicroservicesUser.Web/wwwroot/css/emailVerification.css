@@ -7,10 +7,5 @@
 }
 
 .append-email-verification-result {
-  height: 70vh;
-  scrollbar-gutter: auto;
-}
-
-.main-content {
-  background-color: #ededed;
+  min-height: 70vh;
 }

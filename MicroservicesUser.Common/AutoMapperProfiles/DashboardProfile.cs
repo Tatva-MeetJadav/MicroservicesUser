@@ -11,6 +11,7 @@ namespace MicroservicesUser.Common.AutoMapperProfiles
         {
             CreateMap<DashboardDTO, EmailVerificationDashboardVM>();
             CreateMap<EmailVerificationDTO, EmailVerificationHistoryVM>();
+            CreateMap<ChartDTO, EmailVerificationChart>();
         }
     }
 }

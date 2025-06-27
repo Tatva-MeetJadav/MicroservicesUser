@@ -1,6 +1,4 @@
-﻿@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,398;1,398&display=swap");
-
-:root {
+﻿:root {
   --primaryBackgroundColor: #0b6060;
   --primaryButtonColor: #0b6060;
   --primaryTextColor: #0b6060;
@@ -10,11 +8,9 @@
 }
 
 body {
-  font-family: "Roboto", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 398;
-  font-style: normal;
-  font-variation-settings: "wdth" 100;
+  font-family: "Satoshi", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
 }
 
 .auth-body {
@@ -149,6 +145,7 @@ table td {
 .main-content {
   height: 100vh;
   overflow-y: auto;
+  background-color: #eeeeee;
 }
 .navbar-content {
   z-index: 1050;

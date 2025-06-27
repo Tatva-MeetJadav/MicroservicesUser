@@ -104,5 +104,13 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             User? user = await _userRepository.GetByIdAsync(id);
             return user?.ProfilePhotoGeneratedName ?? string.Empty;
         }
+
+        public async Task<EmailVerificationChart> GetChartData(string token, string range)
+        {
+            int id = _jwtServices.GetUserId(token);
+            ChartDTO chartDTO = await _dashboardRepository.GetChartByRangeAsync(id, range);
+            EmailVerificationChart chartVM = _mapper.Map<EmailVerificationChart>(chartDTO);
+            return chartVM;
+        }
     }
 }
