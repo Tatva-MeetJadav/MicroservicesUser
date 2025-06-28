@@ -27,7 +27,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             if (range == "today")
             {
                 int currentInterval = (int)((now - today).TotalHours / 2);
-                var intervalCounts = Enumerable.Range(0, currentInterval)
+                var intervalCounts = Enumerable.Range(0, currentInterval + 1)
                     .Select(i =>
                     {
                         DateTime intervalStart = today.AddHours(i * 2);
@@ -127,7 +127,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             .Where(u => u.UserId == userId && u.CreatedAt >= today)
             .ToListAsync();
 
-            var intervalCounts = Enumerable.Range(0, currentInterval)
+            var intervalCounts = Enumerable.Range(0, currentInterval + 1)
                 .Select(i =>
                 {
                     DateTime intervalStart = today.AddHours(i * 2);
