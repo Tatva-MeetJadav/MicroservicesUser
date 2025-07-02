@@ -51,6 +51,13 @@ $(document).ready(function () {
     });
 });
 
+$('.sidebar-toggle').on('click', function () {
+    var sidebar = $(this).closest('.main-container').find('.sidebar');
+    var mainContent = $(this).closest('.main-container').find('.main-content');
+    sidebar.toggleClass('sidebar-collapsed');
+    mainContent.toggleClass('full-width');
+});
+
 $(function () {
     $('[data-bs-toggle="popover"]').popover();
 });

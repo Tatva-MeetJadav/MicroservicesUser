@@ -32,7 +32,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                     {
                         DateTime intervalStart = today.AddHours(i * 2);
                         DateTime intervalEnd = intervalStart.AddHours(2);
-                        string label = $"{intervalStart:HH:mm}-{intervalEnd.AddMinutes(-1):HH:mm}";
+                        string label = $"{intervalStart:hh:mm tt}-{intervalEnd.AddMinutes(-1):hh:mm tt}";
                         int count = allScans.Count(ev =>
                             ev.CreatedAt >= intervalStart && ev.CreatedAt < intervalEnd);
                         return new { label, count };
@@ -52,7 +52,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                     DateTime nextDate = date.AddDays(1);
                     string label = date.ToString("dd MMM");
                     int count = await _dbContext.EmailVerifications
-                        .Where(ev => ev.CreatedAt >= date && ev.CreatedAt < nextDate)
+                        .Where(ev => ev.UserId == userId && ev.CreatedAt >= date && ev.CreatedAt < nextDate)
                         .CountAsync();
                     labels.Add(label);
                     scans.Add(count);
@@ -67,7 +67,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                     DateTime monthEnd = monthStart.AddMonths(1);
                     string label = monthStart.ToString("MMM");
                     int count = await _dbContext.EmailVerifications
-                        .Where(ev => ev.CreatedAt >= monthStart && ev.CreatedAt < monthEnd)
+                        .Where(ev => ev.UserId == userId && ev.CreatedAt >= monthStart && ev.CreatedAt < monthEnd)
                         .CountAsync();
                     labels.Add(label);
                     scans.Add(count);
@@ -83,7 +83,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                     DateTime yearEnd = yearStart.AddYears(1);
                     string label = year.ToString();
                     int count = await _dbContext.EmailVerifications
-                        .Where(ev => ev.CreatedAt >= yearStart && ev.CreatedAt < yearEnd)
+                        .Where(ev => ev.UserId == userId && ev.CreatedAt >= yearStart && ev.CreatedAt < yearEnd)
                         .CountAsync();
                     labels.Add(label);
                     scans.Add(count);
@@ -132,8 +132,8 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 {
                     DateTime intervalStart = today.AddHours(i * 2);
                     DateTime intervalEnd = intervalStart.AddHours(2);
-                    string label = $"{intervalStart:HH:mm}-{intervalEnd.AddMinutes(-1):HH:mm}";
-                    int count = todayVerifications.Count(ev =>
+                    string label = $"{intervalStart:hh:mm tt}-{intervalEnd.AddMinutes(-1):hh:mm tt}";
+                    int count = todayVerifications.Where(u => u.UserId == userId).Count(ev =>
                         ev.CreatedAt >= intervalStart && ev.CreatedAt < intervalEnd);
                     return new { label, count };
                 })

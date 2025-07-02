@@ -3,7 +3,7 @@ $('.profilePhotoInput').on('change', function () {
     var file = this.files[0];
     var errorSpan = $('.profilePhotoError');
     if (file && $.inArray(file.type, allowedTypes) === -1) {
-        errorSpan.text('Only JPG and PNG files are allowed.');
+        errorSpan.text('Only JPG/JPEG and PNG files are allowed.');
         $(this).val('');
     } else {
         errorSpan.text('');

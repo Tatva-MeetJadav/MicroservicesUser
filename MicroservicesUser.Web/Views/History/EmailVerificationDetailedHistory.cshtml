@@ -36,7 +36,7 @@
             </div>
             <div class="d-flex align-items-center gap-2 bg-white border shadow-sm rounded-3 px-3 py-2">
                 <i class="bi bi-clock-history text-secondary fs-4"></i>
-                <span class="fw-semibold text-dark">@Model?.CreatedAt</span>
+                <span class="fw-semibold text-dark">@Model?.CreatedAt.ToString("dd/MM/yyyy hh:mm tt")</span>
             </div>
         </div>
         <div>
@@ -218,9 +218,10 @@
                     <ul class="list-group list-group-flush border border-1 fw-bold">
                         <li class="list-group-item d-flex justify-content-between">
                             <span>
-                                First seen (ISO format)
+                                First seen
                             </span>
-                            <span>@responseVM?.FirstSeen?.Iso (@responseVM?.FirstSeen?.Human)</span>
+                            <span>@responseVM?.FirstSeen?.Iso.ToString("dd/MM/yyyy hh:mm tt")
+                                (@responseVM?.FirstSeen?.Human)</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between">
                             <span>

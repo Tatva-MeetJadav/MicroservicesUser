@@ -104,7 +104,6 @@
   margin-top: 0.25rem;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .page-header {
     padding: 1rem 0;

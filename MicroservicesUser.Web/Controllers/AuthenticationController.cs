@@ -66,23 +66,31 @@ namespace MicroservicesUser.Web.Controllers
             }
             else
             {
-                TempData["ErrorMessage"] = "Incorrect email address!";
+                TempData["ErrorMessage"] = "No account found associated with this email.";
             }
             return View();
         }
 
         public async Task<IActionResult> ResetPassword()
         {
-            string token = HttpContext.Request.Query["token"].ToString();
-            string result = await _authenticationServices.ValidatePasswordResetToken(token);
-            if (result == Messages.SuccessMessage)
-            {
-                return View();
-            }
-            else
+            if (User.Identity?.IsAuthenticated ?? false)
             {
                 return RedirectToAction("ResetPasswordExpired", "Error");
             }
+            else
+            {
+                string token = HttpContext.Request.Query["token"].ToString();
+                string result = await _authenticationServices.ValidatePasswordResetToken(token);
+                if (result == Messages.SuccessMessage)
+                {
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("ResetPasswordExpired", "Error");
+                }
+            }
+
         }
 
         [HttpPost]

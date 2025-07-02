@@ -47,7 +47,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                     Id = _encryptDecryptServices.EncryptId(ev?.Id ?? 0),
                     Valid = responseVM.Valid,
                     Email = requestVM.Email ?? string.Empty,
-                    VerifiedAt = ev?.CreatedAt,
+                    VerifiedAt = ev!.CreatedAt,
                     Deliverability = responseVM.Deliverability ?? string.Empty,
                     OverAllScore = responseVM.OverallScore,
                     ResponseStatus = ev?.Status.ToString() ?? string.Empty,

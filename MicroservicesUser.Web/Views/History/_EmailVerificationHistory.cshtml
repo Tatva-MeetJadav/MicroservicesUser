@@ -42,7 +42,7 @@
                                 }
 
                             </td>
-                            <td>@item.VerifiedAt</td>
+                            <td>@item.VerifiedAt.ToString("dd/MM/yyyy hh:mm tt")</td>
                             <td>
                                 @if (item.ResponseStatus != "Failed")
                                 {
@@ -86,7 +86,7 @@
             else
             {
                 <tr>
-                    <td colspan="7" class="text-center">No records found.</td>
+                    <td colspan="8" class="text-center">No records found.</td>
                 </tr>
             }
         </tbody>

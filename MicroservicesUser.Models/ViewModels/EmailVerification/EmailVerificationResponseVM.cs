@@ -104,6 +104,6 @@ namespace MicroservicesUser.Models.ViewModels.EmailVerification
         public string? Human { get; set; }
 
         [JsonProperty("iso")]
-        public string? Iso { get; set; }
+        public DateTime Iso { get; set; }
     }
 }

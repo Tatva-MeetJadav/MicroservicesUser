@@ -21,10 +21,10 @@
 </head>
 
 <body>
-    <div class="row m-0 min-vh-100">
+    <div class="d-flex main-container m-0 min-vh-100">
         @if (currentAction != "UserProfile")
         {
-            <div class="col-2 px-0 border-right">
+            <div class="sidebar px-0 border-right">
                 <div>
                     <div class="text-center py-1">
                         <img src="~/images/logo/new-logo.png" alt="App Logo" class="navbar-logo bg-white rounded-2" />
@@ -44,24 +44,35 @@
             </div>
         }
         
-        <div class="@(currentAction != "UserProfile" ? "col-10" : "col-12") col-10 px-0 main-content">
-            <div class="d-flex justify-content-end align-items-center py-2 bg-primary position-sticky top-0 navbar-content">
-                <div class="dropdown pe-3">
-                    <a class="dropdown-toggle text-white text-decoration-none"
-                    role="button"
-                    id="dropdownMenuLink"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                        <img src="~/images/profile/default.jpg" alt="" class="profile-image">
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <li><a class="dropdown-item" asp-action="UserProfile" asp-controller="Dashboard">My profile</a></li>
-                        <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#changePasswordModal" role="button">Change password</a></li>
-                        <li><a class="dropdown-item" asp-action="Index" asp-controller="Dashboard" role="button">Go to Dashboard</a></li>
-                        <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logoutModal" role="button">Logout</a></li>
-                    </ul>
+        <div class="px-0 main-content @(currentAction == "UserProfile" ? "full-width" :"")">
+            <div class="d-flex justify-content-between align-content-center py-2 bg-primary position-sticky top-0 navbar-content">
+                <div class="d-flex justify-content-center align-items-center">
+                    @if (currentAction != "UserProfile")
+                    {
+                        <a class="sidebar-toggle ms-2" title="Toggle sidebar" role="button">
+                            <i class="bi bi-list fs-4 text-white"></i>
+                        </a>
+                    }
+                </div>
+                <div class="d-flex justify-content-end align-items-center">
+                    <div class="dropdown pe-3">
+                        <a class="dropdown-toggle text-white text-decoration-none"
+                           role="button"
+                           id="dropdownMenuLink"
+                           data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            <img src="~/images/profile/default.jpg" alt="" class="profile-image">
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <li><a class="dropdown-item" asp-action="UserProfile" asp-controller="Dashboard">My profile</a></li>
+                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#changePasswordModal" role="button">Change password</a></li>
+                            <li><a class="dropdown-item" asp-action="Index" asp-controller="Dashboard" role="button">Go to Dashboard</a></li>
+                            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logoutModal" role="button">Logout</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
+       
             <div class="container-fluid">
                 <main role="main" class="pb-3">
                     @RenderBody()

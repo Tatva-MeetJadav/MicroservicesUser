@@ -194,9 +194,9 @@
                 <ul class="list-group list-group-flush border border-1 fw-bold">
                     <li class="list-group-item d-flex justify-content-between">
                         <span>
-                            First seen (ISO format)
+                            First seen
                         </span>
-                        <span>@Model?.FirstSeen?.Iso (@Model?.FirstSeen?.Human)</span>
+                        <span>@Model?.FirstSeen?.Iso.ToString("dd/MM/yyyy hh:mm tt") (@Model?.FirstSeen?.Human)</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span>
@@ -291,3 +291,7 @@
         </div>
     </div>
 </div>
+
+<script>
+    $('[data-bs-toggle="popover"]').popover();
+</script>
