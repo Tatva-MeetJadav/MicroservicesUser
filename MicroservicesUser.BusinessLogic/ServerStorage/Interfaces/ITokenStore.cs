@@ -5,6 +5,6 @@ namespace MicroservicesUser.BusinessLogic.ServerStorage.Interfaces
         void AddToken(string userId, string token, DateTime expiresAt);
         void RemoveToken(string token);
         IEnumerable<(string userId, string token, DateTime expiresAt)> GetExpiredTokens(DateTime utcNow);
-        IEnumerable<(string userId, string token, DateTime expiresAt)> GetTokens(Func<string, bool> predicate);
+        (string userId, string token, DateTime expiresAt)? GetNextExpiringToken();
     }
 }

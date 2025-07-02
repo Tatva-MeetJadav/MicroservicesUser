@@ -26,14 +26,14 @@ public class InMemoryTokenStore : ITokenStore
         }
     }
 
-    public IEnumerable<(string userId, string token, DateTime expiresAt)> GetTokens(Func<string, bool> predicate)
+    public (string userId, string token, DateTime expiresAt)? GetNextExpiringToken()
     {
-        foreach (var kvp in _tokens)
+        var next = _tokens.OrderByDescending(kvp => kvp.Value.ExpiresAt).FirstOrDefault();
+        if (next.Key != null)
         {
-            if (predicate(kvp.Key))
-            {
-                yield return (kvp.Value.UserId, kvp.Key, kvp.Value.ExpiresAt);
-            }
+            var (userId, expiresAt) = next.Value;
+            return (userId, next.Key, expiresAt);
         }
+        return null;
     }
 }

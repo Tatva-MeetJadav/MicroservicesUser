@@ -119,5 +119,13 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                 return string.Empty;
             }
         }
+
+        public void AddInMemoryToken(string token)
+        {
+            int id = _jwtServices.GetUserId(token);
+            double hours = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Hours"]);
+            DateTime expiresAt = DateTime.Now.AddHours(hours);
+            _tokenStore.AddToken(id.ToString(), token, expiresAt);
+        }
     }
 }

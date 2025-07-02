@@ -9,5 +9,6 @@ namespace MicroservicesUser.BusinessLogic.Interfaces
         Task<string> ForgotPassword(string email);
         Task<string> ValidatePasswordResetToken(string token);
         Task<string> ResetPassword(ResetPasswordVM resetPasswordVM);
+        void AddInMemoryToken(string token);
     }
 }

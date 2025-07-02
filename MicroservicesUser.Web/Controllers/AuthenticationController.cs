@@ -19,6 +19,8 @@ namespace MicroservicesUser.Web.Controllers
         {
             if (User.Identity?.IsAuthenticated ?? false)
             {
+                string token = Request.Cookies["AuthToken"] ?? string.Empty;
+                _authenticationServices.AddInMemoryToken(token);
                 return RedirectToAction("Index", "Dashboard");
             }
             return View();

@@ -18,16 +18,27 @@ public class TokenExpiryBackgroundService : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            var expiredTokens = _tokenStore.GetExpiredTokens(DateTime.UtcNow.ToLocalTime()).ToList();
-            var nullOrEmptyTokens = _tokenStore.GetTokens(string.IsNullOrEmpty).ToList();
-            var tokensToLogout = expiredTokens.Concat(nullOrEmptyTokens);
-            foreach (var (userId, token, expiresAt) in tokensToLogout)
+            var nextToken = _tokenStore.GetNextExpiringToken();
+            if (nextToken != null)
             {
-                await _hubContext.Clients.User(userId).SendAsync("ForceLogout", cancellationToken: stoppingToken);
-                _tokenStore.RemoveToken(token);
+                var (userId, token, expiresAt) = nextToken.Value;
+                var now = DateTime.UtcNow.ToLocalTime();
+                if (expiresAt <= now)
+                {
+                    await _hubContext.Clients.User(userId).SendAsync("ForceLogout", cancellationToken: stoppingToken);
+                    _tokenStore.RemoveToken(token);
+                    continue;
+                }
+                else
+                {
+                    TimeSpan delay = expiresAt - now + TimeSpan.FromSeconds(2);
+                    await Task.Delay(delay, stoppingToken);
+                }
             }
-
-            await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+            else
+            {
+                await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+            }
         }
     }
 }
