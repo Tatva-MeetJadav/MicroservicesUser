@@ -3,6 +3,7 @@ using MicroservicesUser.BusinessLogic.Interfaces;
 using MicroservicesUser.Common.ResourcesFiles;
 using MicroservicesUser.DataAccess.Repository.Interfaces;
 using MicroservicesUser.Models.DTO;
+using MicroservicesUser.Models.Enums;
 using MicroservicesUser.Models.Models;
 using MicroservicesUser.Models.ViewModels;
 using MicroservicesUser.Models.ViewModels.EmailVerification;

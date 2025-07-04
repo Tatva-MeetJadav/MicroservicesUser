@@ -33,6 +33,10 @@ namespace MicroservicesUser.Web.Controllers
             if (token == Messages.AuthenticationFailed)
             {
                 TempData["ErrorMessage"] = "Incorrect email or password, please try again.";
+                if (loginVM.IsAdmin == true)
+                {
+                    return RedirectToAction("AdminLogin", "Authentication");
+                }
                 return View(loginVM);
             }
             else
@@ -61,7 +65,7 @@ namespace MicroservicesUser.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(LoginVM loginVM)
         {
-            string result = await _authenticationServices.ForgotPassword(loginVM.Email);
+            string result = await _authenticationServices.ForgotPassword(loginVM);
             if (result == Messages.SuccessMessage)
             {
                 TempData["SuccessMessage"] = "Email sent successfully.";
@@ -69,6 +73,10 @@ namespace MicroservicesUser.Web.Controllers
             else
             {
                 TempData["ErrorMessage"] = "No account found associated with this email.";
+            }
+            if (loginVM.IsAdmin)
+            {
+                return RedirectToAction("AdminForgotPassword");
             }
             return View();
         }
@@ -82,7 +90,7 @@ namespace MicroservicesUser.Web.Controllers
             else
             {
                 string token = HttpContext.Request.Query["token"].ToString();
-                string result = await _authenticationServices.ValidatePasswordResetToken(token);
+                string result = await _authenticationServices.ValidatePasswordResetToken(token, false);
                 if (result == Messages.SuccessMessage)
                 {
                     return View();
@@ -92,7 +100,6 @@ namespace MicroservicesUser.Web.Controllers
                     return RedirectToAction("ResetPasswordExpired", "Error");
                 }
             }
-
         }
 
         [HttpPost]
@@ -106,6 +113,10 @@ namespace MicroservicesUser.Web.Controllers
             }
             else
             {
+                if (resetPasswordVM.IsAdmin)
+                {
+                    RedirectToAction("AdminLogin", "Authentication");
+                }
                 return View();
             }
         }
@@ -136,6 +147,37 @@ namespace MicroservicesUser.Web.Controllers
         {
             Response.Cookies.Delete("AuthToken");
             return RedirectToAction("Login", "Authentication");
+        }
+
+        public IActionResult AdminLogin()
+        {
+            return View();
+        }
+
+        public IActionResult AdminForgotPassword()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> AdminResetPassword()
+        {
+            if (User.Identity?.IsAuthenticated ?? false)
+            {
+                return RedirectToAction("ResetPasswordExpired", "Error");
+            }
+            else
+            {
+                string token = HttpContext.Request.Query["token"].ToString();
+                string result = await _authenticationServices.ValidatePasswordResetToken(token, true);
+                if (result == Messages.SuccessMessage)
+                {
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("ResetPasswordExpired", "Error");
+                }
+            }
         }
     }
 }

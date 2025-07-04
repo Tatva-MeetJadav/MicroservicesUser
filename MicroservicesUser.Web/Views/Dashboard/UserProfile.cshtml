@@ -31,8 +31,7 @@
                 </h3>
 
                 <form method="post" asp-action="UserProfile" asp-controller="Dashboard" enctype="multipart/form-data">
-                    <input type="hidden" asp-for="@Model.Id">
-
+                    <input type="hidden" asp-for="@Model.Id" class="profile-form">
                     <div class="row gy-3">
                         <div class="col-md-6 col-12">
                             <label for="FirstName" class="form-label icon-label">
@@ -87,7 +86,7 @@
 
                     <hr class="my-4">
 
-                    <div class="d-flex justify-content-end gap-2">
+                    <div class="d-flex justify-content-end gap-2 profile-action-buttons">
                         <button type="button" class="btn btn-secondary" onclick="window.location.reload()">
                             <i class="bi bi-arrow-counterclockwise me-1"></i>
                             Reset

@@ -20,7 +20,8 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         private readonly ITokenStore _tokenStore;
         private readonly IConfiguration _configuration;
         private readonly IEncryptDecryptServices _encryptDecryptServices;
-        public AuthenticationServices(IMapper mapper, IUserRepository userRepository, IJwtServices jwtServices, IEmailServices emailServices, ITokenStore tokenStore, IConfiguration configuration, IEncryptDecryptServices encryptDecryptServices)
+        private readonly IAdminRepository _adminRepository;
+        public AuthenticationServices(IMapper mapper, IUserRepository userRepository, IJwtServices jwtServices, IEmailServices emailServices, ITokenStore tokenStore, IConfiguration configuration, IEncryptDecryptServices encryptDecryptServices, IAdminRepository adminRepository)
         {
             _mapper = mapper;
             _userRepository = userRepository;
@@ -29,6 +30,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             _tokenStore = tokenStore;
             _configuration = configuration;
             _encryptDecryptServices = encryptDecryptServices;
+            _adminRepository = adminRepository;
         }
         public async Task<string> RegisterUser(RegisterVM registerVM)
         {
@@ -49,17 +51,24 @@ namespace MicroservicesUser.BusinessLogic.Implementations
 
         public async Task<string> LoginUser(LoginVM loginVM)
         {
-            User? user = await _userRepository.GetByEmailAsync(loginVM.Email);
-            if (user != null)
+            if (loginVM.IsAdmin == false)
             {
-                string dbPassword = user.PasswordHash;
-                if (_encryptDecryptServices.VerifyPassword(loginVM.Password, dbPassword))
+                User? user = await _userRepository.GetByEmailAsync(loginVM.Email);
+                if (user != null)
                 {
-                    string token = _jwtServices.GenerateJwtToken(user.Id);
-                    double hours = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Hours"]);
-                    DateTime expiresAt = DateTime.Now.AddHours(hours);
-                    _tokenStore.AddToken(user.Id.ToString(), token, expiresAt);
-                    return token;
+                    string dbPassword = user.PasswordHash;
+                    if (_encryptDecryptServices.VerifyPassword(loginVM.Password, dbPassword))
+                    {
+                        string token = _jwtServices.GenerateJwtToken(user.Id);
+                        double hours = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Hours"]);
+                        DateTime expiresAt = DateTime.Now.AddHours(hours);
+                        _tokenStore.AddToken(user.Id.ToString(), token, expiresAt);
+                        return token;
+                    }
+                    else
+                    {
+                        return Messages.AuthenticationFailed;
+                    }
                 }
                 else
                 {
@@ -68,56 +77,134 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             }
             else
             {
-                return Messages.AuthenticationFailed;
+                Admin? admin = await _adminRepository.GetByEmailAsync(loginVM.Email);
+                if (admin != null)
+                {
+                    string dbPassword = admin.PasswordHash;
+                    if (_encryptDecryptServices.VerifyPassword(loginVM.Password, dbPassword))
+                    {
+                        string token = _jwtServices.GenerateJwtToken(admin.Id);
+                        double hours = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Hours"]);
+                        DateTime expiresAt = DateTime.Now.AddHours(hours);
+                        _tokenStore.AddToken(admin.Id.ToString(), token, expiresAt);
+                        return token;
+                    }
+                    else
+                    {
+                        return Messages.AuthenticationFailed;
+                    }
+                }
+                else
+                {
+                    return Messages.AuthenticationFailed;
+                }
             }
         }
 
-        public async Task<string> ForgotPassword(string email)
+        public async Task<string> ForgotPassword(LoginVM loginVM)
         {
-            User? user = await _userRepository.GetByEmailAsync(email);
-            if (user != null)
+            if (loginVM.IsAdmin == false)
             {
-                string token = GenerateToken.GenerateGuid();
-                _emailServices.SendEmail(email, token);
-                user.PasswordResetToken = token;
-                user.PasswordResetTokenExpiry = DateTime.UtcNow.AddHours(1);
-                await _userRepository.UpdateAsync(user);
-                return Messages.SuccessMessage;
+                User? user = await _userRepository.GetByEmailAsync(loginVM.Email);
+                if (user != null)
+                {
+                    string token = GenerateToken.GenerateGuid();
+                    _emailServices.SendEmail(loginVM.Email, token, false);
+                    user.PasswordResetToken = token;
+                    user.PasswordResetTokenExpiry = DateTime.UtcNow.AddHours(1);
+                    await _userRepository.UpdateAsync(user);
+                    return Messages.SuccessMessage;
+                }
+                else
+                {
+                    return string.Empty;
+                }
             }
             else
             {
-                return string.Empty;
+                Admin? admin = await _adminRepository.GetByEmailAsync(loginVM.Email);
+                if (admin != null)
+                {
+                    string token = GenerateToken.GenerateGuid();
+                    _emailServices.SendEmail(loginVM.Email, token, true);
+                    admin.PasswordResetToken = token;
+                    admin.PasswordResetTokenExpiry = DateTime.UtcNow.AddHours(1);
+                    await _adminRepository.UpdateAsync(admin);
+                    return Messages.SuccessMessage;
+                }
+                else
+                {
+                    return string.Empty;
+                }
             }
-        }
-        public async Task<string> ValidatePasswordResetToken(string token)
-        {
 
-            User? user = await _userRepository.GetByPasswordResetToken(token);
-            if (user != null && user.PasswordResetTokenExpiry > DateTime.UtcNow && !string.IsNullOrEmpty(token))
+        }
+        public async Task<string> ValidatePasswordResetToken(string token, bool isAdmin)
+        {
+            if (isAdmin == false)
             {
-                return Messages.SuccessMessage;
+                User? user = await _userRepository.GetByPasswordResetToken(token);
+                if (user != null && user.PasswordResetTokenExpiry > DateTime.UtcNow && !string.IsNullOrEmpty(token))
+                {
+                    return Messages.SuccessMessage;
+                }
+                else
+                {
+                    return string.Empty;
+                }
             }
             else
             {
-                return string.Empty;
+                Admin? admin = await _adminRepository.GetByResetPasswordToken(token);
+                if (admin != null && admin.PasswordResetTokenExpiry > DateTime.UtcNow && !string.IsNullOrEmpty(token))
+                {
+                    return Messages.SuccessMessage;
+                }
+                else
+                {
+                    return string.Empty;
+                }
             }
+
+
         }
         public async Task<string> ResetPassword(ResetPasswordVM resetPasswordVM)
         {
-            User? user = await _userRepository.GetByPasswordResetToken(resetPasswordVM.Token);
-            if (user != null && !string.IsNullOrEmpty(resetPasswordVM.Token))
+            if (resetPasswordVM.IsAdmin == false)
             {
-                string hashedPassword = _encryptDecryptServices.EncryptPassword(resetPasswordVM.NewPassword);
-                user.PasswordHash = hashedPassword;
-                user.PasswordResetToken = string.Empty;
-                user.PasswordResetTokenExpiry = DateTime.MinValue;
-                await _userRepository.UpdateAsync(user);
-                return Messages.SuccessMessage;
+                User? user = await _userRepository.GetByPasswordResetToken(resetPasswordVM.Token);
+                if (user != null && !string.IsNullOrEmpty(resetPasswordVM.Token))
+                {
+                    string hashedPassword = _encryptDecryptServices.EncryptPassword(resetPasswordVM.NewPassword);
+                    user.PasswordHash = hashedPassword;
+                    user.PasswordResetToken = string.Empty;
+                    user.PasswordResetTokenExpiry = DateTime.MinValue;
+                    await _userRepository.UpdateAsync(user);
+                    return Messages.SuccessMessage;
+                }
+                else
+                {
+                    return string.Empty;
+                }
             }
             else
             {
-                return string.Empty;
+                Admin? admin = await _adminRepository.GetByResetPasswordToken(resetPasswordVM.Token);
+                if (admin != null && !string.IsNullOrEmpty(resetPasswordVM.Token))
+                {
+                    string hashedPassword = _encryptDecryptServices.EncryptPassword(resetPasswordVM.NewPassword);
+                    admin.PasswordHash = hashedPassword;
+                    admin.PasswordResetToken = string.Empty;
+                    admin.PasswordResetTokenExpiry = DateTime.MinValue;
+                    await _adminRepository.UpdateAsync(admin);
+                    return Messages.SuccessMessage;
+                }
+                else
+                {
+                    return string.Empty;
+                }
             }
+
         }
 
         public void AddInMemoryToken(string token)

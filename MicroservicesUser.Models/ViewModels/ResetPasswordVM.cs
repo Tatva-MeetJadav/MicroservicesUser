@@ -15,5 +15,6 @@ namespace MicroservicesUser.Models.ViewModels
         [Required(ErrorMessage = "Confirm password is required.")]
         [Compare(nameof(NewPassword), ErrorMessage = "New password and confirm password should be same.")]
         public string ConfirmPassword { get; set; } = string.Empty;
+        public bool IsAdmin { get; set; }
     }
 }

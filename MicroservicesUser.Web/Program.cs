@@ -41,6 +41,7 @@ builder.Services.AddAutoMapper(typeof(DashboardProfile).Assembly);
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IEmailVerificationRepository, EmailVerificationRepository>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 
 
 //Setting up business services

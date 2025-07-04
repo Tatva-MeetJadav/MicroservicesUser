@@ -11,5 +11,7 @@ namespace MicroservicesUser.Models.ViewModels
 
         [Required(ErrorMessage = "Password is required.")]
         public string Password { get; set; } = string.Empty;
+
+        public bool IsAdmin { get; set; }
     }
 }

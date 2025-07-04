@@ -15,7 +15,7 @@ namespace Microservices.BusinessLogic.Implementations
             _configuration = configuration;
             _env = env;
         }
-        public void SendEmail(string email, string token)
+        public void SendEmail(string email, string token, bool isAdmin)
         {
             string subject = "Regarding Forgot Password";
             SmtpClient client = new(_configuration["EmailConfiguration:Host"], Convert.ToInt16(_configuration["EmailConfiguration:Port"]));
@@ -27,7 +27,16 @@ namespace Microservices.BusinessLogic.Implementations
             mailMessage.From = new MailAddress(_configuration["EmailConfiguration:SenderEmail"] ?? string.Empty);
             mailMessage.IsBodyHtml = true;
             mailMessage.To.Add(email);
-            string resetLink = _configuration["ResetPasswordLink:Route"] + "?token=" + token;
+            string resetLink;
+            if (isAdmin)
+            {
+                resetLink = _configuration["ResetPasswordLink:AdminRoute"] + "?token=" + token;
+            }
+            else
+            {
+                resetLink = _configuration["ResetPasswordLink:Route"] + "?token=" + token;
+            }
+
             string path = Path.Combine(_env.WebRootPath, "Templates", "ResetPasswordLinkEmail.html");
 
             if (File.Exists(path))

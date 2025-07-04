@@ -12,8 +12,10 @@
                     <div class="text-center mb-3">
                         <img src="~/images/logo/new-logo.png" alt="App Logo" class="img-logo" />
                     </div>
-                    <h3 class="card-title auth-page-title text-center mb-4">Login</h3>
+                    <h3 class="card-title auth-page-title text-center mb-4">Admin Login</h3>
+
                     <form asp-action="Login" asp-controller="Authentication" method="post">
+                        @Html.Hidden("IsAdmin", true)
                         <div class="mb-3">
                             <label class="form-label">Email</label>
                             <input class="form-control" type="email" asp-for="Email" />
@@ -24,20 +26,14 @@
                             <input class="form-control" type="password" asp-for="Password" />
                             <span class="text-danger" asp-validation-for="Password"></span>
                         </div>
-                        <div class="d-flex align-items-center justify-content-between gap-2 my-2">
-                            <div>
-
-                            </div>
+                        <div class="d-flex align-items-center justify-content-end gap-2 my-2">
                             <div class="text-small">
-                                <a asp-action="ForgotPassword">forgot password?</a>
+                                <a asp-action="AdminForgotPassword">forgot password?</a>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-center flex-column align-items-center gap-2">
-                            <a asp-action="AdminLogin" asp-controller="Authentication">Are you admin?</a>
+                        <div class="d-flex flex-column align-items-center gap-2">
+                            <a asp-action="Login" asp-controller="Authentication">Are you user?</a>
                             <button type="submit" class="btn btn-primary w-100">Login</button>
-                        </div>
-                        <div class="my-3 text-center">
-                            Don't have an account? <a asp-action="Register">Create here</a>
                         </div>
                     </form>
                 </div>

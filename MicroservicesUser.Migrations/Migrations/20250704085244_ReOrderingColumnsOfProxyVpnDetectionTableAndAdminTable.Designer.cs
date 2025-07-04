@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MicroservicesUser.Migrations.Migrations
 {
     [DbContext(typeof(MicroservicesUserDbContext))]
-    [Migration("20250623055418_AddingDateTimeInEmailVerificationResponse")]
-    partial class AddingDateTimeInEmailVerificationResponse
+    [Migration("20250704085244_ReOrderingColumnsOfProxyVpnDetectionTableAndAdminTable")]
+    partial class ReOrderingColumnsOfProxyVpnDetectionTableAndAdminTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,6 +26,60 @@ namespace MicroservicesUser.Migrations.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("MicroservicesUser.Models.Models.Admin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("MobileNumber")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
+
+                    b.Property<string>("PasswordResetToken")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<DateTime?>("PasswordResetTokenExpiry")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ProfilePhotoGeneratedName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("varchar(15)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Admins");
+                });
+
             modelBuilder.Entity("MicroservicesUser.Models.Models.EmailVerification", b =>
                 {
                     b.Property<int>("Id")
@@ -35,7 +89,7 @@ namespace MicroservicesUser.Migrations.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<JsonDocument>("EmailRequestParam")
                         .IsRequired()
@@ -45,6 +99,10 @@ namespace MicroservicesUser.Migrations.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
+
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
@@ -53,6 +111,39 @@ namespace MicroservicesUser.Migrations.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("EmailVerifications");
+                });
+
+            modelBuilder.Entity("MicroservicesUser.Models.Models.ProxyVpnDetection", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<JsonDocument>("ProxyVpnRequestParam")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<JsonDocument>("ProxyVpnResponseParam")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ProxyVpnDetections");
                 });
 
             modelBuilder.Entity("MicroservicesUser.Models.Models.User", b =>
@@ -106,6 +197,17 @@ namespace MicroservicesUser.Migrations.Migrations
                 });
 
             modelBuilder.Entity("MicroservicesUser.Models.Models.EmailVerification", b =>
+                {
+                    b.HasOne("MicroservicesUser.Models.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MicroservicesUser.Models.Models.ProxyVpnDetection", b =>
                 {
                     b.HasOne("MicroservicesUser.Models.Models.User", "User")
                         .WithMany()
