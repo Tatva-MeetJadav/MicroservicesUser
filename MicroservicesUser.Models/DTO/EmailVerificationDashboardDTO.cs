@@ -1,6 +1,6 @@
 namespace MicroservicesUser.Models.DTO
 {
-    public class DashboardDTO
+    public class EmailVerificationDashboardDTO
     {
         public int TotalCount { get; set; }
         public int TodayCount { get; set; }

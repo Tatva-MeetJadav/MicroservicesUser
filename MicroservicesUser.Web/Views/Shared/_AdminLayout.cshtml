@@ -1,8 +1,7 @@
-﻿@{
+@{
     string currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
     string currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty;
 }
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,7 +21,7 @@
 
 <body>
     <div class="d-flex main-container m-0 min-vh-100">
-        @if (currentAction != "UserProfile")
+        @if (currentAction != "AdminProfile")
         {
             <div class="sidebar px-0 border-right">
                 <div>
@@ -33,21 +32,18 @@
                         <a class="px-3 py-1 sidebar-link text-start @(currentController == "Dashboard" ? "bg-primary text-white" : "text-black") rounded-1 text-decoration-none" role="button" asp-action="Index" asp-controller="Dashboard">
                             Dashboard
                         </a>
-                        <a class="px-3 py-1 sidebar-link text-start @(currentController == "EmailVerification" ? "bg-primary text-white" : "text-black") rounded-1 text-black text-decoration-none" role="button" asp-action="Index" asp-controller="EmailVerification">
-                            Email Verification
-                        </a>
-                        <a class="px-3 py-1 sidebar-link text-start @(currentController == "History" ? "bg-primary text-white" : "text-black") rounded-1 text-decoration-none" role="button" asp-action="Index" asp-controller="History">
-                            History
+                        <a class="px-3 py-1 sidebar-link text-start @(currentController == "User" ? "bg-primary text-white" : "text-black") rounded-1 text-black text-decoration-none" role="button" asp-action="Index" asp-controller="User">
+                            Users
                         </a>
                     </aside>
                 </div>
             </div>
         }
         
-        <div class="px-0 main-content @(currentAction == "UserProfile" ? "full-width" :"")">
+        <div class="px-0 main-content @(currentAction == "AdminProfile" ? "full-width" :"")">
             <div class="d-flex justify-content-between align-content-center py-2 bg-primary position-sticky top-0 navbar-content">
                 <div class="d-flex justify-content-center align-items-center">
-                    @if (currentAction != "UserProfile")
+                    @if (currentAction != "AdminProfile")
                     {
                         <a class="sidebar-toggle ms-2" title="Toggle sidebar" role="button">
                             <i class="bi bi-list fs-4 text-white"></i>
@@ -64,11 +60,12 @@
                             <img src="~/images/profile/default.jpg" alt="" class="profile-image">
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <li><a class="dropdown-item" asp-action="UserProfile" asp-controller="Dashboard">My Profile</a></li>
+                            <li><a class="dropdown-item" asp-action="AdminProfile" asp-controller="Dashboard">My Profile</a></li>
                             <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target=".changePasswordModal" role="button">Change Password</a></li>
-                            @if(currentAction == "UserProfile")
+                            @if(currentAction == "AdminProfile")
                             {
-                                <li><a class="dropdown-item" asp-action="Index" asp-controller="Dashboard" role="button">Go to Dashboard</a></li>
+                                <li><a class="dropdown-item" asp-action="AdminDashboard" asp-controller="Dashboard" role="button">Go to Dashboard</a>
+                                </li>
                             }
                             <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target=".logoutModal" role="button">Logout</a></li>
                         </ul>
@@ -87,10 +84,10 @@
     <div class="modal fade changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
         @await Html.PartialAsync("_ChangePassword",new ChangePasswordVM())
     </div>
-    <div class="modal fade logoutModal"  tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal fade logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form asp-action="Logout" asp-controller="Authentication" method="post">
+                <form asp-action="AdminLogout" asp-controller="Authentication" method="post">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5 fw-bold text-primary">Logout</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -148,8 +145,8 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
    @Html.Raw("<script src=\"https://cdn.jsdelivr.net/npm/@microsoft/signalr@7.0.14/dist/browser/signalr.min.js\"></script>")
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/comman.js" asp-append-version="true"></script>
+    <script src="~/js/adminSite.js" asp-append-version="true"></script>
+     <script src="~/js/comman.js" asp-append-version="true"></script>
     
     @await RenderSectionAsync("Scripts", required: false)
 </body>

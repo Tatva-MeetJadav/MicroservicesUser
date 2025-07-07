@@ -88,11 +88,29 @@ namespace MicroservicesUser.Common.ResourcesFiles {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ::1.
+        /// </summary>
+        public static string LocalIpAddress {
+            get {
+                return ResourceManager.GetString("LocalIpAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to success.
         /// </summary>
         public static string SuccessMessage {
             get {
                 return ResourceManager.GetString("SuccessMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User.
+        /// </summary>
+        public static string UserRole {
+            get {
+                return ResourceManager.GetString("UserRole", resourceCulture);
             }
         }
         

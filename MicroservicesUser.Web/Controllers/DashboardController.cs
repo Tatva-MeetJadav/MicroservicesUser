@@ -15,6 +15,8 @@ namespace MicroservicesUser.Web.Controllers
         {
             _dashboardServices = dashboardServices;
         }
+
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> Index()
         {
             string token = Request.Cookies["AuthToken"] ?? string.Empty;
@@ -22,6 +24,7 @@ namespace MicroservicesUser.Web.Controllers
             return View(dashboardVM);
         }
 
+        [Authorize(Roles = "User")]
         [HttpGet]
         public async Task<IActionResult> UserProfile()
         {
@@ -65,6 +68,7 @@ namespace MicroservicesUser.Web.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetProfilePhoto()
         {
@@ -79,6 +83,57 @@ namespace MicroservicesUser.Web.Controllers
             string token = Request.Cookies["AuthToken"] ?? string.Empty;
             EmailVerificationChart result = await _dashboardServices.GetChartData(token, range);
             return Json(result);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AdminDashboard()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> AdminProfile()
+        {
+            string token = Request.Cookies["AuthToken"] ?? string.Empty;
+            ProfileVM profileVM = await _dashboardServices.GetAdminProfile(token);
+            return View(profileVM);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> AdminProfile(ProfileVM profileVM, IFormFile profilePhoto)
+        {
+            string result = await _dashboardServices.EditAdminProfile(profileVM, profilePhoto);
+            if (result == Messages.SuccessMessage)
+            {
+                TempData["SuccessMessage"] = "Profile updated successfully.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Something went wrong.";
+                return View(profileVM);
+            }
+            return RedirectToAction("AdminProfile", "Dashboard");
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> AdminChangePassword(ChangePasswordVM changePasswordVM)
+        {
+            string token = Request.Cookies["AuthToken"] ?? string.Empty;
+            string result = await _dashboardServices.AdminChangePassword(changePasswordVM, token);
+            if (result == Messages.SuccessMessage)
+            {
+                return Json(Messages.SuccessMessage);
+            }
+            else if (result == Messages.WrongPassword)
+            {
+                return Json(Messages.WrongPassword);
+            }
+            else
+            {
+                return Json(Messages.Failed);
+            }
         }
     }
 }

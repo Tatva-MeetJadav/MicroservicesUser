@@ -15,7 +15,12 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             _dbContext = _DbContext;
         }
 
-        public async Task<ChartDTO> GetChartByRangeAsync(int userId, string range)
+        public Task<AdminDashboardDTO> GetAdminDashboardAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ChartDTO> GetEmailVerificationChartByRangeAsync(int userId, string range)
         {
             List<int> scans = new();
             List<string> labels = new();
@@ -98,7 +103,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             };
         }
 
-        public async Task<DashboardDTO> GetDashboardAsync(int userId)
+        public async Task<EmailVerificationDashboardDTO> GetEmailVerificationDashboardAsync(int userId)
         {
             DateTime today = DateTime.Today;
             DateTime now = DateTime.Now;
@@ -155,7 +160,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 ResponseStatus = x.Status.ToString()
             }).ToList();
 
-            return new DashboardDTO
+            return new EmailVerificationDashboardDTO
             {
                 TotalCount = counts?.TotalCount ?? 0,
                 TodayCount = counts?.TodayCount ?? 0,
@@ -169,5 +174,11 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 }
             };
         }
+
+        // public Task<AdminDashboardDTO> GetAdminDashboardAsync()
+        // {
+        //     DateTime today = DateTime.Today;
+        // }
+
     }
 }

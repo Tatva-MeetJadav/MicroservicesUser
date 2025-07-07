@@ -1,0 +1,106 @@
+@{
+    ViewData["Title"] = "My Profile";
+    Layout = "_AdminLayout";
+}
+@model ProfileVM
+<link rel="stylesheet" href="~/css/profile.css" asp-append-version="true">
+<div class="container-fluid mt-3">
+    <div class="w-100">
+        <div>
+            <div class="form-card">
+                <div class="profile-card">
+                    <div class="profile-header-section">
+                        <div class="d-flex gap-3 align-items-center">
+                            <div class="text-center text-md-start">
+                                <div class="profile-img-container">
+                                    <img src="~/images/profile/@Model.ProfilePhotoGeneratedName" alt="Profile Photo">
+                                </div>
+                            </div>
+                            <div class="text-center text-md-start">
+                                <h2 class="profile-name">@Model.FirstName @Model.LastName</h2>
+                                <div class="profile-email">
+                                    <i class="bi bi-envelope-fill"></i>
+                                    <span>@Model.Email</span>
+                                </div>
+                                @if (Model.Role != string.Empty)
+                                {
+                                    <div class="fw-semibold mt-2">@Model.Role</div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="form-section-title">
+                    <i class="bi bi-person-gear me-2"></i>Edit Profile Information
+                </h3>
+
+                <form method="post" asp-action="AdminProfile" asp-controller="Dashboard" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="@Model.Id" class="profile-form">
+                    <div class="row gy-3">
+                        <div class="col-md-6 col-12">
+                            <label for="FirstName" class="form-label icon-label">
+                                <i class="bi bi-person text-primary"></i>
+                                First Name
+                            </label>
+                            <input type="text" class="form-control" asp-for="FirstName"
+                                placeholder="Enter your first name" />
+                            <span class="text-danger" asp-validation-for="FirstName"></span>
+                        </div>
+
+                        <div class="col-md-6 col-12">
+                            <label for="LastName" class="form-label icon-label">
+                                <i class="bi bi-person text-primary"></i>
+                                Last Name
+                            </label>
+                            <input type="text" class="form-control" asp-for="LastName"
+                                placeholder="Enter your last name" />
+                            <span class="text-danger" asp-validation-for="LastName"></span>
+                        </div>
+
+                        <div class="col-md-6 col-12">
+                            <label for="ProfilePhoto" class="form-label icon-label">
+                                <i class="bi bi-camera text-primary"></i>
+                                Profile Photo
+                            </label>
+                            <input type="file" class="form-control profilePhotoInput" name="profilePhoto"
+                                accept=".jpg,.jpeg,.png" />
+                            <span class="profilePhotoError text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 col-12">
+                            <label for="PhoneNumber" class="form-label icon-label">
+                                <i class="bi bi-telephone text-primary"></i>
+                                Phone Number
+                            </label>
+                            <input type="tel" class="form-control" asp-for="PhoneNumber"
+                                placeholder="Enter your phone number" />
+                            <span class="text-danger" asp-validation-for="PhoneNumber"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="Address" class="form-label icon-label">
+                                <i class="bi bi-geo-alt text-primary"></i>
+                                Address
+                            </label>
+                            <textarea class="form-control" asp-for="Address" rows="3"
+                                placeholder="Enter your complete address"></textarea>
+                            <span class="text-danger" asp-validation-for="Address"></span>
+                        </div>
+                    </div>
+                    <hr class="my-4">
+                    <div class="d-flex justify-content-end gap-2 profile-action-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="window.location.reload()">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i>
+                            Reset
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg me-1"></i>
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

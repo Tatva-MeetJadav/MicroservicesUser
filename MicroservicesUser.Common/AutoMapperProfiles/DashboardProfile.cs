@@ -9,7 +9,7 @@ namespace MicroservicesUser.Common.AutoMapperProfiles
     {
         public DashboardProfile()
         {
-            CreateMap<DashboardDTO, EmailVerificationDashboardVM>();
+            CreateMap<EmailVerificationDashboardDTO, EmailVerificationDashboardVM>();
             CreateMap<EmailVerificationDTO, EmailVerificationHistoryVM>();
             CreateMap<ChartDTO, EmailVerificationChart>();
         }

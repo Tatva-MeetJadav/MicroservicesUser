@@ -42,7 +42,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IEmailVerificationRepository, EmailVerificationRepository>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
-
+builder.Services.AddScoped<IProxyVpnDetectionRepository, ProxyVpnDetectionRepository>();
 
 //Setting up business services
 builder.Services.AddScoped<IJwtServices, JwtServices>();
@@ -52,6 +52,7 @@ builder.Services.AddScoped<IDashboardServices, DashboardServices>();
 builder.Services.AddScoped<IEmailVerificationServices, EmailVerificationServices>();
 builder.Services.AddScoped<IGenericAPIClientServices, GenericAPIClientServices>();
 builder.Services.AddScoped<IEncryptDecryptServices, EncryptDecryptServices>();
+
 
 
 
@@ -93,7 +94,15 @@ builder.Services.AddAuthentication(options =>
            {
                context.Response.Cookies.Delete("AuthToken");
                context.HandleResponse();
-               context.Response.Redirect("/Authentication/Login");
+               string path = context.Request.Path.ToString();
+               if (path.Contains("Admin", StringComparison.OrdinalIgnoreCase))
+               {
+                   context.Response.Redirect("/Authentication/AdminLogin");
+               }
+               else
+               {
+                   context.Response.Redirect("/Authentication/Login");
+               }
                return Task.CompletedTask;
            }
        };
@@ -101,7 +110,6 @@ builder.Services.AddAuthentication(options =>
 
 WebApplication app = builder.Build();
 app.MapHub<LogoutHub>("/logouthub");
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");

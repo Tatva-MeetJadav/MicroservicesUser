@@ -21,9 +21,10 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IConfiguration _configuration;
         private readonly IEncryptDecryptServices _encryptDecryptServices;
-        private readonly IEmailVerificationRepository _emailVerificationRepository;
         private readonly IDashboardRepository _dashboardRepository;
-        public DashboardServices(IUserRepository userRepository, IJwtServices jwtServices, IMapper mapper, IWebHostEnvironment webHostEnvironment, IConfiguration configuration, IEncryptDecryptServices encryptDecryptServices, IEmailVerificationRepository emailVerificationRepository, IDashboardRepository dashboardRepository)
+
+        private readonly IAdminRepository _adminRepository;
+        public DashboardServices(IUserRepository userRepository, IJwtServices jwtServices, IMapper mapper, IWebHostEnvironment webHostEnvironment, IConfiguration configuration, IEncryptDecryptServices encryptDecryptServices, IDashboardRepository dashboardRepository, IAdminRepository adminRepository)
         {
             _userRepository = userRepository;
             _jwtServices = jwtServices;
@@ -31,8 +32,8 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             _webHostEnvironment = webHostEnvironment;
             _configuration = configuration;
             _encryptDecryptServices = encryptDecryptServices;
-            _emailVerificationRepository = emailVerificationRepository;
             _dashboardRepository = dashboardRepository;
+            _adminRepository = adminRepository;
         }
 
         public async Task<ProfileVM> GetUserProfile(string token)
@@ -47,7 +48,6 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         public async Task<string> EditUserProfile(ProfileVM profileVM, IFormFile file)
         {
             User? user = await _userRepository.GetByIdAsync(profileVM.Id);
-
             if (user != null)
             {
                 _mapper.Map(profileVM, user);
@@ -93,7 +93,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         public async Task<EmailVerificationDashboardVM> GetEmailVerificationDashboard(string token)
         {
             int id = _jwtServices.GetUserId(token);
-            DashboardDTO dashboardDTO = await _dashboardRepository.GetDashboardAsync(id);
+            EmailVerificationDashboardDTO dashboardDTO = await _dashboardRepository.GetEmailVerificationDashboardAsync(id);
             EmailVerificationDashboardVM dashboardVM = _mapper.Map<EmailVerificationDashboardVM>(dashboardDTO);
             return dashboardVM;
         }
@@ -101,16 +101,82 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         public async Task<string> GetProfilePhoto(string token)
         {
             int id = _jwtServices.GetUserId(token);
-            User? user = await _userRepository.GetByIdAsync(id);
-            return user?.ProfilePhotoGeneratedName ?? string.Empty;
+            string role = _jwtServices.GetRole(token);
+            if (role == Messages.UserRole)
+            {
+                User? user = await _userRepository.GetByIdAsync(id);
+                return user?.ProfilePhotoGeneratedName ?? string.Empty;
+            }
+            else
+            {
+                Admin? admin = await _adminRepository.GetByIdAsync(id);
+                return admin?.ProfilePhotoGeneratedName ?? string.Empty;
+            }
         }
 
         public async Task<EmailVerificationChart> GetChartData(string token, string range)
         {
             int id = _jwtServices.GetUserId(token);
-            ChartDTO chartDTO = await _dashboardRepository.GetChartByRangeAsync(id, range);
+            ChartDTO chartDTO = await _dashboardRepository.GetEmailVerificationChartByRangeAsync(id, range);
             EmailVerificationChart chartVM = _mapper.Map<EmailVerificationChart>(chartDTO);
             return chartVM;
         }
+
+        public async Task<ProfileVM> GetAdminProfile(string token)
+        {
+            int id = _jwtServices.GetUserId(token);
+            Admin? admin = await _adminRepository.GetByIdAsync(id);
+            ProfileVM profileVM = _mapper.Map<ProfileVM>(admin);
+            return profileVM;
+        }
+
+        public async Task<string> EditAdminProfile(ProfileVM profileVM, IFormFile file)
+        {
+            Admin? admin = await _adminRepository.GetByIdAsync(profileVM.Id);
+            if (admin != null)
+            {
+                _mapper.Map(profileVM, admin);
+                if (file != null)
+                {
+                    string imageUrl = await UploadFile.UploadPhotoAsync(file, _webHostEnvironment.WebRootPath, _configuration["PhotosPath:ProfilePhoto"] ?? string.Empty) ?? string.Empty;
+                    admin.ProfilePhotoGeneratedName = imageUrl;
+                }
+                await _adminRepository.UpdateAsync(admin);
+                return Messages.SuccessMessage;
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        public async Task<string> AdminChangePassword(ChangePasswordVM changePasswordVM, string token)
+        {
+            int id = _jwtServices.GetUserId(token);
+            Admin? admin = await _adminRepository.GetByIdAsync(id);
+            if (admin != null)
+            {
+                if (_encryptDecryptServices.VerifyPassword(changePasswordVM.CurrentPassword, admin.PasswordHash))
+                {
+                    string hashedPassword = _encryptDecryptServices.EncryptPassword(changePasswordVM.NewPassword);
+                    admin.PasswordHash = hashedPassword;
+                    await _adminRepository.UpdateAsync(admin);
+                    return Messages.SuccessMessage;
+                }
+                else
+                {
+                    return Messages.WrongPassword;
+                }
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        // public async Task<string> GetAdminDashboard()
+        // {
+
+        // }
     }
 }

@@ -9,10 +9,13 @@ namespace MicroservicesUser.Web.Controllers
     {
         private readonly IAuthenticationServices _authenticationServices;
         private readonly IConfiguration _configuration;
-        public AuthenticationController(IAuthenticationServices authenticationServices, IConfiguration configuration)
+
+        private readonly IJwtServices _jwtServices;
+        public AuthenticationController(IAuthenticationServices authenticationServices, IConfiguration configuration, IJwtServices jwtServices)
         {
             _authenticationServices = authenticationServices;
             _configuration = configuration;
+            _jwtServices = jwtServices;
         }
 
         public IActionResult Login()
@@ -21,7 +24,16 @@ namespace MicroservicesUser.Web.Controllers
             {
                 string token = Request.Cookies["AuthToken"] ?? string.Empty;
                 _authenticationServices.AddInMemoryToken(token);
-                return RedirectToAction("Index", "Dashboard");
+                string role = _jwtServices.GetRole(token);
+                if (role == Messages.UserRole)
+                {
+                    return RedirectToAction("Index", "Dashboard");
+                }
+                else
+                {
+                    return RedirectToAction("AdminDashboard", "Dashboard");
+                }
+
             }
             return View();
         }
@@ -29,7 +41,8 @@ namespace MicroservicesUser.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginVM loginVM)
         {
-            string token = await _authenticationServices.LoginUser(loginVM);
+            string ipAddress = HttpContext.Connection.RemoteIpAddress!.ToString();
+            string token = await _authenticationServices.LoginUser(loginVM, ipAddress);
             if (token == Messages.AuthenticationFailed)
             {
                 TempData["ErrorMessage"] = "Incorrect email or password, please try again.";
@@ -50,6 +63,10 @@ namespace MicroservicesUser.Web.Controllers
                 };
                 Response.Cookies.Append("AuthToken", token, cookieOptions);
                 TempData["SuccessMessage"] = "Logged in successful.";
+                if (loginVM.IsAdmin == true)
+                {
+                    return RedirectToAction("AdminDashboard", "Dashboard");
+                }
                 return RedirectToAction("Index", "Dashboard");
             }
         }
@@ -109,14 +126,14 @@ namespace MicroservicesUser.Web.Controllers
             if (result == Messages.SuccessMessage)
             {
                 TempData["SuccessMessage"] = "Password reset successfully.";
+                if (resetPasswordVM.IsAdmin)
+                {
+                    return RedirectToAction("AdminLogin", "Authentication");
+                }
                 return RedirectToAction("Login", "Authentication");
             }
             else
             {
-                if (resetPasswordVM.IsAdmin)
-                {
-                    RedirectToAction("AdminLogin", "Authentication");
-                }
                 return View();
             }
         }
@@ -143,10 +160,18 @@ namespace MicroservicesUser.Web.Controllers
             return View();
         }
 
+        [HttpPost]
         public IActionResult Logout()
         {
             Response.Cookies.Delete("AuthToken");
             return RedirectToAction("Login", "Authentication");
+        }
+
+        [HttpPost]
+        public IActionResult AdminLogout()
+        {
+            Response.Cookies.Delete("AuthToken");
+            return RedirectToAction("AdminLogin", "Authentication");
         }
 
         public IActionResult AdminLogin()

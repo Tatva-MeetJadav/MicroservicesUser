@@ -8,6 +8,10 @@ using Microservices.BusinessLogic.Interfaces;
 using MicroservicesUser.Common.ResourcesFiles;
 using MicroservicesUser.BusinessLogic.ServerStorage.Interfaces;
 using Microsoft.Extensions.Configuration;
+using MicroservicesUser.Models.DTO;
+using System.Text.Json;
+using Newtonsoft.Json;
+using MicroservicesUser.Models.Enums;
 
 namespace MicroservicesUser.BusinessLogic.Implementations
 {
@@ -21,7 +25,9 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         private readonly IConfiguration _configuration;
         private readonly IEncryptDecryptServices _encryptDecryptServices;
         private readonly IAdminRepository _adminRepository;
-        public AuthenticationServices(IMapper mapper, IUserRepository userRepository, IJwtServices jwtServices, IEmailServices emailServices, ITokenStore tokenStore, IConfiguration configuration, IEncryptDecryptServices encryptDecryptServices, IAdminRepository adminRepository)
+        private readonly IGenericAPIClientServices _apiClient;
+        private readonly IProxyVpnDetectionRepository _proxyVpnDetectionRepository;
+        public AuthenticationServices(IMapper mapper, IUserRepository userRepository, IJwtServices jwtServices, IEmailServices emailServices, ITokenStore tokenStore, IConfiguration configuration, IEncryptDecryptServices encryptDecryptServices, IAdminRepository adminRepository, IGenericAPIClientServices apiClient, IProxyVpnDetectionRepository proxyVpnDetectionRepository)
         {
             _mapper = mapper;
             _userRepository = userRepository;
@@ -31,6 +37,8 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             _configuration = configuration;
             _encryptDecryptServices = encryptDecryptServices;
             _adminRepository = adminRepository;
+            _apiClient = apiClient;
+            _proxyVpnDetectionRepository = proxyVpnDetectionRepository;
         }
         public async Task<string> RegisterUser(RegisterVM registerVM)
         {
@@ -49,7 +57,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             }
         }
 
-        public async Task<string> LoginUser(LoginVM loginVM)
+        public async Task<string> LoginUser(LoginVM loginVM, string ipAddress)
         {
             if (loginVM.IsAdmin == false)
             {
@@ -59,10 +67,41 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                     string dbPassword = user.PasswordHash;
                     if (_encryptDecryptServices.VerifyPassword(loginVM.Password, dbPassword))
                     {
-                        string token = _jwtServices.GenerateJwtToken(user.Id);
+                        string token = _jwtServices.GenerateJwtToken(user.Id, Messages.UserRole);
                         double hours = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Hours"]);
                         DateTime expiresAt = DateTime.Now.AddHours(hours);
                         _tokenStore.AddToken(user.Id.ToString(), token, expiresAt);
+                        if (ipAddress == Messages.LocalIpAddress)
+                        {
+                            ipAddress = _configuration["IpAddress"]!;
+                            ProxyAndVpnDetectionRequestDTO requestDTO = new() { IpAddress = ipAddress };
+                            ProxyAndVpnDetectionResponseDTO responseDTO = new();
+                            try
+                            {
+                                responseDTO = await _apiClient.PostAsync<ProxyAndVpnDetectionRequestDTO, ProxyAndVpnDetectionResponseDTO>(requestDTO, _configuration["ProxyAndVpnDetectionAPI:Url"]!);
+                            }
+                            catch (Exception)
+                            {
+                                ProxyVpnDetection proxyAndVpnDetectionFailed = new()
+                                {
+                                    UserId = user.Id,
+                                    CreatedAt = DateTime.UtcNow.ToLocalTime(),
+                                    Status = Status.Success,
+                                    ProxyVpnRequestParam = JsonDocument.Parse(JsonConvert.SerializeObject(requestDTO)),
+                                    ProxyVpnResponseParam = JsonDocument.Parse(JsonConvert.SerializeObject("{}")),
+                                };
+                                await _proxyVpnDetectionRepository.AddAsync(proxyAndVpnDetectionFailed);
+                            }
+                            ProxyVpnDetection proxyAndVpnDetection = new()
+                            {
+                                UserId = user.Id,
+                                CreatedAt = DateTime.UtcNow.ToLocalTime(),
+                                Status = Status.Success,
+                                ProxyVpnRequestParam = JsonDocument.Parse(JsonConvert.SerializeObject(requestDTO)),
+                                ProxyVpnResponseParam = JsonDocument.Parse(JsonConvert.SerializeObject(responseDTO)),
+                            };
+                            await _proxyVpnDetectionRepository.AddAsync(proxyAndVpnDetection);
+                        }
                         return token;
                     }
                     else
@@ -83,7 +122,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                     string dbPassword = admin.PasswordHash;
                     if (_encryptDecryptServices.VerifyPassword(loginVM.Password, dbPassword))
                     {
-                        string token = _jwtServices.GenerateJwtToken(admin.Id);
+                        string token = _jwtServices.GenerateJwtToken(admin.Id, admin.Role.ToString());
                         double hours = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Hours"]);
                         DateTime expiresAt = DateTime.Now.AddHours(hours);
                         _tokenStore.AddToken(admin.Id.ToString(), token, expiresAt);

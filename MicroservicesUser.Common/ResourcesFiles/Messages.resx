@@ -126,8 +126,14 @@
   <data name="Failed" xml:space="preserve">
     <value>failed</value>
   </data>
+  <data name="LocalIpAddress" xml:space="preserve">
+    <value>::1</value>
+  </data>
   <data name="SuccessMessage" xml:space="preserve">
     <value>success</value>
+  </data>
+  <data name="UserRole" xml:space="preserve">
+    <value>User</value>
   </data>
   <data name="WrongPassword" xml:space="preserve">
     <value>wrongPassword</value>

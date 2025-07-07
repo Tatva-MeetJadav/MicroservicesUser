@@ -9,5 +9,7 @@ namespace MicroservicesUser.DataAccess.Repository.Interfaces
         Task UpdateAsync(Admin admin);
 
         Task<Admin?> GetByResetPasswordToken(string resetPasswordToken);
+
+        Task<Admin?> GetByIdAsync(int id);
     }
 }

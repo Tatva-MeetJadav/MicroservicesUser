@@ -12,5 +12,8 @@ namespace MicroservicesUser.BusinessLogic.Interfaces
         Task<EmailVerificationDashboardVM> GetEmailVerificationDashboard(string token);
         Task<string> GetProfilePhoto(string token);
         Task<EmailVerificationChart> GetChartData(string token, string range);
+        Task<ProfileVM> GetAdminProfile(string token);
+        Task<string> EditAdminProfile(ProfileVM profileVM, IFormFile formFile);
+        Task<string> AdminChangePassword(ChangePasswordVM changePasswordVM, string token);
     }
 }

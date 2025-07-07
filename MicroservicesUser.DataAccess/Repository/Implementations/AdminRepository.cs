@@ -28,5 +28,10 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             _context.Admins.Update(admin);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Admin?> GetByIdAsync(int id)
+        {
+            return await _context.Admins.FirstOrDefaultAsync(x => x.Id == id);
+        }
     }
 }
