@@ -1,0 +1,75 @@
+<div class="row gy-3">
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="stat-card primary">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Total Verified Ip Addresses</div>
+                    <div class="stat-number primary">@Model.TotalIPVerifications</div>
+                </div>
+                <div class="stat-icon primary">
+                    <i class="bi bi-rocket-takeoff-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="stat-card danger">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">High Risk Ip Addresses </div>
+                    <div class="stat-number danger">@Model.HighRiskIPs</div>
+                </div>
+                <div class="stat-icon danger">
+                    <i class="bi bi-shield-fill-exclamation"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="stat-card warning">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">Average Fraud Score</div>
+                    <div class="stat-number warning">@Model.AverageFraudScore %</div>
+                </div>
+                <div class="stat-icon warning">
+                    <i class="bi bi-bar-chart-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="stat-card info">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-label">VPN/Proxy/Tor Usage</div>
+                    <div class="stat-number info">@Model.VPNProxyTorUsage %</div>
+                </div>
+                <div class="stat-icon info">
+                    <i class="bi bi-house-lock-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6">
+        <!-- HTML -->
+        <div class="custom-table-wrapper mt-4">
+            <div class="custom-table-header">
+                <div class="custom-cell">Sr No.</div>
+                <div class="custom-cell">User Email</div>
+                <div class="custom-cell">IP Address</div>
+                <div class="custom-cell">View Detail</div>
+            </div>
+            <div class="custom-table-row">
+                <div class="custom-cell">1</div>
+                <div class="custom-cell">meet@gmail.com</div>
+                <div class="custom-cell">114.41.23.46</div>
+                <div class="custom-cell">
+                    <i class="bi bi-eye"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

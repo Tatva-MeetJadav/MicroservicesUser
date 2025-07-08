@@ -174,8 +174,9 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             }
         }
 
-        // public async Task<string> GetAdminDashboard()
+        // public async Task<AdminDashboardVM> GetAdminDashboard()
         // {
+        //     AdminDashboardDTO dashboardDTO = await _dashboardRepository.GetEmailVerificationDashboardAsync();
 
         // }
     }

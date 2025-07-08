@@ -1,4 +1,5 @@
-﻿using MicroservicesUser.DataAccess.Data;
+﻿using System.Text.Json;
+using MicroservicesUser.DataAccess.Data;
 using MicroservicesUser.DataAccess.Repository.Interfaces;
 using MicroservicesUser.Models.DTO;
 using MicroservicesUser.Models.Enums;
@@ -13,11 +14,6 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
         public DashboardRepository(MicroservicesUserDbContext _DbContext)
         {
             _dbContext = _DbContext;
-        }
-
-        public Task<AdminDashboardDTO> GetAdminDashboardAsync()
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<ChartDTO> GetEmailVerificationChartByRangeAsync(int userId, string range)
@@ -175,10 +171,74 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             };
         }
 
-        // public Task<AdminDashboardDTO> GetAdminDashboardAsync()
-        // {
-        //     DateTime today = DateTime.Today;
-        // }
+        public async Task<ProxyVpnDetectionDashboardDTO> GetProxyVpnDetectionDashboard(List<int>? userIds)
+        {
+            List<User> users = await _dbContext.Users.ToListAsync();
 
+            List<ProxyVpnDetection> data = await _dbContext.ProxyVpnDetections
+            .Where(u => userIds == null || userIds.Contains(u.UserId))
+            .ToListAsync();
+
+            List<ProxyVpnDetection> latestEntries = data
+                .GroupBy(u =>
+                {
+                    var json = u.ProxyVpnRequestParam;
+                    var ip = json.RootElement.TryGetProperty("IpAddress", out var ipProp) ? ipProp.GetString() : "unknown";
+                    return new { IpAddress = ip };
+                })
+                .Select(g => g.OrderBy(u => u.CreatedAt).First())
+                .ToList();
+
+
+            int totalIPVerifications = latestEntries.Count;
+
+            int highRiskIPs = latestEntries
+            .Count(u =>
+            {
+                var json = u.ProxyVpnResponseParam;
+                return json.RootElement.TryGetProperty("fraudScore", out var score) && score.GetInt32() > 75;
+            });
+
+            double averageFraudScore = latestEntries.Count != 0 ? latestEntries.Average(u =>
+            {
+                var json = u.ProxyVpnResponseParam;
+                return json.RootElement.TryGetProperty("fraudScore", out var score) ? score.GetInt32() : 0;
+            }) : 0;
+
+            int vpnProxyTorCount = latestEntries.Count != 0 ? latestEntries.Count(u =>
+            {
+                var json = u.ProxyVpnResponseParam;
+                return (json.RootElement.TryGetProperty("vpn", out var vpn) && vpn.GetBoolean()) ||
+                        (json.RootElement.TryGetProperty("proxy", out var proxy) && proxy.GetBoolean()) ||
+                        (json.RootElement.TryGetProperty("tor", out var tor) && tor.GetBoolean());
+            }) : 0;
+            double vpnProxyTorUsage = totalIPVerifications > 0 ? ((double)vpnProxyTorCount / totalIPVerifications * 100) : 0;
+
+            return new ProxyVpnDetectionDashboardDTO
+            {
+                TotalIPVerifications = totalIPVerifications,
+                AverageFraudScore = Math.Round(averageFraudScore, 2),
+                HighRiskIPs = highRiskIPs,
+                VPNProxyTorUsage = Math.Round(vpnProxyTorUsage, 2),
+                DashboardUsers = users.Select(u => new DashboardUserDTO
+                {
+                    UserId = u.Id,
+                    Email = u.Email
+                }).ToList()
+            };
+        }
+
+
+        // public async Task<AdminDashboardDTO> GetAdminDashboardAsync()
+        // {
+        //     var counts = await _dbContext.ProxyVpnDetections
+        //         .GroupBy(u => u.UserId)
+        //         .Select(g => new
+        //         {
+        //             HighRiskProfiles = g.Count(u => EF.Functions.JsonContains(u.ProxyVpnResponseParam, "{\"valid\": true}")),
+        //             SuccessCount = g.Count(u => u.Status == Status.Success)
+        //         })
+        //         .FirstOrDefaultAsync();
+        // }
     }
 }

@@ -1,22 +1,3 @@
-.profile-img-container img {
-  height: 130px;
-  width: 130px;
-  border-radius: 50%;
-}
-.form-label {
-  margin: 0;
-}
-
-.email-verification-bar-chart {
-  height: 350px !important;
-  width: 100% !important;
-  display: block;
-}
-
-.recent-look-ups {
-  height: 350px;
-}
-
 .dashboard-container {
   padding: 2rem 1rem;
   background-color: #f8fafc;
@@ -171,133 +152,44 @@
   background-color: #d40606;
 }
 
-.chart-card {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  height: 100%;
-  margin-bottom: 1rem;
+.users-dropdown-search {
+  width: 220px;
 }
 
-.chart-header {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #1e293b;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
+.users-dropdown-list li input:checked {
+  accent-color: gray;
 }
 
-.activity-card {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  height: 100%;
-  margin-bottom: 1rem;
-}
-
-.activity-header {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #1e293b;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-}
-
-.activity-item {
-  display: flex;
-  align-items: center;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.activity-item:last-child {
-  border-bottom: none;
-}
-
-.activity-icon {
-  width: 32px;
-  height: 32px;
+.custom-table-wrapper {
+  border: 1px solid black;
   border-radius: 6px;
+  overflow: hidden;
+  background-color: white;
+}
+
+.custom-table-header,
+.custom-table-row {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 0.75rem;
-  font-size: 0.875rem;
+  border-bottom: 1px solid #ccc;
 }
 
-.activity-icon.success {
-  background-color: rgba(16, 185, 129, 0.1);
-  color: #10b981;
+.custom-table-header {
+  background-color: rgb(87, 87, 87);
+  color: white;
+  font-weight: bold;
 }
 
-.activity-icon.danger {
-  background-color: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
-}
-
-.activity-email {
+.custom-cell {
   flex: 1;
-  font-weight: 500;
-  color: #1e293b;
+  padding: 12px;
+  text-align: center;
+  border-right: 1px solid #ccc;
 }
 
-.activity-status {
-  font-size: 0.75rem;
-  font-weight: 500;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.025em;
+.custom-cell:last-child {
+  border-right: none;
 }
 
-.status-success {
-  background-color: rgba(16, 185, 129, 0.1);
-  color: #10b981;
+.custom-table-row:hover {
+  background-color: #f8f9fa;
 }
-
-.status-danger {
-  background-color: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
-}
-
-.trend-indicator {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #10b981;
-}
-
-.chart-placeholder {
-  height: 250px;
-  background-color: #f8fafc;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #64748b;
-  border: 2px dashed #e2e8f0;
-}
-
-.page-header {
-  background: white;
-  padding: 2rem 0 1rem 0;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.page-title {
-  color: #2c3e50;
-  font-weight: 700;
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-}
-
-.page-subtitle {
-  color: #6c757d;
-  font-size: 1rem;
-  margin: 0;
-}
-

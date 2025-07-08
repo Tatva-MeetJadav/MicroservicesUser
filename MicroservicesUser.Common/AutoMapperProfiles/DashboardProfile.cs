@@ -12,6 +12,10 @@ namespace MicroservicesUser.Common.AutoMapperProfiles
             CreateMap<EmailVerificationDashboardDTO, EmailVerificationDashboardVM>();
             CreateMap<EmailVerificationDTO, EmailVerificationHistoryVM>();
             CreateMap<ChartDTO, EmailVerificationChart>();
+
+            //ProxyVpnMapping
+            CreateMap<ProxyVpnDetectionDashboardDTO, ProxyVpnDetectionDashboardVM>();
+            CreateMap<DashboardUserDTO,DashboardUserVM>();
         }
     }
 }
