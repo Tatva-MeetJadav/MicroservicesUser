@@ -1,9 +1,13 @@
 using MicroservicesUser.BusinessLogic.Interfaces;
+using MicroservicesUser.Models.DTO;
+using MicroservicesUser.Models.ViewModels;
 using MicroservicesUser.Models.ViewModels.Dashboard;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MicroservicesUser.Web.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ProxyVpnDetectionController : Controller
     {
         private readonly IProxyVpnDetectionServices _proxyVpnDetectionServices;
@@ -22,5 +26,12 @@ namespace MicroservicesUser.Web.Controllers
             ProxyVpnDetectionDashboardVM dashboardVM = await _proxyVpnDetectionServices.GetProxyVpnDetectionDashboard(userIds);
             return PartialView("_ProxyVpnDetection", dashboardVM);
         }
+
+        public async Task<IActionResult> GetProxyVpnDetectionHistory([FromBody] ProxyVpnDetectionHistoryRequestDTO requestDto)
+        {
+            ProxyVpnDetectionDashboardVM result = await _proxyVpnDetectionServices.GetProxyVpnDetectionHistoryList(requestDto);
+            return PartialView("_ProxyVpnDetectionHistoryList", result);
+        }
+        
     }
 }

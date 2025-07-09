@@ -1,6 +1,6 @@
-namespace MicroservicesUser.Models.ViewModels
+namespace MicroservicesUser.Models.DTO
 {
-    public class PaginationVM
+    public class PaginationDTO
     {
         public string SearchQuery { get; set; } = string.Empty;
         public int CurrentPage { get; set; }
@@ -10,6 +10,5 @@ namespace MicroservicesUser.Models.ViewModels
         public string OrderOfSorting { get; set; } = string.Empty;
         public string ColumnNameForFilter { get; set; } = string.Empty;
         public bool FilterValue { get; set; } = false;
-
     }
 }

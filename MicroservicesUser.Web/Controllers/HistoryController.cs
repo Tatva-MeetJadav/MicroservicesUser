@@ -1,6 +1,6 @@
 
 using MicroservicesUser.BusinessLogic.Interfaces;
-using MicroservicesUser.Models.ViewModels;
+using MicroservicesUser.Models.DTO;
 using MicroservicesUser.Models.ViewModels.History;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +20,7 @@ namespace MicroservicesUser.Web.Controllers
             return View();
         }
 
-        public async Task<IActionResult> GetEmailVerificationHistoryList([FromBody] PaginationVM paginationVM)
+        public async Task<IActionResult> GetEmailVerificationHistoryList([FromBody] PaginationDTO paginationVM)
         {
             string token = Request.Cookies["AuthToken"] ?? string.Empty;
             EmailVerificationListHistoryVM result = await _emailVerificationServices.GetEmailVerificationListHistory(paginationVM, token);

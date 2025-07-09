@@ -5,7 +5,6 @@ using MicroservicesUser.DataAccess.Repository.Interfaces;
 using MicroservicesUser.Models.DTO;
 using MicroservicesUser.Models.Enums;
 using MicroservicesUser.Models.Models;
-using MicroservicesUser.Models.ViewModels;
 using MicroservicesUser.Models.ViewModels.EmailVerification;
 using MicroservicesUser.Models.ViewModels.History;
 using Microsoft.Extensions.Configuration;
@@ -30,12 +29,12 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             _encryptDecryptServices = encryptDecryptServices;
         }
 
-        public async Task<EmailVerificationListHistoryVM> GetEmailVerificationListHistory(PaginationVM paginationVM, string token)
+        public async Task<EmailVerificationListHistoryVM> GetEmailVerificationListHistory(PaginationDTO PaginationDTO, string token)
         {
             int id = _jwtServices.GetUserId(token);
             byte[] key = Convert.FromBase64String(_configuration["EncryptId:Key"] ?? string.Empty);
             byte[] iv = Convert.FromBase64String(_configuration["EncryptId:IV"] ?? string.Empty);
-            (List<EmailVerification> emailVerifications, int count) = await _emailVerificationRepository.GetListByUserId(id, paginationVM);
+            (List<EmailVerification> emailVerifications, int count) = await _emailVerificationRepository.GetListByUserId(id, PaginationDTO);
 
             List<EmailVerificationHistoryVM> emailVerificationHistoryListVMs = emailVerifications.Select(ev =>
             {
@@ -59,8 +58,8 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             return new EmailVerificationListHistoryVM
             {
                 EmailVerificationHistoryListVM = emailVerificationHistoryListVMs,
-                PageSize = paginationVM.PageSize,
-                CurrentPage = paginationVM.CurrentPage,
+                PageSize = PaginationDTO.PageSize,
+                CurrentPage = PaginationDTO.CurrentPage,
                 TotalItems = count
             };
         }

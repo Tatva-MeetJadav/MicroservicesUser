@@ -1,7 +1,7 @@
 using MicroservicesUser.DataAccess.Data;
 using MicroservicesUser.DataAccess.Repository.Interfaces;
+using MicroservicesUser.Models.DTO;
 using MicroservicesUser.Models.Models;
-using MicroservicesUser.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace MicroservicesUser.DataAccess.Repository.Implementations
@@ -25,7 +25,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             return result!;
         }
 
-        public async Task<(List<EmailVerification>, int)> GetListByUserId(int userId, PaginationVM paginationVM)
+        public async Task<(List<EmailVerification>, int)> GetListByUserId(int userId, PaginationDTO paginationVM)
         {
             List<EmailVerification>? result = await _dbContext.EmailVerifications
             .Where(x => x.UserId == userId)

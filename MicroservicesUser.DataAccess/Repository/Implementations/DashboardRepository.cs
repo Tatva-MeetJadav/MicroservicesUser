@@ -176,6 +176,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             List<User> users = await _dbContext.Users.ToListAsync();
 
             List<ProxyVpnDetection> data = await _dbContext.ProxyVpnDetections
+            .Include(u => u.User)
             .Where(u => userIds == null || userIds.Contains(u.UserId))
             .ToListAsync();
 
@@ -184,7 +185,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 {
                     var json = u.ProxyVpnRequestParam;
                     var ip = json.RootElement.TryGetProperty("IpAddress", out var ipProp) ? ipProp.GetString() : "unknown";
-                    return new { IpAddress = ip };
+                    return new { u.UserId, IpAddress = ip };
                 })
                 .Select(g => g.OrderBy(u => u.CreatedAt).First())
                 .ToList();
@@ -224,21 +225,38 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 {
                     UserId = u.Id,
                     Email = u.Email
-                }).ToList()
+                }).ToList(),
+                ProxyVpnDetectionHistoryList = latestEntries.OrderBy(u => u.Id).Take(5).Select(x =>
+                {
+                    int fraudScore = x.ProxyVpnResponseParam.RootElement.TryGetProperty("fraudScore", out var scoreElement)
+                    ? scoreElement.GetInt16()
+                    : 0;
+
+                    string? riskLevel = fraudScore > 75 ? "High" :
+                    fraudScore >= 25 ? "Medium" : "Low";
+
+                    bool isTor = x.ProxyVpnResponseParam.RootElement.TryGetProperty("tor", out var torElement) && torElement.GetBoolean();
+                    bool isVpn = x.ProxyVpnResponseParam.RootElement.TryGetProperty("vpn", out var vpnElement) && vpnElement.GetBoolean();
+                    bool isProxy = x.ProxyVpnResponseParam.RootElement.TryGetProperty("proxy", out var proxyElement) && proxyElement.GetBoolean();
+
+                    string? connectionType = isTor ? "TOR" :
+                    isVpn ? "VPN" :
+                    isProxy ? "Proxy" :
+                    "Normal";
+                    return new ProxyVpnDetectionHistoryListDTO
+                    {
+                        Id = x.Id,
+                        Email = x.User!.Email,
+                        IpAddress = x.ProxyVpnRequestParam.RootElement.GetProperty("IpAddress").ToString(),
+                        RiskStatus = riskLevel,
+                        VPNProxyTor = connectionType,
+
+                    };
+                }).ToList(),
+                CurrentPage = 1,
+                PageSize = 5,
+                TotalItems = latestEntries.Count,
             };
         }
-
-
-        // public async Task<AdminDashboardDTO> GetAdminDashboardAsync()
-        // {
-        //     var counts = await _dbContext.ProxyVpnDetections
-        //         .GroupBy(u => u.UserId)
-        //         .Select(g => new
-        //         {
-        //             HighRiskProfiles = g.Count(u => EF.Functions.JsonContains(u.ProxyVpnResponseParam, "{\"valid\": true}")),
-        //             SuccessCount = g.Count(u => u.Status == Status.Success)
-        //         })
-        //         .FirstOrDefaultAsync();
-        // }
     }
 }

@@ -1,3 +1,7 @@
+var currentlySelectedUserIds = [];
+var connectionType = "";
+var riskLevel = "";
+
 $('#showResultBtn').on('click', function () {
     let selectedUserIds = [];
     $('.dashboard-dropdown-user-id').each(function () {
@@ -6,6 +10,8 @@ $('#showResultBtn').on('click', function () {
             selectedUserIds.push(parseInt($(this).val()));
         }
     });
+
+    currentlySelectedUserIds = selectedUserIds;
     $.ajax({
         url: '/ProxyVpnDetection/GetDashboardData',
         type: 'POST',
@@ -37,7 +43,6 @@ $('#dropdownSearch').on('keyup', function () {
 });
 
 
-
 $('#selectAllUsers').on('change', function () {
     let isChecked = $(this).is(':checked');
     $('#dropdownMenu input[type="checkbox"]').prop('checked', isChecked);
@@ -51,3 +56,76 @@ $('#dropdownMenu input[type="checkbox"]').on('change', function () {
         $('#selectAllUsers').prop('checked', allChecked);
     }
 });
+
+
+function fetchProxyVpnDetectionHistoryList(page, pageSize) {
+    var searchQuery = $('input[name="searchQueryForHistory"]').val();
+    var paginationDTO =
+    {
+        searchQuery: searchQuery,
+        currentPage: page,
+        pageSize: pageSize,
+    }
+    var proxyVpnDetectionHistoryDTO =
+    {
+        userIds: currentlySelectedUserIds,
+        paginationDTO: paginationDTO,
+        connectionType: connectionType,
+        riskStatus: riskLevel
+    }
+    $.ajax({
+        url: "/ProxyVpnDetection/GetProxyVpnDetectionHistory",
+        type: "POST",
+        contentType: "application/json",
+        traditional: true,
+        data: JSON.stringify(proxyVpnDetectionHistoryDTO),
+        success: function (response) {
+            $(".proxy-vpn-detection-history-list").html(response);
+        },
+    });
+}
+
+
+$(document).on("change", ".items-per-page", function () {
+    fetchProxyVpnDetectionHistoryList(1, $(this).val());
+});
+
+$(document).on("click", ".prev-page", function () {
+    if ($(this).hasClass('disabled')) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    }
+    var currentPage = parseInt($(".pagination-info").data("current-page"));
+    fetchProxyVpnDetectionHistoryList(currentPage - 1, $(".items-per-page").val());
+});
+
+$(document).on("click", ".next-page", function () {
+    if ($(this).hasClass('disabled')) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    }
+    var currentPage = parseInt($(".pagination-info").data("current-page"));
+    fetchProxyVpnDetectionHistoryList(currentPage + 1, $(".items-per-page").val());
+});
+
+$(document).on('input', '.search-query', function () {
+    var pageSize = $(".items-per-page").val();
+    fetchProxyVpnDetectionHistoryList(1, pageSize);
+})
+
+$(document).on("click", ".page-index", function () {
+    var page = parseInt($(this).data("page"));
+    var pageSize = $(".items-per-page").val();
+    fetchProxyVpnDetectionHistoryList(page, pageSize);
+});
+
+$(document).on('change', '.risk-filter, .connection-filter', function () {
+    var risk = $('.risk-filter').val();
+    var connection = $('.connection-filter').val();
+    connectionType = connection;
+    riskLevel = risk;
+    fetchProxyVpnDetectionHistoryList(1, $(".items-per-page").val());
+});
+

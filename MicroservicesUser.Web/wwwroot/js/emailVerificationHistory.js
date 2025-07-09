@@ -9,7 +9,7 @@ $(document).ready(function () {
 
 function fetchEmailVerificationHistoryList(page, pageSize) {
     var searchQuery = $('input[name="searchQueryForHistory"]').val();
-    var paginationVM =
+    var paginationDTO =
     {
         searchQuery: searchQuery,
         currentPage: page,
@@ -24,7 +24,7 @@ function fetchEmailVerificationHistoryList(page, pageSize) {
         type: "POST",
         contentType: "application/json",
         traditional: true,
-        data: JSON.stringify(paginationVM),
+        data: JSON.stringify(paginationDTO),
         success: function (response) {
             $(".load-history-table").html(response);
         },

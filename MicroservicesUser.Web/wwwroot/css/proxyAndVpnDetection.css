@@ -160,36 +160,38 @@
   accent-color: gray;
 }
 
-.custom-table-wrapper {
-  border: 1px solid black;
-  border-radius: 6px;
-  overflow: hidden;
-  background-color: white;
-}
-
-.custom-table-header,
-.custom-table-row {
-  display: flex;
-  border-bottom: 1px solid #ccc;
-}
-
-.custom-table-header {
-  background-color: rgb(87, 87, 87);
-  color: white;
-  font-weight: bold;
-}
-
-.custom-cell {
-  flex: 1;
-  padding: 12px;
+.table th,
+.table td {
   text-align: center;
-  border-right: 1px solid #ccc;
+  vertical-align: middle;
 }
 
-.custom-cell:last-child {
-  border-right: none;
+.table td div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.custom-table-row:hover {
-  background-color: #f8f9fa;
+.active > .page-link,
+.page-link.active,
+.active > .page-link:focus,
+.page-link.active:focus,
+.active > .page-link:hover,
+.page-link.active:hover {
+  z-index: 3;
+  background-color: var(--primaryBackgroundColor);
+  border-color: var(--primaryBorderColor);
+  box-shadow: 0 0 0;
+}
+.page-link,
+.page-link:hover {
+  color: var(--primaryTextColor) !important;
+}
+
+.page-link:focus {
+  box-shadow: none;
+}
+
+.page-item.active .page-link {
+  color: white !important;
 }

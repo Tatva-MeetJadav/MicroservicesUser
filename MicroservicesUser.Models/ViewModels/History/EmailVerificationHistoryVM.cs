@@ -1,3 +1,5 @@
+using MicroservicesUser.Models.DTO;
+
 namespace MicroservicesUser.Models.ViewModels.History
 {
     public class EmailVerificationHistoryVM
@@ -11,7 +13,7 @@ namespace MicroservicesUser.Models.ViewModels.History
         public int OverAllScore { get; set; }
     }
 
-    public class EmailVerificationListHistoryVM : PaginationVM
+    public class EmailVerificationListHistoryVM : PaginationDTO
     {
         public List<EmailVerificationHistoryVM>? EmailVerificationHistoryListVM { get; set; }
 
