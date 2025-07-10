@@ -58,13 +58,17 @@
     </div>
     <div class="col-12 col-xl-7">
         <div class="bg-white p-2 rounded-2 shadow-sm h-100">
-            <h5 class="mt-1 mb-3 ps-2 fw-bold">Proxy and Vpn Detection history List</h5>
+            <div class="d-flex gap-1 align-items-center mb-2 ps-1">
+                <i class="bi bi-hourglass fs-5 fw-bold"></i>
+                <h5 class="mb-0 fw-bold ">Proxy and Vpn Detection history List</h5>
+            </div>
+
             <div class="row mb-3 justify-content-end align-items-center">
-                <div class="col-md-6 col-xxl-4">
+                <div class="col-md-6 col-xxl-4 fw-semibold">
                     <label for="riskFilter" class="form-label">Search</label>
                     <input type="text" class="form-control search-query" name="searchQueryForHistory">
                 </div>
-                <div class="col-md-3 col-xxl-3">
+                <div class="col-md-3 col-xxl-3 fw-semibold">
                     <label for="riskFilter" class="form-label">Risk Status</label>
                     <select class="form-select risk-filter" role="button">
                         <option value="">All</option>
@@ -73,7 +77,7 @@
                         <option value="High">High</option>
                     </select>
                 </div>
-                <div class="col-md-3 col-xxl-3">
+                <div class="col-md-3 col-xxl-3 fw-semibold">
                     <label for="connectionFilter" class="form-label">Connection Type</label>
                     <select class="form-select connection-filter" role="button">
                         <option value="">All</option>
@@ -92,7 +96,10 @@
 
     <div class="col-12 col-xl-5">
         <div class="bg-white p-3 rounded-2 shadow-sm h-100">
-            <h5 class="mb-3 fw-bold">Continent Wise IP Distributions</h5>
+            <div class="d-flex gap-2 align-items-center mb-2 ps-1">
+                <i class="bi bi-pie-chart fs-5 fw-bold"></i>
+                <h5 class="mb-0 fw-bold ">Continent Wise IP Distributions</h5>
+            </div>
             <div id="ipStats3DPieChart"></div>
             <div data-pie-chart-data='@Html.Raw(JsonSerializer.Serialize(Model.ContinentIPStats))'
                 class="pie-chart-data-container"></div>

@@ -5,6 +5,7 @@
   --primaryTextDarkColor: #095454;
   --primaryButtonDarkColor: #084444;
   --primaryBorderColor: #095454;
+  --secondaryTextColor: #464646;
 }
 
 body {
@@ -177,4 +178,7 @@ table td {
 .offcanvas.offcanvas-start {
   width: 270px !important;
   z-index: 2000 !important;
+}
+.text-secondary {
+  color: var(--secondaryTextColor) !important;
 }

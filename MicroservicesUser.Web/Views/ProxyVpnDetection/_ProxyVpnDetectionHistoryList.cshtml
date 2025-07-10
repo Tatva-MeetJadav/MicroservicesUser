@@ -10,16 +10,6 @@
 
 @functions {
 
-    public string GetRiskColor(string? riskStatus)
-    {
-        return riskStatus switch
-        {
-            "High" => "bg-danger",
-            "Medium" => "bg-warning",
-            "Low" => "bg-success",
-            _ => "bg-secondary"
-        };
-    }
 
     public string GetVpnColor(string? vpnStatus)
     {
@@ -28,6 +18,17 @@
             "VPN" => "bg-secondary",
             "Proxy" => "bg-secondary",
             "TOR" => "bg-secondary",
+            _ => "bg-success"
+        };
+    }
+
+    public string GetRiskIcon(string? riskIcon)
+    {
+        return riskIcon switch
+        {
+            "High" => "bi-arrow-up-circle-fill text-danger",
+            "Medium" => "bi-arrow-right-circle-fill text-warning",
+            "Low" => "bi-arrow-down-circle-fill text-success",
             _ => "bg-success"
         };
     }
@@ -48,7 +49,7 @@
     </div>
 </div>
 
-<div class="table-responsive my-2">
+<div class="table-responsive rounded-2 my-2">
     <table class="table table-borderless align-middle mb-0">
         <thead class="table-primary">
             <tr>
@@ -66,24 +67,25 @@
                 @foreach (var user in Model.ProxyVpnDetectionHistoryList)
                 {
                     <tr class="border-bottom">
-                        <td>@serialNumber</td>
-                        <td>@user.Email</td>
-                        <td>@user.IpAddress</td>
-                        <td>
+                        <td class="text-secondary">@serialNumber</td>
+                        <td class="text-secondary">@user.Email</td>
+                        <td class="text-secondary">@user.IpAddress</td>
+                        <td class="text-secondary">
                             <div class="d-flex justify-content-center">
-                                <div class="@GetRiskColor(user.RiskStatus) px-2 py-1 rounded-2 d-flex align-items-center gap-2">
-                                    <span class="text-white">@user.RiskStatus</span>
+                                <div class="px-2 py-1 rounded-2 d-flex align-items-center gap-2">
+                                    <span>@user.RiskStatus</span>
+                                    <i class="@GetRiskIcon(user.RiskStatus)"></i>
                                 </div>
                             </div>
                         </td>
-                        <td>
+                        <td class="text-secondary">
                             <div class="d-flex justify-content-center">
                                 <span
                                     class="@GetVpnColor(user.VPNProxyTor) px-2 py-1 text-white rounded-2">@user.VPNProxyTor</span>
                             </div>
                         </td>
 
-                        <td>
+                        <td class="text-secondary">
                             <div class="text-center">
                                 <i class="bi bi-eye view-detail-eye" role="button"></i>
                                 <input type="hidden" asp-for="@user.Id">

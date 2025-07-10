@@ -28,8 +28,8 @@
 }
 
 <div class="container-fluid py-4">
-    <div class="mb-3 d-flex justify-content-between align-items-center">
-        <div class="d-flex flex-wrap gap-3 my-2">
+    <div class="mb-3 d-flex flex-column flex-lg-row justify-content-between align-items-center">
+        <div class="d-flex justify-content-center flex-wrap gap-3 my-2">
             <div class="d-flex align-items-center gap-2 bg-white border shadow-sm rounded-3 px-3 py-2">
                 <i class="bi bi-envelope-at-fill text-primary fs-4"></i>
                 <span class="fw-semibold text-dark">@Model?.RequestVM?.Email</span>
@@ -40,12 +40,12 @@
             </div>
         </div>
         <div>
-            <a class="btn btn-primary rounded-1 back px-2" asp-action="Index" asp-controller="History"><i
+            <a class="btn btn-primary rounded-1 mt-2 mt-lg-0 back px-2" asp-action="Index" asp-controller="History"><i
                     class="bi bi-chevron-compact-left"></i>Back</a>
         </div>
     </div>
     <div class="row ">
-        <div class="col-md-6 mb-3">
+        <div class="col-lg-6 mb-3">
             <div class="card shadow-sm bg-light">
                 <div class="card-header fw-bold fs-5 bg-primary text-white">
                     General details
@@ -137,7 +137,7 @@
             </div>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-lg-6 mb-3">
             <div class="card h-100 shadow-sm bg-light">
                 <div class="card-header bg-danger text-white fw-bold fs-5">
                     Security & Risk
@@ -209,7 +209,7 @@
 
 
     <div class="row">
-        <div class="col-md-6 mb-3">
+        <div class="col-lg-6 mb-3">
             <div class="card shadow-sm bg-light">
                 <div class="card-header bg-primary fw-bold fs-5 text-white">
                     Email Details
