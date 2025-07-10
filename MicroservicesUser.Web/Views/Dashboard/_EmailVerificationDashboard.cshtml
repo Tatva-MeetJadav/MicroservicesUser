@@ -82,8 +82,8 @@
             <div class="bg-white rounded-2">
                 <canvas class="email-verification-bar-chart w-100 h-100"></canvas>
             </div>
-            <div class="chart-data" data-labels='@Html.Raw(JsonSerializer.Serialize(Model.ChartData?.Labels))'
-                data-scans='@Html.Raw(JsonSerializer.Serialize(Model.ChartData?.Scans))' style="display:none">
+            <div class="chart-data d-none" data-labels='@Html.Raw(JsonSerializer.Serialize(Model.ChartData?.Labels))'
+                data-scans='@Html.Raw(JsonSerializer.Serialize(Model.ChartData?.Scans))'>
             </div>
         </div>
     </div>

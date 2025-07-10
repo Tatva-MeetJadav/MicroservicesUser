@@ -10,6 +10,8 @@ namespace MicroservicesUser.Models.ViewModels.Dashboard
         public double VPNProxyTorUsage { get; set; }
         public List<DashboardUserVM>? DashboardUsers { get; set; }
         public List<ProxyVpnDetectionHistoryListVM>? ProxyVpnDetectionHistoryList { get; set; }
+        public List<ContinentIPStatsVM>? ContinentIPStats { get; set; }
+
     }
 
     public class ProxyVpnDetectionHistoryListVM
@@ -21,4 +23,11 @@ namespace MicroservicesUser.Models.ViewModels.Dashboard
         public string VPNProxyTor { get; set; } = "Normal";
 
     }
+
+    public class ContinentIPStatsVM
+    {
+        public string ContinentName { get; set; } = "Unknown";
+        public double Percentage { get; set; }
+    }
+
 }

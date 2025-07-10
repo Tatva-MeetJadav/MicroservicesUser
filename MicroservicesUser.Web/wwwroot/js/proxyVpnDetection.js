@@ -140,4 +140,4 @@ $(document).on('click', '.view-detail-eye', function () {
             $('.view-detail-proxy-vpn-detection').modal('show');
         },
     });
-})
+});

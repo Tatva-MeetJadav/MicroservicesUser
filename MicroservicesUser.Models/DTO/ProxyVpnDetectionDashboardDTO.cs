@@ -8,6 +8,7 @@
         public double VPNProxyTorUsage { get; set; }
         public List<DashboardUserDTO>? DashboardUsers { get; set; }
         public List<ProxyVpnDetectionHistoryListDTO>? ProxyVpnDetectionHistoryList { get; set; }
+        public List<ContinentIPStatsDTO>? ContinentIPStats { get; set; }
 
     }
 
@@ -20,4 +21,10 @@
         public string VPNProxyTor { get; set; } = "Normal";
 
     }
+    public class ContinentIPStatsDTO
+    {
+        public string ContinentName { get; set; } = "Unknown";
+        public double Percentage { get; set; }
+    }
+
 }

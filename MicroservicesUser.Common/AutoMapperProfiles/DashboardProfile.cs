@@ -17,6 +17,7 @@ namespace MicroservicesUser.Common.AutoMapperProfiles
             CreateMap<ProxyVpnDetectionDashboardDTO, ProxyVpnDetectionDashboardVM>();
             CreateMap<DashboardUserDTO, DashboardUserVM>();
             CreateMap<ProxyVpnDetectionHistoryListDTO, ProxyVpnDetectionHistoryListVM>();
+            CreateMap<ContinentIPStatsDTO, ContinentIPStatsVM>();
         }
     }
 }

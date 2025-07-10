@@ -190,8 +190,31 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 .Select(g => g.OrderBy(u => u.CreatedAt).First())
                 .ToList();
 
-
             int totalIPVerifications = latestEntries.Count;
+
+            List<ProxyVpnDetection> uniqueIPAddresses = latestEntries.GroupBy(u =>
+            {
+                var json = u.ProxyVpnRequestParam;
+                var ip = json.RootElement.TryGetProperty("IpAddress", out var ipProp) ? ipProp.GetString() : "unknown";
+                return new { IpAddress = ip };
+            }).Select(g => g.OrderBy(u => u.CreatedAt).First()).ToList();
+
+            List<ContinentIPStatsDTO> continentIPStats = uniqueIPAddresses
+            .Select(u =>
+            {
+                var json = u.ProxyVpnResponseParam;
+                string timezone = json.RootElement.TryGetProperty("timezone", out var tzProp) ? tzProp.GetString() ?? "Unknown/Unknown" : "Unknown/Unknown";
+                string continent = timezone.Contains('/') ? timezone.Split('/')[0] : "Unknown";
+                return continent;
+            })
+            .GroupBy(continent => continent)
+            .Select(g => new ContinentIPStatsDTO
+            {
+                ContinentName = g.Key,
+                Percentage = Math.Round((double)g.Count() / uniqueIPAddresses.Count * 100, 2)
+            })
+            .ToList();
+
 
             int highRiskIPs = latestEntries
             .Count(u =>
@@ -256,6 +279,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 CurrentPage = 1,
                 PageSize = 5,
                 TotalItems = latestEntries.Count,
+                ContinentIPStats = continentIPStats
             };
         }
     }

@@ -37,15 +37,14 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 data = data.Where(x => x.User!.Email.ToLower().Contains(requestDto.PaginationDTO.SearchQuery.ToLower())).ToList();
             }
             List<ProxyVpnDetection> latestEntries = data
-                .GroupBy(u =>
-                {
-                    var json = u.ProxyVpnRequestParam;
-                    var ip = json.RootElement.TryGetProperty("IpAddress", out var ipProp) ? ipProp.GetString() : "unknown";
-                    return new { u.UserId, IpAddress = ip };
-                })
-                .Select(g => g.OrderBy(u => u.CreatedAt).First())
-                .ToList();
-
+            .GroupBy(u =>
+            {
+                var json = u.ProxyVpnRequestParam;
+                var ip = json.RootElement.TryGetProperty("IpAddress", out var ipProp) ? ipProp.GetString() : "unknown";
+                return new { u.UserId, IpAddress = ip };
+            })
+            .Select(g => g.OrderBy(u => u.CreatedAt).First())
+            .ToList();
 
             List<ProxyVpnDetectionHistoryListDTO> filteredEntries = latestEntries.Select(x =>
             {
@@ -89,7 +88,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 ProxyVpnDetectionHistoryList = paginatedEntries,
                 CurrentPage = requestDto.PaginationDTO.CurrentPage,
                 PageSize = requestDto.PaginationDTO.PageSize,
-                TotalItems = filteredEntries.Count
+                TotalItems = filteredEntries.Count,
             };
 
         }

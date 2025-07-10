@@ -1,4 +1,5 @@
 @using MicroservicesUser.Models.ViewModels.Dashboard
+@using System.Text.Json
 @model ProxyVpnDetectionDashboardVM
 <div class="row gy-3">
     <div class="col-12 col-md-6 col-lg-3">
@@ -56,7 +57,8 @@
         </div>
     </div>
     <div class="col-12 col-xl-7">
-        <div class="bg-white p-2 rounded-2 shadow-sm">
+        <div class="bg-white p-2 rounded-2 shadow-sm h-100">
+            <h5 class="mt-1 mb-3 ps-2 fw-bold">Proxy and Vpn Detection history List</h5>
             <div class="row mb-3 justify-content-end align-items-center">
                 <div class="col-md-6 col-xxl-4">
                     <label for="riskFilter" class="form-label">Search</label>
@@ -85,7 +87,17 @@
             <div class="proxy-vpn-detection-history-list">
                 @await Html.PartialAsync("_ProxyVpnDetectionHistoryList", Model)
             </div>
+        </div>
+    </div>
 
+    <div class="col-12 col-xl-5">
+        <div class="bg-white p-3 rounded-2 shadow-sm h-100">
+            <h5 class="mb-3 fw-bold">Continent Wise IP Distributions</h5>
+            <div id="ipStats3DPieChart"></div>
+            <div data-pie-chart-data='@Html.Raw(JsonSerializer.Serialize(Model.ContinentIPStats))'
+                class="pie-chart-data-container"></div>
         </div>
     </div>
 </div>
+
+<script src="~/js/proxyVpnDetectionPieChart.js"></script>
