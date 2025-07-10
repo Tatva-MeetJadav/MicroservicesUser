@@ -1,12 +1,12 @@
 @using MicroservicesUser.Models.ViewModels.Dashboard
 @model ProxyVpnDetectionDashboardVM
 <div class="row gy-3">
-    <div class="col-12 col-sm-6 col-lg-3">
+    <div class="col-12 col-md-6 col-lg-3">
         <div class="stat-card primary">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="stat-label">Total Verified Ip Addresses</div>
-                    <div class="stat-number primary">@Model.TotalIPVerifications</div>
+                    <div class="stat-number primary text-nowrap">@Model.TotalIPVerifications</div>
                 </div>
                 <div class="stat-icon primary">
                     <i class="bi bi-rocket-takeoff-fill"></i>
@@ -14,12 +14,12 @@
             </div>
         </div>
     </div>
-    <div class="col-12 col-sm-6 col-lg-3">
+    <div class="col-12 col-md-6 col-lg-3">
         <div class="stat-card danger">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="stat-label">High Risk Ip Addresses </div>
-                    <div class="stat-number danger">@Model.HighRiskIPs</div>
+                    <div class="stat-number danger text-nowrap">@Model.HighRiskIPs</div>
                 </div>
                 <div class="stat-icon danger">
                     <i class="bi bi-shield-fill-exclamation"></i>
@@ -28,12 +28,12 @@
         </div>
     </div>
 
-    <div class="col-12 col-sm-6 col-lg-3">
+    <div class="col-12 col-md-6 col-lg-3">
         <div class="stat-card warning">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="stat-label">Average Fraud Score</div>
-                    <div class="stat-number warning">@Model.AverageFraudScore %</div>
+                    <div class="stat-number warning text-nowrap">@Model.AverageFraudScore %</div>
                 </div>
                 <div class="stat-icon warning">
                     <i class="bi bi-bar-chart-fill"></i>
@@ -42,12 +42,12 @@
         </div>
     </div>
 
-    <div class="col-12 col-sm-6 col-lg-3">
+    <div class="col-12 col-md-6 col-lg-3">
         <div class="stat-card info">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <div class="stat-label">VPN/Proxy/Tor Usage</div>
-                    <div class="stat-number info">@Model.VPNProxyTorUsage %</div>
+                    <div class="stat-number info text-nowrap">@Model.VPNProxyTorUsage %</div>
                 </div>
                 <div class="stat-icon info">
                     <i class="bi bi-house-lock-fill"></i>
@@ -55,14 +55,14 @@
             </div>
         </div>
     </div>
-    <div class="col-12 col-md-7">
+    <div class="col-12 col-xl-7">
         <div class="bg-white p-2 rounded-2 shadow-sm">
             <div class="row mb-3 justify-content-end align-items-center">
-                <div class="col-md-4">
+                <div class="col-md-6 col-xxl-4">
                     <label for="riskFilter" class="form-label">Search</label>
                     <input type="text" class="form-control search-query" name="searchQueryForHistory">
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3 col-xxl-3">
                     <label for="riskFilter" class="form-label">Risk Status</label>
                     <select class="form-select risk-filter" role="button">
                         <option value="">All</option>
@@ -71,7 +71,7 @@
                         <option value="High">High</option>
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3 col-xxl-3">
                     <label for="connectionFilter" class="form-label">Connection Type</label>
                     <select class="form-select connection-filter" role="button">
                         <option value="">All</option>

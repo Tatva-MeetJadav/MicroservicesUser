@@ -20,6 +20,11 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             await _context.SaveChangesAsync();
         }
 
+        public async Task<ProxyVpnDetection?> GetAsync(int id)
+        {
+            return await _context.ProxyVpnDetections.FirstOrDefaultAsync(u => u.Id == id);
+        }
+
         public async Task<ProxyVpnDetectionDashboardDTO> GetListAsync(ProxyVpnDetectionHistoryRequestDTO requestDto)
         {
             List<ProxyVpnDetection> data = await _context.ProxyVpnDetections

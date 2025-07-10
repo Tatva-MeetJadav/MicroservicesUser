@@ -1,4 +1,5 @@
 using MicroservicesUser.Models.DTO;
+using MicroservicesUser.Models.ViewModels;
 using MicroservicesUser.Models.ViewModels.Dashboard;
 
 namespace MicroservicesUser.BusinessLogic.Interfaces
@@ -7,5 +8,6 @@ namespace MicroservicesUser.BusinessLogic.Interfaces
     {
         Task<ProxyVpnDetectionDashboardVM> GetProxyVpnDetectionDashboard(List<int>? userIds);
         Task<ProxyVpnDetectionDashboardVM> GetProxyVpnDetectionHistoryList(ProxyVpnDetectionHistoryRequestDTO requestDto);
+        Task<ProxyVpnDetectionViewDetailVM> GetProxyVpnDetectionViewDetail(int id);
     }
 }

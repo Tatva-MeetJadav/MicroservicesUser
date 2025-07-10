@@ -1,3 +1,5 @@
+@using MicroservicesUser.Models.ViewModels.Dashboard
+@model ProxyVpnDetectionDashboardVM
 @{
     int totalPages = (int)Math.Ceiling((double)Model.TotalItems / Model.PageSize);
     int currentPage = Model.CurrentPage;
@@ -31,8 +33,22 @@
     }
 }
 
-@using MicroservicesUser.Models.ViewModels.Dashboard
-@model ProxyVpnDetectionDashboardVM
+
+<div class="modal modal-xl fade view-detail-proxy-vpn-detection" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detailed View</h5>
+                <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body bg-light proxy-vpn-view-detail-body">
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="table-responsive my-2">
     <table class="table table-borderless align-middle mb-0">
         <thead class="table-primary">
@@ -70,7 +86,8 @@
 
                         <td>
                             <div class="text-center">
-                                <a><i class="bi bi-eye" role="button"></i></a>
+                                <i class="bi bi-eye view-detail-eye" role="button"></i>
+                                <input type="hidden" asp-for="@user.Id">
                             </div>
                         </td>
                     </tr>

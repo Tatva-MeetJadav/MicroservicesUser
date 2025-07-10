@@ -1,0 +1,156 @@
+@model ProxyVpnDetectionViewDetailVM
+
+@{
+    Func<bool?, string> statusIcon = status => status == true
+    ? "<i class='bi bi-check-circle-fill text-success'></i>"
+    : status == false
+    ? "<i class='bi bi-x-circle-fill text-danger'></i>"
+    : "<i class='bi bi-question-circle-fill text-secondary'></i>";
+}
+
+<div class="row">
+    <div class="col-6">
+        <div class="card mb-4 h-100 shadow-sm">
+            <div class="card-header fw-bold bg-primary text-white">
+                Network & Identity Detection
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush border border-1 fw-bold">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Fraud Score
+                            <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="A score indicating the likelihood of fraudulent activity. Higher means more risk."></i>
+                        </span>
+                        <span>@Model.FraudScore</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Proxy
+                            <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="Indicates if the IP is using a proxy server to mask(hide) its identity."></i>
+                        </span>
+                        <span>@Html.Raw(statusIcon(Model.Proxy))</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            VPN
+                            <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="Shows whether the IP is connected through a Virtual Private Network."></i>
+                        </span>
+                        <span>@Html.Raw(statusIcon(Model.Vpn))</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Active VPN
+                        <span>@Html.Raw(statusIcon(Model.ActiveVpn))</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Tor
+                            <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="The Tor network is a privacy-focused system that routes internet traffic through multiple servers to hide the user's location and identity. If true, it may indicate anonymous or suspicious behavior.">
+                            </i>
+                        </span>
+                        <span>@Html.Raw(statusIcon(Model.Tor))</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Active Tor
+                        </span>
+                        <span>@Html.Raw(statusIcon(Model.ActiveTor))</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Is Crawler
+                            <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="Web crawler or crawler is an automated program used by search engines and other services to systematically browse the internet and collect data from websites."></i>
+                        </span>
+                        <span>@Html.Raw(statusIcon(Model.IsCrawler))</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Is it Bot?
+                        <span>@Html.Raw(statusIcon(Model.BotStatus))</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Is using Mobile?
+                        <span>@Html.Raw(statusIcon(Model.Mobile))</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Recent Abuse
+                            <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="Indicates if the IP has been involved in abusive behavior recently."></i>
+                        </span>
+                        <span>@Html.Raw(statusIcon(Model.RecentAbuse))</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="card shadow-sm">
+            <div class="card-header fw-bold bg-primary text-white">
+                Geolocation & ISP Information
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush border border-1 fw-bold">
+                    <li class="list-group-item d-flex justify-content-between">
+                        ISP
+                        <span>@Model.ISP</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Organization
+                        <span>@Model.Organization</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>ASN <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="An Autonomous System Number (ASN) is a unique identifier for a group of networks or a network that is under the control of a single administrative entity."></i></span>
+                        <span>@Model.ASN</span>
+
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Host
+                        <span>@Model.Host</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Country Code
+                        <span>@Model.CountryCode</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        City
+                        <span>@Model.City</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Region
+                        <span>@Model.Region</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Zip Code
+                        <span>@Model.ZipCode</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Timezone
+                        <span>@Model.Timezone</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Latitude
+                        <span>@Model.Latitude</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Longitude
+                        <span>@Model.Longitude</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/pophoverScript.js"></script>

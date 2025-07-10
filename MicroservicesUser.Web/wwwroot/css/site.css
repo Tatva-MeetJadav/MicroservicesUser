@@ -155,7 +155,7 @@ table td {
 
 .sidebar {
   width: 16.66667%;
-  min-width: 200px;
+  min-width: 250px;
   max-width: 300px;
   transition: width 0.3s ease, min-width 0.3s, max-width 0.3s;
   overflow: hidden;
@@ -172,4 +172,9 @@ table td {
 
 .main-content.full-width {
   width: 100% !important;
+}
+
+.offcanvas.offcanvas-start {
+  width: 270px !important;
+  z-index: 2000 !important;
 }

@@ -27,11 +27,18 @@ namespace MicroservicesUser.Web.Controllers
             return PartialView("_ProxyVpnDetection", dashboardVM);
         }
 
+        [HttpPost]
         public async Task<IActionResult> GetProxyVpnDetectionHistory([FromBody] ProxyVpnDetectionHistoryRequestDTO requestDto)
         {
             ProxyVpnDetectionDashboardVM result = await _proxyVpnDetectionServices.GetProxyVpnDetectionHistoryList(requestDto);
             return PartialView("_ProxyVpnDetectionHistoryList", result);
         }
-        
+
+        public async Task<IActionResult> GetProxyVpnViewDetail(int id)
+        {
+            ProxyVpnDetectionViewDetailVM viewDetailVM = await _proxyVpnDetectionServices.GetProxyVpnDetectionViewDetail(id);
+            return PartialView("_ProxyVpnDetectionViewDetailModal", viewDetailVM);
+        }
+
     }
 }

@@ -129,3 +129,15 @@ $(document).on('change', '.risk-filter, .connection-filter', function () {
     fetchProxyVpnDetectionHistoryList(1, $(".items-per-page").val());
 });
 
+$(document).on('click', '.view-detail-eye', function () {
+    var id = parseInt($(this).next().val());
+    $.ajax({
+        url: "/ProxyVpnDetection/GetProxyVpnViewDetail",
+        type: "GET",
+        data: { id: id },
+        success: function (response) {
+            $(".proxy-vpn-view-detail-body").html(response);
+            $('.view-detail-proxy-vpn-detection').modal('show');
+        },
+    });
+})
