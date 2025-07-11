@@ -53,6 +53,7 @@ builder.Services.AddScoped<IEmailVerificationServices, EmailVerificationServices
 builder.Services.AddScoped<IGenericAPIClientServices, GenericAPIClientServices>();
 builder.Services.AddScoped<IEncryptDecryptServices, EncryptDecryptServices>();
 builder.Services.AddScoped<IProxyVpnDetectionServices, ProxyVpnDetectionServices>();
+builder.Services.AddScoped<IUserServices, UserServices>();
 
 
 

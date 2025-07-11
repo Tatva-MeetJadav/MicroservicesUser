@@ -195,3 +195,8 @@
 .page-item.active .page-link {
   color: white !important;
 }
+
+.btn-view {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}

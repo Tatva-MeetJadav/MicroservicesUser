@@ -18,6 +18,7 @@ $('#showResultBtn').on('click', function () {
         data: { userIds: selectedUserIds },
         success: function (response) {
             $('.proxy-vpn-dashboard-data').html(response);
+            renderPieChart();
         },
         error: function (xhr, status, error) {
             console.error('Error:', error);
@@ -141,3 +142,7 @@ $(document).on('click', '.view-detail-eye', function () {
         },
     });
 });
+
+$(document).ready(function () {
+    renderPieChart();
+})

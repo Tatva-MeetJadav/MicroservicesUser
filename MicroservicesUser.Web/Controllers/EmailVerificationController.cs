@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MicroservicesUser.Web.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "User")]
     public class EmailVerificationController : Controller
     {
         private readonly IEmailVerificationServices _emailVerificationServices;

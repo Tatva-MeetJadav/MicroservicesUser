@@ -39,6 +39,6 @@ namespace MicroservicesUser.Web.Controllers
             ProxyVpnDetectionViewDetailVM viewDetailVM = await _proxyVpnDetectionServices.GetProxyVpnDetectionViewDetail(id);
             return PartialView("_ProxyVpnDetectionViewDetailModal", viewDetailVM);
         }
-
+        
     }
 }

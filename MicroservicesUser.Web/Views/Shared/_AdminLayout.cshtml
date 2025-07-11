@@ -63,8 +63,9 @@
         }
         
         <div class="px-0 main-content @(currentAction == "AdminProfile" ? "full-width" :"")">
-            <div class="d-flex justify-content-between align-content-center py-2 bg-primary position-sticky top-0 navbar-content">
-                <button class="btn d-md-none ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
+            <div class="d-flex @(currentAction == "AdminProfile" ? "justify-content-end":"justify-content-between") align-content-center py-2 bg-primary position-sticky top-0 navbar-content">
+
+                <button class="btn d-md-none @(currentAction == "AdminProfile" ? "d-none":"") ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
                     <i class="bi bi-list fs-4 text-white"></i>
                 </button>
 

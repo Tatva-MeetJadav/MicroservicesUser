@@ -1,6 +1,7 @@
-
-$(document).ready(function () {
+function renderPieChart() {
     var rawData = $('.pie-chart-data-container').attr('data-pie-chart-data');
+    if (!rawData) return;
+
     var continentStats = JSON.parse(rawData);
     var labels = continentStats.map(x => x.ContinentName);
     var values = continentStats.map(x => x.Percentage);
@@ -37,4 +38,4 @@ $(document).ready(function () {
     };
 
     Plotly.newPlot('ipStats3DPieChart', data, layout, config);
-});
+}

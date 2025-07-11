@@ -3,11 +3,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MicroservicesUser.Models.Models
 {
+    [Table("Users")]
     public class User
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+
+        [Required]
+        public bool IsBlocked { get; set; }
 
         [EmailAddress]
         [StringLength(256)]
@@ -32,5 +36,7 @@ namespace MicroservicesUser.Models.Models
         public required string LastName { get; set; }
 
         public string? ProfilePhotoGeneratedName { get; set; }
+
+
     }
 }

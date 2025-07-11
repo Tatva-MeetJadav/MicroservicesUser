@@ -23,7 +23,7 @@
                     <div class="stat-number danger text-nowrap">@Model.HighRiskIPs</div>
                 </div>
                 <div class="stat-icon danger">
-                    <i class="bi bi-shield-fill-exclamation"></i>
+                    <i class="bi bi-exclamation-triangle-fill"></i>
                 </div>
             </div>
         </div>
@@ -58,7 +58,7 @@
     </div>
     <div class="col-12 col-xl-7">
         <div class="bg-white p-2 rounded-2 shadow-sm h-100">
-            <div class="d-flex gap-1 align-items-center mb-2 ps-1">
+            <div class="d-flex gap-1 align-items-center mt-1 mb-2 ps-1">
                 <i class="bi bi-hourglass fs-5 fw-bold"></i>
                 <h5 class="mb-0 fw-bold ">Proxy and Vpn Detection history List</h5>
             </div>
@@ -66,7 +66,8 @@
             <div class="row mb-3 justify-content-end align-items-center">
                 <div class="col-md-6 col-xxl-4 fw-semibold">
                     <label for="riskFilter" class="form-label">Search</label>
-                    <input type="text" class="form-control search-query" name="searchQueryForHistory">
+                    <input type="text" class="form-control search-query" placeholder="Enter the email for search..."
+                        name="searchQueryForHistory">
                 </div>
                 <div class="col-md-3 col-xxl-3 fw-semibold">
                     <label for="riskFilter" class="form-label">Risk Status</label>
@@ -106,5 +107,3 @@
         </div>
     </div>
 </div>
-
-<script src="~/js/proxyVpnDetectionPieChart.js"></script>

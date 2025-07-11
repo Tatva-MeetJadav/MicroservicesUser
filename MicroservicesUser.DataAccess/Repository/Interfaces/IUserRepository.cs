@@ -1,4 +1,5 @@
-﻿using MicroservicesUser.Models.Models;
+﻿using MicroservicesUser.Models.DTO;
+using MicroservicesUser.Models.Models;
 
 namespace MicroservicesUser.DataAccess.Repository.Interfaces
 {
@@ -9,5 +10,6 @@ namespace MicroservicesUser.DataAccess.Repository.Interfaces
         Task UpdateAsync(User user);
         Task<User?> GetByEmailAsync(string email);
         Task<User?> GetByPasswordResetToken(string token);
+        Task<(List<User>, int)> GetListAsync(PaginationDTO paginationDTO);
     }
 }

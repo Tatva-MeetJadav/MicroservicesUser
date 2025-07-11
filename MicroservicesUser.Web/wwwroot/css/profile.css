@@ -125,12 +125,6 @@
   .form-card {
     padding: 1.5rem;
   }
-
-  .profile-img-container img {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 1rem auto;
-  }
 }
 
 .status-badge {

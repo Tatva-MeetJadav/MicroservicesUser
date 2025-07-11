@@ -1,5 +1,6 @@
 ﻿using MicroservicesUser.DataAccess.Data;
 using MicroservicesUser.DataAccess.Repository.Interfaces;
+using MicroservicesUser.Models.DTO;
 using MicroservicesUser.Models.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,6 +37,20 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
         public async Task<User?> GetByPasswordResetToken(string token)
         {
             return await _context.Users.FirstOrDefaultAsync(x => x.PasswordResetToken == token);
+        }
+
+        public async Task<(List<User>, int)> GetListAsync(PaginationDTO paginationDTO)
+        {
+            List<User> users = await _context.Users.ToListAsync();
+
+            if (!string.IsNullOrEmpty(paginationDTO.SearchQuery))
+            {
+                users = users.Where(x => x.Email.ToLower().Contains(paginationDTO.SearchQuery.ToLower())).ToList();
+            }
+
+            int totalCount = users.Count;
+            users = users.Skip((paginationDTO.CurrentPage - 1) * paginationDTO.PageSize).Take(paginationDTO.PageSize).ToList();
+            return (users, totalCount);
         }
     }
 }

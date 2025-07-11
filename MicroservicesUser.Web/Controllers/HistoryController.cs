@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MicroservicesUser.Web.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "User")]
     public class HistoryController : Controller
     {
         private readonly IEmailVerificationServices _emailVerificationServices;

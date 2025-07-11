@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MicroservicesUser.Models.DTO;
 using MicroservicesUser.Models.Models;
 using MicroservicesUser.Models.ViewModels;
 
@@ -31,6 +32,10 @@ namespace Microservices.Common.AutoMapperProfiles
                 .ForMember(dest => dest.Email, opt => opt.Ignore())
                 .ForMember(dest => dest.PasswordResetToken, opt => opt.Ignore())
                 .ForMember(dest => dest.PasswordResetTokenExpiry, opt => opt.Ignore());
+
+            CreateMap<User, UserVM>();
+            CreateMap<PaginationDTO, UserListVM>();
+
         }
     }
 }
