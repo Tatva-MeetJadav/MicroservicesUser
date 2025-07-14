@@ -63,5 +63,12 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             }
             return (result, count);
         }
+
+        public async Task DeleteByUserId(int id)
+        {
+            List<EmailVerification> emailVerifications = await _dbContext.EmailVerifications.Where(x => x.UserId == id).ToListAsync();
+            _dbContext.RemoveRange(emailVerifications);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

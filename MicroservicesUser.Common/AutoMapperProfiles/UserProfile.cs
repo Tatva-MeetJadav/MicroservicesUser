@@ -33,7 +33,8 @@ namespace Microservices.Common.AutoMapperProfiles
                 .ForMember(dest => dest.PasswordResetToken, opt => opt.Ignore())
                 .ForMember(dest => dest.PasswordResetTokenExpiry, opt => opt.Ignore());
 
-            CreateMap<User, UserVM>();
+            CreateMap<User, UserVM>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<PaginationDTO, UserListVM>();
 
         }

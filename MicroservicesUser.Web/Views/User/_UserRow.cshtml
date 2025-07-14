@@ -1,0 +1,81 @@
+@model UserVM
+
+<td>
+    <div class="user-info">
+        @if (!string.IsNullOrEmpty(Model.ProfilePhotoGeneratedName))
+        {
+            <img src="~/images/profile/@Model.ProfilePhotoGeneratedName" class="user-avatar" />
+        }
+        else
+        {
+            <img src="~/images/profile/default.jpg" class="user-avatar" />
+        }
+        <div class="user-details">
+            <h6>@Model.FirstName @Model.LastName</h6>
+        </div>
+    </div>
+</td>
+<td>@Model.Email</td>
+<td>
+    @if (!string.IsNullOrEmpty(Model.MobileNumber))
+    {
+        @Model.MobileNumber
+    }
+    else
+    {
+        <i class="bi bi-dash-lg"></i>
+    }
+</td>
+<td>
+    @if (!Model.IsDeleted)
+    {
+        @if (!Model.IsBlocked)
+        {
+            <span class="status-badge status-active">
+                Active
+            </span>
+        }
+        else
+        {
+            <span class="status-badge status-blocked">
+                Blocked
+            </span>
+        }
+    }
+    else
+    {
+        <span class="status-badge status-deleted">
+            Deleted
+        </span>
+    }
+</td>
+<td>
+    <div class="action-buttons">
+        <button class="action-btn btn-view" title="View User" data-bs-toggle="modal" data-bs-target="#userDetailsModal">
+            <i class="fas fa-eye"></i>
+        </button>
+        <input type="hidden" asp-for="@Model.Address" class="user-address">
+        <input type="hidden" class="user-joining-date" value="@Model.CreatedAt.ToString("dd-MM-yyyy hh:mm tt")">
+        @if (!Model.IsDeleted)
+        {
+            @if (Model.IsBlocked)
+            {
+                <button class="action-btn btn-unblock btn-block-unblock" title="Unblock User" data-id="@Model.Id"
+                    data-bs-toggle="modal" data-bs-target="#unblockUserModal">
+                    <i class="fas fa-unlock"></i>
+                </button>
+            }
+            else
+            {
+                <button class="action-btn btn-lock btn-block-unblock" title="Block User" data-id="@Model.Id"
+                    data-bs-toggle="modal" data-bs-target="#blockUserModal">
+                    <i class="fas fa-lock"></i>
+                </button>
+            }
+            <button class="action-btn btn-delete" title="Delete User" data-bs-toggle="modal"
+                data-bs-target="#deleteUserModal" data-id="@Model.Id">
+                <i class="fas fa-trash"></i>
+            </button>
+        }
+    </div>
+</td>

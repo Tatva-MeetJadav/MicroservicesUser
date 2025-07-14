@@ -13,6 +13,15 @@ namespace MicroservicesUser.Models.Models
         [Required]
         public bool IsBlocked { get; set; }
 
+        [Required]
+        public bool IsDeleted { get; set; }
+
+        [Column(TypeName = "timestamp without time zone")]
+        public DateTime? CreatedAt { get; set; }
+
+        [Column(TypeName = "timestamp without time zone")]
+        public DateTime? UpdatedAt { get; set; }
+
         [EmailAddress]
         [StringLength(256)]
         public required string Email { get; set; }

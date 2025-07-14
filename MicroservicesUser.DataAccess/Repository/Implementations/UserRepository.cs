@@ -21,12 +21,12 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
 
         public async Task<User?> GetByEmailAsync(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            return await _context.Users.FirstOrDefaultAsync(x => x.Email == email && x.IsDeleted == false);
         }
 
         public async Task<User?> GetByIdAsync(int id)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted == false);
         }
 
         public async Task UpdateAsync(User user)
@@ -43,13 +43,45 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
         {
             List<User> users = await _context.Users.ToListAsync();
 
+
             if (!string.IsNullOrEmpty(paginationDTO.SearchQuery))
             {
-                users = users.Where(x => x.Email.ToLower().Contains(paginationDTO.SearchQuery.ToLower())).ToList();
+                users = users.Where(x => x.Email.ToLower().Contains(paginationDTO.SearchQuery.ToLower()) || x.FirstName.ToLower().Contains(paginationDTO.SearchQuery.ToLower()) || x.LastName.ToLower().Contains(paginationDTO.SearchQuery.ToLower())).ToList();
             }
-
+            users = users.OrderBy(u => u.Id).ToList();
             int totalCount = users.Count;
             users = users.Skip((paginationDTO.CurrentPage - 1) * paginationDTO.PageSize).Take(paginationDTO.PageSize).ToList();
+
+            if (paginationDTO.OrderOfSorting == "asc")
+            {
+                if (paginationDTO.ColumnNameForSorting == "User")
+                {
+                    users = users.OrderBy(u => u.FirstName + u.LastName).ToList();
+                }
+                else if (paginationDTO.ColumnNameForSorting == "Email")
+                {
+                    users = users.OrderBy(u => u.Email).ToList();
+                }
+                else if (paginationDTO.ColumnNameForSorting == "Status")
+                {
+                    users = users.OrderBy(u => u.IsBlocked).ThenBy(u => u.IsDeleted).ToList();
+                }
+            }
+            else
+            {
+                if (paginationDTO.ColumnNameForSorting == "User")
+                {
+                    users = users.OrderByDescending(u => u.FirstName + u.LastName).ToList();
+                }
+                else if (paginationDTO.ColumnNameForSorting == "Email")
+                {
+                    users = users.OrderByDescending(u => u.Email).ToList();
+                }
+                else if (paginationDTO.ColumnNameForSorting == "Status")
+                {
+                    users = users.OrderByDescending(u => u.IsDeleted).ThenByDescending(u => u.IsBlocked).ToList();
+                }
+            }
             return (users, totalCount);
         }
     }

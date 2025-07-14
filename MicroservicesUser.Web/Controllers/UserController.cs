@@ -28,5 +28,19 @@ namespace MicroservicesUser.Web.Controllers
             UserListVM result = await _userServices.GetUserList(paginationDTO);
             return PartialView("_UserList", result);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> BlockUnblockUser(string id)
+        {
+            UserVM result = await _userServices.BlockUnblockUser(id);
+            return PartialView("_UserRow", result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            UserVM result = await _userServices.DeleteUser(id);
+            return PartialView("_UserRow", result);
+        }
     }
 }

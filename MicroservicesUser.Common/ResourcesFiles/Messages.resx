@@ -120,6 +120,9 @@
   <data name="AuthenticationFailed" xml:space="preserve">
     <value>AuthenticationFailed</value>
   </data>
+  <data name="BlockedUser" xml:space="preserve">
+    <value>User is blocked</value>
+  </data>
   <data name="DuplicateValue" xml:space="preserve">
     <value>Duplicate value found.</value>
   </data>

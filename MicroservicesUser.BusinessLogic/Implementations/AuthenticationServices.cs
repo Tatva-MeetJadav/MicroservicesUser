@@ -48,6 +48,8 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                 string passwordHash = _encryptDecryptServices.EncryptPassword(registerVM.Password);
                 registerVM.Password = passwordHash;
                 User user = _mapper.Map<User>(registerVM);
+                user.CreatedAt = DateTime.UtcNow.ToLocalTime();
+                user.UpdatedAt = DateTime.UtcNow.ToLocalTime();
                 await _userRepository.AddAsync(user);
                 return Messages.SuccessMessage;
             }
@@ -64,49 +66,56 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                 User? user = await _userRepository.GetByEmailAsync(loginVM.Email);
                 if (user != null)
                 {
-                    string dbPassword = user.PasswordHash;
-                    if (_encryptDecryptServices.VerifyPassword(loginVM.Password, dbPassword))
+                    if (!user.IsBlocked)
                     {
-                        string token = _jwtServices.GenerateJwtToken(user.Id, Messages.UserRole);
-                        double hours = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Hours"]);
-                        DateTime expiresAt = DateTime.Now.AddHours(hours);
-                        _tokenStore.AddToken(user.Id.ToString(), token, expiresAt);
-                        if (ipAddress == Messages.LocalIpAddress)
+                        string dbPassword = user.PasswordHash;
+                        if (_encryptDecryptServices.VerifyPassword(loginVM.Password, dbPassword))
                         {
-                            ipAddress = _configuration["IpAddress"]!;
-                            ProxyAndVpnDetectionRequestDTO requestDTO = new() { IpAddress = ipAddress };
-                            ProxyAndVpnDetectionResponseDTO responseDTO = new();
-                            try
+                            string token = _jwtServices.GenerateJwtToken(user.Id, Messages.UserRole);
+                            double hours = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Hours"]);
+                            DateTime expiresAt = DateTime.Now.AddHours(hours);
+                            _tokenStore.AddToken(user.Id.ToString(), token, expiresAt);
+                            if (ipAddress == Messages.LocalIpAddress)
                             {
-                                responseDTO = await _apiClient.PostAsync<ProxyAndVpnDetectionRequestDTO, ProxyAndVpnDetectionResponseDTO>(requestDTO, _configuration["ProxyAndVpnDetectionAPI:Url"]!);
-                            }
-                            catch (Exception)
-                            {
-                                ProxyVpnDetection proxyAndVpnDetectionFailed = new()
+                                ipAddress = _configuration["IpAddress"]!;
+                                ProxyAndVpnDetectionRequestDTO requestDTO = new() { IpAddress = ipAddress };
+                                ProxyAndVpnDetectionResponseDTO responseDTO = new();
+                                try
+                                {
+                                    responseDTO = await _apiClient.PostAsync<ProxyAndVpnDetectionRequestDTO, ProxyAndVpnDetectionResponseDTO>(requestDTO, _configuration["ProxyAndVpnDetectionAPI:Url"]!);
+                                }
+                                catch (Exception)
+                                {
+                                    ProxyVpnDetection proxyAndVpnDetectionFailed = new()
+                                    {
+                                        UserId = user.Id,
+                                        CreatedAt = DateTime.UtcNow.ToLocalTime(),
+                                        Status = Status.Success,
+                                        ProxyVpnRequestParam = JsonDocument.Parse(JsonConvert.SerializeObject(requestDTO)),
+                                        ProxyVpnResponseParam = JsonDocument.Parse(JsonConvert.SerializeObject("{}")),
+                                    };
+                                    await _proxyVpnDetectionRepository.AddAsync(proxyAndVpnDetectionFailed);
+                                }
+                                ProxyVpnDetection proxyAndVpnDetection = new()
                                 {
                                     UserId = user.Id,
                                     CreatedAt = DateTime.UtcNow.ToLocalTime(),
                                     Status = Status.Success,
                                     ProxyVpnRequestParam = JsonDocument.Parse(JsonConvert.SerializeObject(requestDTO)),
-                                    ProxyVpnResponseParam = JsonDocument.Parse(JsonConvert.SerializeObject("{}")),
+                                    ProxyVpnResponseParam = JsonDocument.Parse(JsonConvert.SerializeObject(responseDTO)),
                                 };
-                                await _proxyVpnDetectionRepository.AddAsync(proxyAndVpnDetectionFailed);
+                                await _proxyVpnDetectionRepository.AddAsync(proxyAndVpnDetection);
                             }
-                            ProxyVpnDetection proxyAndVpnDetection = new()
-                            {
-                                UserId = user.Id,
-                                CreatedAt = DateTime.UtcNow.ToLocalTime(),
-                                Status = Status.Success,
-                                ProxyVpnRequestParam = JsonDocument.Parse(JsonConvert.SerializeObject(requestDTO)),
-                                ProxyVpnResponseParam = JsonDocument.Parse(JsonConvert.SerializeObject(responseDTO)),
-                            };
-                            await _proxyVpnDetectionRepository.AddAsync(proxyAndVpnDetection);
+                            return token;
                         }
-                        return token;
+                        else
+                        {
+                            return Messages.AuthenticationFailed;
+                        }
                     }
                     else
                     {
-                        return Messages.AuthenticationFailed;
+                        return Messages.BlockedUser;
                     }
                 }
                 else

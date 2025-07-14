@@ -4,15 +4,19 @@
 }
 @model UserListVM
 <link rel="stylesheet" href="~/css/userManagement.css" asp-append-version="true">
-<div class="user-management-container">
+<div class="user-management-container px-1 px-md-4 mt-4">
     <div class="mb-3 page-header">
         <h1 class="page-title">User Management</h1>
         <p class="page-subtitle">Manage and monitor user accounts</p>
     </div>
     <div class="row">
-        <div class="col-3 mt-3">
-            <input type="text" class="form-control mb-2 search-query"
-                placeholder="Enter the name or email for search..." name="searchQueryForUsers">
+        <div class="col-xl-3 col-md-7 col-12 mt-3">
+            <div class="input-group mb-3">
+                <i class="input-group-text bi bi-search"></i>
+                <input type="text" class="form-control search-query" placeholder="Enter the name or email for search..."
+                    name="searchQueryForUsers">
+            </div>
+
         </div>
     </div>
     <div class="user-list-container">
@@ -22,5 +26,5 @@
 
 @section Scripts
 {
-    <script src="~/js/user.js"></script>
+    <script src="~/js/userManagement.js"></script>
 }

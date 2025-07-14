@@ -52,6 +52,11 @@ namespace MicroservicesUser.Web.Controllers
                 }
                 return View(loginVM);
             }
+            else if (token == Messages.BlockedUser)
+            {
+                TempData["ErrorMessage"] = "This account has been blocked. Please contact administrator for more information.";
+                return View(loginVM);
+            }
             else
             {
                 double hours = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Hours"]);

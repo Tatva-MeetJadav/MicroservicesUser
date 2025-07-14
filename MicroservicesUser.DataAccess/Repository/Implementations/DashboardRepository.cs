@@ -244,7 +244,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 AverageFraudScore = Math.Round(averageFraudScore, 2),
                 HighRiskIPs = highRiskIPs,
                 VPNProxyTorUsage = Math.Round(vpnProxyTorUsage, 2),
-                DashboardUsers = users.Select(u => new DashboardUserDTO
+                DashboardUsers = users.Where(u=>u.IsDeleted == false).Select(u => new DashboardUserDTO
                 {
                     UserId = u.Id,
                     Email = u.Email

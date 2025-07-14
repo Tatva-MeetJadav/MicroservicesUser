@@ -70,6 +70,15 @@ namespace MicroservicesUser.Common.ResourcesFiles {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User is blocked.
+        /// </summary>
+        public static string BlockedUser {
+            get {
+                return ResourceManager.GetString("BlockedUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Duplicate value found..
         /// </summary>
         public static string DuplicateValue {

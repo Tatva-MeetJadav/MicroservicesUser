@@ -20,6 +20,13 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             await _context.SaveChangesAsync();
         }
 
+        public async Task DeleteByUserId(int id)
+        {
+            List<ProxyVpnDetection> proxyVpnDetections = await _context.ProxyVpnDetections.Where(u => u.UserId == id).ToListAsync();
+            _context.ProxyVpnDetections.RemoveRange(proxyVpnDetections);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<ProxyVpnDetection?> GetAsync(int id)
         {
             return await _context.ProxyVpnDetections.FirstOrDefaultAsync(u => u.Id == id);
@@ -90,7 +97,8 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 PageSize = requestDto.PaginationDTO.PageSize,
                 TotalItems = filteredEntries.Count,
             };
-
         }
+
+
     }
 }
