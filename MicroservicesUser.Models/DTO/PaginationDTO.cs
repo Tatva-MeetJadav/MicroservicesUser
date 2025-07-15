@@ -9,6 +9,6 @@ namespace MicroservicesUser.Models.DTO
         public string ColumnNameForSorting { get; set; } = string.Empty;
         public string OrderOfSorting { get; set; } = string.Empty;
         public string ColumnNameForFilter { get; set; } = string.Empty;
-        public bool FilterValue { get; set; } = false;
+        public string FilterValue { get; set; } = "False";
     }
 }

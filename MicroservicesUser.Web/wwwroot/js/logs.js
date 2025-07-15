@@ -1,39 +1,33 @@
 var columnNameForSorting = "";
-var orderOfSorting = "asc";
-var columnNameForFilter = ""
-var filterValue = "False";
-
-$(document).ready(function () {
-    fetchEmailVerificationHistoryList(1, 5);
-});
-
-function fetchEmailVerificationHistoryList(page, pageSize) {
-    var searchQuery = $('input[name="searchQueryForHistory"]').val();
+var orderOfSorting = "desc";
+var columnNameForFilter = "";
+var filterValue = "";
+function fetchLogs(page, pageSize) {
+    var searchQuery = $('input[name="searchQueryForLogs"]').val();
     var paginationDTO =
     {
         searchQuery: searchQuery,
         currentPage: page,
-        pageSize: pageSize,
         columnNameForSorting: columnNameForSorting,
         orderOfSorting: orderOfSorting,
         columnNameForFilter: columnNameForFilter,
-        filterValue: filterValue
+        filterValue: filterValue,
+        pageSize: pageSize,
     }
     $.ajax({
-        url: "/History/GetEmailVerificationHistoryList",
+        url: "/Log/GetLogList",
         type: "POST",
         contentType: "application/json",
         traditional: true,
         data: JSON.stringify(paginationDTO),
         success: function (response) {
-            $(".load-history-table").html(response);
+            $(".log-list-container").html(response);
         },
     });
 }
 
-
 $(document).on("change", ".items-per-page", function () {
-    fetchEmailVerificationHistoryList(1, $(this).val());
+    fetchLogs(1, $(this).val());
 });
 
 $(document).on("click", ".prev-page", function () {
@@ -43,7 +37,7 @@ $(document).on("click", ".prev-page", function () {
         return false;
     }
     var currentPage = parseInt($(".pagination-info").data("current-page"));
-    fetchEmailVerificationHistoryList(currentPage - 1, $(".items-per-page").val());
+    fetchLogs(currentPage - 1, $(".items-per-page").val());
 });
 
 $(document).on("click", ".next-page", function () {
@@ -53,18 +47,18 @@ $(document).on("click", ".next-page", function () {
         return false;
     }
     var currentPage = parseInt($(".pagination-info").data("current-page"));
-    fetchEmailVerificationHistoryList(currentPage + 1, $(".items-per-page").val());
+    fetchLogs(currentPage + 1, $(".items-per-page").val());
 });
 
-$(document).on('input', '.search-query', function () {
+$(document).on('click', '.search-query', function () {
     var pageSize = $(".items-per-page").val();
-    fetchEmailVerificationHistoryList(1, pageSize);
+    fetchLogs(1, pageSize);
 })
 
 $(document).on("click", ".page-index", function () {
     var page = parseInt($(this).data("page"));
     var pageSize = $(".items-per-page").val();
-    fetchEmailVerificationHistoryList(page, pageSize);
+    fetchLogs(page, pageSize);
 });
 
 $(document).on("click", ".sort-filter", function () {
@@ -74,21 +68,22 @@ $(document).on("click", ".sort-filter", function () {
     } else {
         orderOfSorting = "asc";
     }
-
     var currentPage = parseInt($(".pagination-info").data("current-page"));
     var pageSize = $(".items-per-page").val();
-    fetchEmailVerificationHistoryList(currentPage, pageSize);
+    fetchLogs(currentPage, pageSize);
 });
 
-$(document).on('click', '.valid-email-history-switch', function () {
-    columnNameForFilter = "Valid";
-    var checkboxValue = $(this).prop("checked");
-    if (checkboxValue) {
-        filterValue = "True"
-    }
-    else {
-        filterValue = "False"
-    }
-    var pageSize = $(".items-per-page").val();
-    fetchEmailVerificationHistoryList(1, pageSize);
+$(document).on('click', '.btn-view', function () {
+    var button = $(this); // Button that triggered the modal
+    var exception = button.data('exception');
+    var modal = $('#exceptionModal');
+    modal.find('#exceptionText').text(exception || "No exception details available.");
+});
+
+$(document).on('change', '.column-filter', function () {
+    var column = $(this).data('column');
+    var value = $(this).val();
+    columnNameForFilter = column;
+    filterValue = value;
+    fetchLogs(1, $(".items-per-page").val());
 });

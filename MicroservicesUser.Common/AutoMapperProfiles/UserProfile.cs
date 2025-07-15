@@ -19,10 +19,10 @@ namespace Microservices.Common.AutoMapperProfiles
                .ForMember(dest => dest.ProfilePhotoGeneratedName, opt => opt.Ignore());
 
             CreateMap<User, ProfileVM>()
-            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.MobileNumber))
-            .ForMember(dest => dest.ConfirmPassword, opt => opt.Ignore())
-            .ForMember(dest => dest.ProfilePhotoName, opt => opt.Ignore())
-            .ForMember(dest => dest.Password, opt => opt.Ignore());
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.MobileNumber))
+                .ForMember(dest => dest.ConfirmPassword, opt => opt.Ignore())
+                .ForMember(dest => dest.ProfilePhotoName, opt => opt.Ignore())
+                .ForMember(dest => dest.Password, opt => opt.Ignore());
 
             CreateMap<ProfileVM, User>()
                 .ForMember(dest => dest.ProfilePhotoGeneratedName, opt => opt.Ignore())

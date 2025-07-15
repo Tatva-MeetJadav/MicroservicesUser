@@ -43,7 +43,6 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
         {
             List<User> users = await _context.Users.ToListAsync();
 
-
             if (!string.IsNullOrEmpty(paginationDTO.SearchQuery))
             {
                 users = users.Where(x => x.Email.ToLower().Contains(paginationDTO.SearchQuery.ToLower()) || x.FirstName.ToLower().Contains(paginationDTO.SearchQuery.ToLower()) || x.LastName.ToLower().Contains(paginationDTO.SearchQuery.ToLower())).ToList();

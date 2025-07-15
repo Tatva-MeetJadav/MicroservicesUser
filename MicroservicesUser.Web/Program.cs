@@ -19,10 +19,14 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-//Setting up DbContext
+//Setting up DbContexts
 string connection = builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
+string MicroservicesConnection = builder.Configuration.GetConnectionString("MicroservicesConnection") ?? string.Empty;
+
 builder.Services.AddDbContext<MicroservicesUserDbContext>(options =>
 options.UseNpgsql(connection, npgsqlOptions => npgsqlOptions.MigrationsAssembly("MicroservicesUser.Migrations")));
+builder.Services.AddDbContext<MicroservicesDbContext>(options =>
+options.UseNpgsql(MicroservicesConnection, npgsqlOptions => npgsqlOptions.MigrationsAssembly("MicroservicesUser.Migrations")));
 
 //Adding SignalR
 builder.Services.AddSignalR();
@@ -33,8 +37,7 @@ builder.Services.AddSingleton<ITokenStore, InMemoryTokenStore>();
 //Adding background services
 builder.Services.AddHostedService<TokenExpiryBackgroundService>();
 
-//Setting up automapper profiles
-builder.Services.AddAutoMapper(typeof(UserProfile).Assembly);
+//Setting up automapper
 builder.Services.AddAutoMapper(typeof(DashboardProfile).Assembly);
 
 //Setting up Repositories
@@ -43,6 +46,7 @@ builder.Services.AddScoped<IEmailVerificationRepository, EmailVerificationReposi
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IProxyVpnDetectionRepository, ProxyVpnDetectionRepository>();
+builder.Services.AddScoped<ILogRepository, LogRepository>();
 
 //Setting up business services
 builder.Services.AddScoped<IJwtServices, JwtServices>();
@@ -54,6 +58,7 @@ builder.Services.AddScoped<IGenericAPIClientServices, GenericAPIClientServices>(
 builder.Services.AddScoped<IEncryptDecryptServices, EncryptDecryptServices>();
 builder.Services.AddScoped<IProxyVpnDetectionServices, ProxyVpnDetectionServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
+builder.Services.AddScoped<ILogServices, LogServices>();
 
 
 

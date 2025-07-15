@@ -96,7 +96,7 @@
                 <p>Are you sure you want to delete this user? Once deleted, the user's data will be permanently
                     removed, and they will lose access to their account.
                 </p>
-                <p><strong class="text-warning">This action can't be undone!</strong></p>
+                <p><strong class="text-warning">This action can't be reverted!</strong></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -145,14 +145,16 @@
         </tbody>
     </table>
 </div>
-<div class="my-2 p-2 bg-white @(Model.TotalItems == 0 ? "d-none" : "") shadow-sm">
+<div
+    class="my-2 p-2 border border-1 border-secondary-subtle rounded-1 bg-white @(Model.TotalItems == 0 ? "d-none" : "") shadow-sm">
     <div class="d-flex flex-sm-row flex-column justify-content-between gap-2 align-items-center">
         <div class="d-flex align-items-center gap-2">
             <div>
                 <span>Items Per Page</span>
             </div>
             <div>
-                <select class="form-select items-per-page form-select-sm" data-pagination-info="@Model.Users?.Count()">
+                <select class="form-select items-per-page form-select-sm" data-pagination-info="@Model.Users?.Count()"
+                    role="button">
                     <option value="5" selected="@(Model.PageSize == 5)">5</option>
                     <option value="10" selected="@(Model.PageSize == 10)">10</option>
                     <option value="15" selected="@(Model.PageSize == 15)">15</option>

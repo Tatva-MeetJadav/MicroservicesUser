@@ -37,7 +37,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 result = result.Where(x => x.EmailRequestParam.RootElement.GetProperty("Email").GetString()!.ToLower().Contains(paginationVM.SearchQuery.ToLower())).ToList();
             }
 
-            if (paginationVM.ColumnNameForFilter == "Valid" && paginationVM.FilterValue)
+            if (paginationVM.ColumnNameForFilter == "Valid" && paginationVM.FilterValue == "True")
             {
                 result = result.Where(u =>
                 u.EmailResponseParam.RootElement.TryGetProperty("valid", out var validProp) &&

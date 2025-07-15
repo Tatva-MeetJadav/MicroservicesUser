@@ -9,10 +9,10 @@ namespace MicroservicesUser.Common.AutoMapperProfiles
         public AdminProfile()
         {
             CreateMap<Admin, ProfileVM>()
-            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.MobileNumber))
-            .ForMember(dest => dest.ConfirmPassword, opt => opt.Ignore())
-            .ForMember(dest => dest.ProfilePhotoName, opt => opt.Ignore())
-            .ForMember(dest => dest.Password, opt => opt.Ignore());
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.MobileNumber))
+                .ForMember(dest => dest.ConfirmPassword, opt => opt.Ignore())
+                .ForMember(dest => dest.ProfilePhotoName, opt => opt.Ignore())
+                .ForMember(dest => dest.Password, opt => opt.Ignore());
 
             CreateMap<ProfileVM, Admin>()
                 .ForMember(dest => dest.ProfilePhotoGeneratedName, opt => opt.Ignore())

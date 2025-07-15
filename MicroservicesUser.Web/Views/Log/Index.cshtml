@@ -2,29 +2,43 @@
     ViewData["Title"] = "User";
     Layout = "_AdminLayout";
 }
-@model UserListVM
-<link rel="stylesheet" href="~/css/userManagement.css" asp-append-version="true">
-<div class="user-management-container px-1 px-md-4 mt-4">
+@model LogListVM
+<link rel="stylesheet" href="~/css/logs.css" asp-append-version="true">
+<div class="log-container px-1 px-md-4 mt-4">
     <div class="mb-3 page-header">
         <h1 class="page-title">Logs</h1>
         <p class="page-subtitle">Monitor logs of Microservices</p>
     </div>
     <div class="row">
-        <div class="col-xl-3 col-md-7 col-12 mt-3">
-            <div class="input-group mb-3">
-                <i class="input-group-text bi bi-search"></i>
-                <input type="text" class="form-control search-query" placeholder="Enter the name or email for search..."
-                    name="searchQueryForUsers">
+        <div class="col-xxl-4 col-md-8 col-12 mt-lg-3">
+            <div class="d-flex gap-2 mb-3">
+                <input type="text" class="form-control"
+                    placeholder="Enter the log message or machine name for search..." name="searchQueryForLogs">
+                <button class="btn btn-primary search-query">Search</button>
             </div>
-
+        </div>
+        <div class="col-xxl-3 col-md-4 col-12 mt-lg-3 mb-3 mb-lg-0 fw-semibold">
+            <div class="input-group">
+                <span class="input-group-text">Status</span>
+                <select class="form-select column-filter" role="button" data-column="Status">
+                    <option value="">All</option>
+                    <option value="0">Trace</option>
+                    <option value="1">Debug</option>
+                    <option value="2">Information</option>
+                    <option value="3">Warning</option>
+                    <option value="4">Error</option>
+                    <option value="5">Critical</option>
+                </select>
+            </div>
         </div>
     </div>
-    <div class="user-list-container">
-        @await Html.PartialAsync("_UserList", Model)
+
+    <div class="log-list-container">
+        @await Html.PartialAsync("_LogList", Model)
     </div>
 </div>
 
 @section Scripts
 {
-    <script src="~/js/userManagement.js"></script>
+    <script src="~/js/logs.js"></script>
 }

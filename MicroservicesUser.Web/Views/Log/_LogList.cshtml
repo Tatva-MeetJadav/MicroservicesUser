@@ -5,19 +5,64 @@
     int endPage = Math.Min(totalPages - 1, currentPage + 1);
     int serialNumber = Model.CurrentPage * Model.PageSize - Model.PageSize + 1;
 }
+
+@functions {
+    public string GetLogLevelName(int level)
+    {
+        return level switch
+        {
+            0 => "Trace",
+            1 => "Debug",
+            2 => "Information",
+            3 => "Warning",
+            4 => "Error",
+            5 => "Critical",
+            _ => "Unknown"
+        };
+    }
+}
+
 @model LogListVM
-<div class="history-table table-responsive mt-3 table-shadow-custom">
-    <table class="table table table-bordered table-striped m-0">
+<div class="modal fade" id="exceptionModal" tabindex="-1" aria-labelledby="exceptionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-primary fw-bold" id="exceptionModalLabel">Exception Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body bg-light">
+                <pre id="exceptionText"></pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="logs-card table-responsive">
+    <table class="logs-table table">
         <thead class="table-primary border-black">
-            <th scope="col" class="text-white">Sr No.</th>
-            <th scope="col" class="text-white">Email</th>
-            <th scope="col" class="text-white">Response Status</th>
-            <th scope="col" class="text-white">Valid</th>
-            <th scope="col" class="text-white sort-filter" data-column="CreatedAt" title="Click to sort by CreatedAt">
-                CreatedAt</th>
-            <th scope="col" class="text-white">Deliverability</th>
-            <th scope="col" class="text-white">OverAllScore</th>
-            <th scope="col" class="text-white">View Detail</th>
+            <th scope="col" class="text-white text-nowrap">Sr No.</th>
+            <th scope="col" class="text-white text-nowrap">
+                <i class="bi bi-card-text"></i>
+                Message
+            </th>
+            <th scope="col" class="text-white text-nowrap">
+                <i class="bi bi-info-circle"></i>
+                Status
+            </th>
+            <th scope="col" class="text-white sort-filter text-nowrap" data-column="CreatedAt"
+                title="Click to sort by Logged On" role="button">
+                <i class="bi bi-clock-history"></i>
+                Logged On
+            </th>
+            <th scope="col" class="text-white text-nowrap">
+                <i class="bi bi-laptop"></i>
+                Machine Name
+            </th>
+            <th scope="col" class="text-white text-nowrap">
+                <i class="bi bi-exclamation-triangle"></i>
+                Exception
+            </th>
         </thead>
         <tbody>
             @if (Model.TotalItems != 0)
@@ -27,11 +72,22 @@
                     @foreach (var item in Model.Logs)
                     {
                         <tr>
-                            <td>@serialNumber</td>
-                            <td>@item.Message</td>
-                            <td>@item.RaiseDate</td>
-                            <td>@item.MachineName</td>
-                            <td>@item.Exception!</td>
+                            <td class="text-nowrap">@serialNumber</td>
+                            <td class="log-message">@item.Message</td>
+                            <td class="text-nowrap">@GetLogLevelName(item.Level)</td>
+                            <td class="text-nowrap">@item.RaiseDate.ToString("dd-MM-yyyy hh:mm tt")</td>
+                            <td class="text-nowrap">
+                                @item.MachineName!.Replace("\"", "")
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.Exception))
+                                {
+                                    <button class="action-btn btn-view" title="View User" data-bs-toggle="modal"
+                                        data-bs-target="#exceptionModal" data-exception="@item.Exception">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                }
+                            </td>
                         </tr>
                         serialNumber = serialNumber + 1;
                     }
@@ -48,15 +104,15 @@
 </div>
 
 <div
-    class="rounded-1 my-2 p-2 border border-1 border-secondary-subtle bg-white @(Model.TotalItems == 0 ? "d-none" : "")">
+    class="my-2 p-2 border border-1 border-secondary-subtle rounded-1 bg-white @(Model.TotalItems == 0 ? "d-none" : "") shadow-sm">
     <div class="d-flex flex-sm-row flex-column justify-content-between gap-2 align-items-center">
         <div class="d-flex align-items-center gap-2">
             <div>
                 <span>Items Per Page</span>
             </div>
             <div>
-                <select class="form-select items-per-page form-select-sm"
-                    data-pagination-info="@Model.Logs?.Count()">
+                <select class="form-select items-per-page form-select-sm" data-pagination-info="@Model.Logs?.Count()"
+                    role="button">
                     <option value="5" selected="@(Model.PageSize == 5)">5</option>
                     <option value="10" selected="@(Model.PageSize == 10)">10</option>
                     <option value="15" selected="@(Model.PageSize == 15)">15</option>
@@ -64,57 +120,61 @@
                 </select>
             </div>
         </div>
-        <div class="d-flex gap-2 align-items-center">
+        <div class="d-flex flex-column flex-md-row gap-2 align-items-center">
             <span class="me-2 pagination-info" data-current-page="@Model.CurrentPage">
-                Showing @((Model.CurrentPage - 1) * Model.PageSize + 1)-@((Model.CurrentPage - 1) * Model.PageSize
+                Showing @((Model.CurrentPage - 1) * Model.PageSize + 1)-@((Model.CurrentPage - 1) *
+                                Model.PageSize
                                 + Model.Logs?.Count()) of @Model.TotalItems
             </span>
-            <button class="btn prev-page btn-primary @(Model.CurrentPage == 1 ? "disabled" : "")">
-                <i class="bi bi-chevron-left"></i>
-                <span>Previous</span>
-            </button>
-            @if (totalPages > 1)
-            {
-                <nav>
-                    <ul class="pagination mb-0">
+            <div class="d-flex gap-2">
+                <button class="btn prev-page btn-primary text-nowrap @(Model.CurrentPage == 1 ? "disabled" : "")">
+                    <i class="bi bi-chevron-left"></i>
+                    <span class="d-none d-lg-inline-flex">Previous</span>
+                </button>
+                @if (totalPages > 1)
+                {
+                    <nav>
+                        <ul class="pagination mb-0">
 
-                        <li class="page-item @(currentPage == 1 ? "active" : "")">
-                            <button class="page-link page-index" data-page="1">1</button>
-                        </li>
-
-
-                        @if (startPage > 2)
-                        {
-                            <li class="page-item disabled"><span class="page-link">...</span></li>
-                        }
-
-                        @for (int i = startPage; i <= endPage; i++)
-                        {
-                            <li class="page-item @(currentPage == i ? "active" : "")">
-                                <button class="page-link page-index" data-page="@i">@i</button>
+                            <li class="page-item @(currentPage == 1 ? "active" : "")">
+                                <button class="page-link page-index" data-page="1">1</button>
                             </li>
-                        }
 
-                        @if (endPage < totalPages - 1)
-                        {
-                            <li class="page-item disabled"><span class="page-link">...</span></li>
-                        }
 
-                        @if (totalPages > 1)
-                        {
-                            <li class="page-item @(currentPage == totalPages ? "active" : "")">
-                                <button class="page-link page-index" data-page="@totalPages">@totalPages</button>
-                            </li>
-                        }
-                    </ul>
-                </nav>
-            }
+                            @if (startPage > 2)
+                            {
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            }
 
-            <button
-                class="btn next-page btn-primary @(Model.CurrentPage* Model.PageSize >= Model.TotalItems ? "disabled" : "")">
-                <span>Next</span>
-                <i class="bi bi-chevron-right"></i>
-            </button>
+                            @for (int i = startPage; i <= endPage; i++)
+                            {
+                                <li class="page-item @(currentPage == i ? "active" : "")">
+                                    <button class="page-link page-index" data-page="@i">@i</button>
+                                </li>
+                            }
+
+                            @if (endPage < totalPages - 1)
+                            {
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            }
+
+                            @if (totalPages > 1)
+                            {
+                                <li class="page-item @(currentPage == totalPages ? "active" : "")">
+                                    <button class="page-link page-index" data-page="@totalPages">@totalPages</button>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                }
+
+                <button
+                    class="btn next-page btn-primary text-nowrap @(Model.CurrentPage* Model.PageSize >= Model.TotalItems ? "disabled" : "")">
+                    <span class="d-none d-lg-inline-flex">Next</span>
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+            </div>
+
         </div>
     </div>
 </div>
