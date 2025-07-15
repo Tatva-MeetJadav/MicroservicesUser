@@ -1,0 +1,120 @@
+@{
+    int totalPages = (int)Math.Ceiling((double)Model.TotalItems / Model.PageSize);
+    int currentPage = Model.CurrentPage;
+    int startPage = Math.Max(2, currentPage - 1);
+    int endPage = Math.Min(totalPages - 1, currentPage + 1);
+    int serialNumber = Model.CurrentPage * Model.PageSize - Model.PageSize + 1;
+}
+@model LogListVM
+<div class="history-table table-responsive mt-3 table-shadow-custom">
+    <table class="table table table-bordered table-striped m-0">
+        <thead class="table-primary border-black">
+            <th scope="col" class="text-white">Sr No.</th>
+            <th scope="col" class="text-white">Email</th>
+            <th scope="col" class="text-white">Response Status</th>
+            <th scope="col" class="text-white">Valid</th>
+            <th scope="col" class="text-white sort-filter" data-column="CreatedAt" title="Click to sort by CreatedAt">
+                CreatedAt</th>
+            <th scope="col" class="text-white">Deliverability</th>
+            <th scope="col" class="text-white">OverAllScore</th>
+            <th scope="col" class="text-white">View Detail</th>
+        </thead>
+        <tbody>
+            @if (Model.TotalItems != 0)
+            {
+                @if (Model.Logs != null)
+                {
+                    @foreach (var item in Model.Logs)
+                    {
+                        <tr>
+                            <td>@serialNumber</td>
+                            <td>@item.Message</td>
+                            <td>@item.RaiseDate</td>
+                            <td>@item.MachineName</td>
+                            <td>@item.Exception!</td>
+                        </tr>
+                        serialNumber = serialNumber + 1;
+                    }
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="8" class="text-center">No records found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div
+    class="rounded-1 my-2 p-2 border border-1 border-secondary-subtle bg-white @(Model.TotalItems == 0 ? "d-none" : "")">
+    <div class="d-flex flex-sm-row flex-column justify-content-between gap-2 align-items-center">
+        <div class="d-flex align-items-center gap-2">
+            <div>
+                <span>Items Per Page</span>
+            </div>
+            <div>
+                <select class="form-select items-per-page form-select-sm"
+                    data-pagination-info="@Model.Logs?.Count()">
+                    <option value="5" selected="@(Model.PageSize == 5)">5</option>
+                    <option value="10" selected="@(Model.PageSize == 10)">10</option>
+                    <option value="15" selected="@(Model.PageSize == 15)">15</option>
+                    <option value="20" selected="@(Model.PageSize == 20)">20</option>
+                </select>
+            </div>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            <span class="me-2 pagination-info" data-current-page="@Model.CurrentPage">
+                Showing @((Model.CurrentPage - 1) * Model.PageSize + 1)-@((Model.CurrentPage - 1) * Model.PageSize
+                                + Model.Logs?.Count()) of @Model.TotalItems
+            </span>
+            <button class="btn prev-page btn-primary @(Model.CurrentPage == 1 ? "disabled" : "")">
+                <i class="bi bi-chevron-left"></i>
+                <span>Previous</span>
+            </button>
+            @if (totalPages > 1)
+            {
+                <nav>
+                    <ul class="pagination mb-0">
+
+                        <li class="page-item @(currentPage == 1 ? "active" : "")">
+                            <button class="page-link page-index" data-page="1">1</button>
+                        </li>
+
+
+                        @if (startPage > 2)
+                        {
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        }
+
+                        @for (int i = startPage; i <= endPage; i++)
+                        {
+                            <li class="page-item @(currentPage == i ? "active" : "")">
+                                <button class="page-link page-index" data-page="@i">@i</button>
+                            </li>
+                        }
+
+                        @if (endPage < totalPages - 1)
+                        {
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        }
+
+                        @if (totalPages > 1)
+                        {
+                            <li class="page-item @(currentPage == totalPages ? "active" : "")">
+                                <button class="page-link page-index" data-page="@totalPages">@totalPages</button>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            }
+
+            <button
+                class="btn next-page btn-primary @(Model.CurrentPage* Model.PageSize >= Model.TotalItems ? "disabled" : "")">
+                <span>Next</span>
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</div>
