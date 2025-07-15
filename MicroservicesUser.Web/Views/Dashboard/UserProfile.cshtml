@@ -12,7 +12,15 @@
                         <div class="d-flex gap-3 align-items-center">
                             <div class="text-center text-md-start">
                                 <div class="profile-img-container">
-                                    <img src="~/images/profile/@Model.ProfilePhotoGeneratedName" alt="Profile Photo">
+                                    @if (Model.ProfilePhotoGeneratedName != string.Empty
+                                                                        && Model.ProfilePhotoGeneratedName != null)
+                                    {
+                                        <img src="~/images/profile/@Model.ProfilePhotoGeneratedName" alt="Profile Photo">
+                                    }
+                                    else
+                                    {
+                                        <img src="~/images/profile/default.jpg" alt="Profile Photo">
+                                    }
                                 </div>
                             </div>
                             <div class="text-center text-md-start">

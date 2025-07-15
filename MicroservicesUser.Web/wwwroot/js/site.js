@@ -38,9 +38,12 @@ $(document).ready(function () {
         url: '/Dashboard/GetProfilePhoto',
         method: 'GET',
         success: function (data) {
-            let profilePhoto = data;
-            let imagePath = "/images/profile/" + profilePhoto;
-            $('.profile-image').attr('src', imagePath);
+            if (data) {
+                let profilePhoto = data;
+                let imagePath = "/images/profile/" + profilePhoto;
+                $('.profile-image').attr('src', imagePath);
+            }
+
         },
     });
 });

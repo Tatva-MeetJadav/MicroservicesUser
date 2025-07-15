@@ -68,7 +68,6 @@ namespace MicroservicesUser.Web.Controllers
             }
         }
 
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetProfilePhoto()
         {
@@ -117,6 +116,7 @@ namespace MicroservicesUser.Web.Controllers
             return RedirectToAction("AdminProfile", "Dashboard");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<JsonResult> AdminChangePassword(ChangePasswordVM changePasswordVM)
         {
