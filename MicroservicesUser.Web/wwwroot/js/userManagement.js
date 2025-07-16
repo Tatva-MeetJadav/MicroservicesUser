@@ -64,19 +64,21 @@ $(document).on("click", ".page-index", function () {
 $(document).on('click', '.btn-view', function () {
     var button = $(this);
     var row = button.closest('tr');
-    var userName = row.find('.user-details h6').text();
+    var userFullName = row.find('.user-details h6').text();
     var userEmail = row.find('td:nth-child(2)').text();
     var userPhone = row.find('td:nth-child(3)').text();
     var userStatus = row.find('td:nth-child(4) .status-badge').text().trim();
     var userAddress = row.find('.user-address').val();
     var userAvatar = row.find('.user-avatar').attr('src');
+    var username = row.find('.user-username').data('username');
     var userJoiningDate = row.find('.user-joining-date').val();
 
     if (!userPhone) {
         userPhone = '—';
     }
 
-    $('#modalUserName').text(userName);
+    $('#modalUserFullName').text(userFullName);
+    $('#modalUserName').text(username)
     $('#modalUserEmail').text(userEmail);
     $('#modalUserPhone').text(userPhone);
     $('#modalUserStatus').text(userStatus).removeClass().addClass('user-profile-status ' + (userStatus === 'Active' ? 'online' : 'offline'));

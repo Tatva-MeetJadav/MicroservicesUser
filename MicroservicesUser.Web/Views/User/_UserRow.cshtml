@@ -1,6 +1,7 @@
 @model UserVM
 
 <td>
+    <div class="user-username" data-username="@Model.Username"></div>
     <div class="user-info">
         @if (!string.IsNullOrEmpty(Model.ProfilePhotoGeneratedName))
         {
