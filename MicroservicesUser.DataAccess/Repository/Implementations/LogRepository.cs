@@ -20,27 +20,20 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             {
                 logs = logs.Where(x => x.MachineName!.ToLower().Contains(paginationDTO.SearchQuery.ToLower()) || x.Message!.ToLower().Contains(paginationDTO.SearchQuery.ToLower())).ToList();
             }
-            logs = logs.OrderByDescending(u => u.RaiseDate).ToList();
+            if (paginationDTO.OrderOfSorting == "asc" && paginationDTO.ColumnNameForSorting == "CreatedAt")
+            {
+                logs = logs.OrderBy(u => u.RaiseDate).ToList();
+            }
+            else
+            {
+                logs = logs.OrderByDescending(u => u.RaiseDate).ToList();
+            }
             if (paginationDTO.ColumnNameForFilter == "Status" && !string.IsNullOrEmpty(paginationDTO.FilterValue))
             {
                 logs = logs.Where(u => u.Level == Convert.ToInt16(paginationDTO.FilterValue)).ToList();
             }
             int totalCount = logs.Count;
             logs = logs.Skip((paginationDTO.CurrentPage - 1) * paginationDTO.PageSize).Take(paginationDTO.PageSize).ToList();
-            if (paginationDTO.OrderOfSorting == "asc")
-            {
-                if (paginationDTO.ColumnNameForSorting == "CreatedAt")
-                {
-                    logs = logs.OrderBy(u => u.RaiseDate).ToList();
-                }
-            }
-            else
-            {
-                if (paginationDTO.ColumnNameForSorting == "CreatedAt")
-                {
-                    logs = logs.OrderByDescending(u => u.RaiseDate).ToList();
-                }
-            }
             return (logs, totalCount);
         }
     }

@@ -79,6 +79,15 @@ namespace MicroservicesUser.Common.ResourcesFiles {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Duplicate username found.
+        /// </summary>
+        public static string DuplicateUsername {
+            get {
+                return ResourceManager.GetString("DuplicateUsername", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Duplicate value found..
         /// </summary>
         public static string DuplicateValue {

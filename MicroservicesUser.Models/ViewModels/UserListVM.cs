@@ -18,5 +18,6 @@ namespace MicroservicesUser.Models.ViewModels
         public DateTime CreatedAt { get; set; }
         public bool IsBlocked { get; set; } = false;
         public bool IsDeleted { get; set; } = false;
+        public string Username { get; set; } = string.Empty;
     }
 }

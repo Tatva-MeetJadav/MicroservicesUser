@@ -162,6 +162,11 @@ namespace MicroservicesUser.Web.Controllers
                 TempData["ErrorMessage"] = "Email already taken!";
                 return View();
             }
+            if (result == Messages.DuplicateUsername)
+            {
+                TempData["ErrorMessage"] = "Username already taken!";
+                return View();
+            }
             return View();
         }
 

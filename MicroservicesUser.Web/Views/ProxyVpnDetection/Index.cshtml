@@ -1,6 +1,9 @@
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "Proxy and Vpn Detection Dashboard";
+    var activeUsers = Model.DashboardUsers!.Where(u => u.Status == "Active").ToList();
+    var blockedUsers = Model.DashboardUsers!.Where(u => u.Status == "Blocked").ToList();
+    var inactiveUsers = Model.DashboardUsers!.Where(u => u.Status == "Inactive").ToList();
 }
 
 @using MicroservicesUser.Models.ViewModels.Dashboard
@@ -12,10 +15,9 @@
     <div class="page-header mt-4">
         <div class="d-flex justify-content-between align-items-start flex-wrap">
             <div class="mb-3 mb-md-0">
-                <h1 class="page-title">Proxy And Vpn Detection Dashboard</h1>
-                <p class="page-subtitle">Aggregated metrics for proxy and vpn detection service</p>
+                <h1 class="page-title">Proxy And Vpn Detection Analytics</h1>
+                <p class="page-subtitle mt-2">Aggregated metrics for proxy and vpn detection service</p>
             </div>
-
             <div class="dropdown mt-2 mt-lg-0">
                 <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                     aria-expanded="false">
@@ -30,35 +32,87 @@
                     <li>
                         <div class="d-flex gap-2 px-2 align-items-center">
                             <span class="mt-1">
-                                <input type="checkbox" id="selectAllUsers" role="button" checked>
+                                <input type="checkbox" id="selectAllUsers" checked role="button" />
                             </span>
                             <span><strong>Select All</strong></span>
                         </div>
                     </li>
                     <li>
-                        <hr class="dropdown-divider">
+                        <hr class="dropdown-divider" />
                     </li>
-                    @if (Model.DashboardUsers != null)
-                    {
-                        @foreach (var user in Model.DashboardUsers)
+                    <div class="users-dropdown-list-container">
+                        @if (activeUsers.Any())
                         {
+                            <li class="fw-bold text-success d-flex align-items-center gap-2 px-2">
+                                <input type="checkbox" id="selectAllActive" checked role="button" />
+                                Active Users
+                            </li>
+                            @foreach (var user in activeUsers)
+                            {
+                                <li>
+                                    <input type="hidden" value="@user.UserId" class="dashboard-dropdown-user-id">
+                                    <div class="d-flex gap-2 px-3 align-items-center">
+                                        <span class="mt-1">
+                                            <input type="checkbox" class="user-checkbox active-checkbox" role="button" checked>
+                                        </span>
+                                        <span>@user.Username</span>
+                                    </div>
+                                </li>
+                            }
                             <li>
-                                <input type="hidden" asp-for="@user.UserId" class="dashboard-dropdown-user-id">
-                                <div class="d-flex gap-2 px-2 align-items-center">
-                                    <span class="mt-1">
-                                        <input type="checkbox" role="button" value="Apple" checked>
-                                    </span>
-                                    <span>
-                                        @user.Email
-                                    </span>
-                                </div>
+                                <hr class="dropdown-divider" />
                             </li>
                         }
-                    }
+                        @if (blockedUsers.Any())
+                        {
+                            <li class="fw-bold blocked-users d-flex align-items-center gap-2 px-2">
+                                <input type="checkbox" id="selectAllBlocked" checked role="button" />
+                                Blocked Users
+                            </li>
+                            @foreach (var user in blockedUsers)
+                            {
+                                <li>
+                                    <input type="hidden" value="@user.UserId" class="dashboard-dropdown-user-id">
+                                    <div class="d-flex gap-2 px-3 align-items-center">
+                                        <span class="mt-1">
+                                            <input type="checkbox" class="user-checkbox blocked-checkbox" role="button" checked>
+                                        </span>
+                                        <span>@user.Username</span>
+                                    </div>
+                                </li>
+                            }
+                            <li>
+                                <hr class="dropdown-divider" />
+                            </li>
+                        }
+                        @if (inactiveUsers.Any())
+                        {
+                            <li class="fw-bold text-danger d-flex align-items-center gap-2 px-2">
+                                <input type="checkbox" id="selectAllInactive" checked role="button" />
+                                Inactive Users
+                            </li>
+                            @foreach (var user in inactiveUsers)
+                            {
+                                <li>
+                                    <input type="hidden" value="@user.UserId" class="dashboard-dropdown-user-id">
+                                    <div class="d-flex gap-2 px-3 align-items-center">
+                                        <span class="mt-1">
+                                            <input type="checkbox" class="user-checkbox inactive-checkbox" role="button"
+                                                checked>
+                                        </span>
+                                        <span>@user.Username</span>
+                                    </div>
+                                </li>
+                            }
+
+                        }
+                    </div>
                     <li>
-                        <hr class="dropdown-divider">
+                        <hr class="dropdown-divider" />
                     </li>
-                    <li><button class="btn btn-primary w-100" id="showResultBtn">Show Result</button></li>
+                    <li>
+                        <button class="btn btn-primary w-100" id="showResultBtn">Show Result</button>
+                    </li>
                 </ul>
             </div>
         </div>

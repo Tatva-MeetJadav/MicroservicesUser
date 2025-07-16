@@ -20,7 +20,7 @@ namespace MicroservicesUser.BusinessLogic.Utilities
             string uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
             string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            using (FileStream stream = new(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }

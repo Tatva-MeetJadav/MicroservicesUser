@@ -1,5 +1,6 @@
 using MicroservicesUser.Models.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 
 namespace MicroservicesUser.DataAccess.Data
@@ -12,10 +13,10 @@ namespace MicroservicesUser.DataAccess.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            foreach (var entity in modelBuilder.Model.GetEntityTypes())
+            foreach (IMutableEntityType entity in modelBuilder.Model.GetEntityTypes())
             {
                 entity.SetTableName(entity.GetTableName()?.ToLower() ?? string.Empty);
-                foreach (var property in entity.GetProperties())
+                foreach (IMutableProperty? property in entity.GetProperties())
                 {
                     property.SetColumnName(property.Name.ToLower());
                 }

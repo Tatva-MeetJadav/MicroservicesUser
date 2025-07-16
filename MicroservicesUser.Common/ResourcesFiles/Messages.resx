@@ -123,6 +123,9 @@
   <data name="BlockedUser" xml:space="preserve">
     <value>User is blocked</value>
   </data>
+  <data name="DuplicateUsername" xml:space="preserve">
+    <value>Duplicate username found</value>
+  </data>
   <data name="DuplicateValue" xml:space="preserve">
     <value>Duplicate value found.</value>
   </data>

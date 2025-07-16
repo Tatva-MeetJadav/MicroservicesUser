@@ -250,7 +250,7 @@
                             @if (Model?.MxRecords != null && Model.MxRecords.Any())
                             {
                                 <ul class="mb-0 ps-3">
-                                    @foreach (var mx in Model.MxRecords)
+                                    @foreach (string mx in Model.MxRecords)
                                     {
                                         <li>@mx</li>
                                     }
@@ -274,7 +274,7 @@
                             @if (Model?.ARecords != null && Model.ARecords.Any())
                             {
                                 <ul class="mb-0 ps-3">
-                                    @foreach (var a in Model.ARecords)
+                                    @foreach (string a in Model.ARecords)
                                     {
                                         <li>@a</li>
                                     }

@@ -7,7 +7,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
     public class GenericAPIClientServices : IGenericAPIClientServices
     {
         private readonly HttpClient _httpClient;
-        public GenericAPIClientServices(HttpClient httpClient) 
+        public GenericAPIClientServices(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
@@ -16,24 +16,18 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             try
             {
                 string json = JsonSerializer.Serialize(request);
-                using var content = new StringContent(json, Encoding.UTF8, "application/json");
+                using StringContent? content = new(json, Encoding.UTF8, "application/json");
 
                 // Send POST request
-                using var response = await _httpClient.PostAsync(baseUrl, content);
+                using HttpResponseMessage? response = await _httpClient.PostAsync(baseUrl, content);
                 response.EnsureSuccessStatusCode();
 
                 // Read and deserialize the response content
-                await using var responseStream = await response.Content.ReadAsStreamAsync();
-                var result = await JsonSerializer.DeserializeAsync<TResponse>(responseStream, new JsonSerializerOptions
+                await using Stream? responseStream = await response.Content.ReadAsStreamAsync();
+                TResponse? result = await JsonSerializer.DeserializeAsync<TResponse>(responseStream, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
-                });
-
-                if (result == null)
-                {
-                    throw new InvalidOperationException("Deserialized response was null.");
-                }
-
+                }) ?? throw new InvalidOperationException("Deserialized response was null.");
                 return result;
             }
             catch (HttpRequestException httpEx)

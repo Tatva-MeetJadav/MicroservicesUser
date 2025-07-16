@@ -8,6 +8,10 @@ namespace MicroservicesUser.Models.ViewModels
         [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Email is not valid.")]
         public string Email { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Username is required.")]
+        [RegularExpression(@"^(?!\s*$).+", ErrorMessage = "Username is required.")]
+        public string Username { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "Password is required.")]
         [RegularExpression(@"^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
         ErrorMessage = "Password should be at least 8 characters long, must contain at least one uppercase letter, one digit, and one special character.")]

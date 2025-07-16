@@ -40,13 +40,18 @@ namespace MicroservicesUser.Web.Controllers
             if (result == Messages.SuccessMessage)
             {
                 TempData["SuccessMessage"] = "Profile updated successfully.";
+                return RedirectToAction("UserProfile", "Dashboard");
+            }
+            if (result == Messages.DuplicateUsername)
+            {
+                TempData["ErrorMessage"] = "Username already taken!";
+                return RedirectToAction("UserProfile", "Dashboard");
             }
             else
             {
                 TempData["ErrorMessage"] = "Something went wrong.";
                 return View(profileVM);
             }
-            return RedirectToAction("UserProfile", "Dashboard");
         }
 
         [HttpPost]

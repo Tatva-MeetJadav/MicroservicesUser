@@ -116,7 +116,6 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 })
                 .FirstOrDefaultAsync();
 
-
             double successRate = 0;
             if (counts != null && counts.TotalCount > 0)
             {
@@ -129,17 +128,18 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             .Where(u => u.UserId == userId && u.CreatedAt >= today)
             .ToListAsync();
 
-            var intervalCounts = Enumerable.Range(0, currentInterval + 1)
-                .Select(i =>
-                {
-                    DateTime intervalStart = today.AddHours(i * 2);
-                    DateTime intervalEnd = intervalStart.AddHours(2);
-                    string label = $"{intervalStart:hh:mm tt}-{intervalEnd.AddMinutes(-1):hh:mm tt}";
-                    int count = todayVerifications.Where(u => u.UserId == userId).Count(ev =>
-                        ev.CreatedAt >= intervalStart && ev.CreatedAt < intervalEnd);
-                    return new { label, count };
-                })
-                .ToList();
+
+            List<(string label, int count)> intervalCounts = Enumerable.Range(0, currentInterval + 1)
+            .Select(i =>
+            {
+                DateTime intervalStart = today.AddHours(i * 2);
+                DateTime intervalEnd = intervalStart.AddHours(2);
+                string label = $"{intervalStart:hh:mm tt}-{intervalEnd.AddMinutes(-1):hh:mm tt}";
+                int count = todayVerifications.Where(u => u.UserId == userId).Count(ev =>
+                    ev.CreatedAt >= intervalStart && ev.CreatedAt < intervalEnd);
+                return (label, count);
+            })
+            .ToList();
 
             List<string> labels = intervalCounts.Select(x => x.label).ToList();
             List<int> scans = intervalCounts.Select(x => x.count).ToList();
@@ -183,27 +183,26 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             List<ProxyVpnDetection> latestEntries = data
                 .GroupBy(u =>
                 {
-                    var json = u.ProxyVpnRequestParam;
-                    var ip = json.RootElement.TryGetProperty("IpAddress", out var ipProp) ? ipProp.GetString() : "unknown";
+                    JsonDocument json = u.ProxyVpnRequestParam;
+                    string? ip = json.RootElement.TryGetProperty("IpAddress", out JsonElement ipProp) ? ipProp.GetString() : "unknown";
                     return new { u.UserId, IpAddress = ip };
                 })
-                .Select(g => g.OrderBy(u => u.CreatedAt).First())
+                .Select(g => g.OrderByDescending(u => u.CreatedAt).First())
                 .ToList();
-
-            int totalIPVerifications = latestEntries.Count;
 
             List<ProxyVpnDetection> uniqueIPAddresses = latestEntries.GroupBy(u =>
             {
-                var json = u.ProxyVpnRequestParam;
-                var ip = json.RootElement.TryGetProperty("IpAddress", out var ipProp) ? ipProp.GetString() : "unknown";
+                JsonDocument? json = u.ProxyVpnRequestParam;
+                string? ip = json.RootElement.TryGetProperty("IpAddress", out JsonElement ipProp) ? ipProp.GetString() : "unknown";
                 return new { IpAddress = ip };
-            }).Select(g => g.OrderBy(u => u.CreatedAt).First()).ToList();
+            }).Select(g => g.OrderByDescending(u => u.CreatedAt).First()).ToList();
 
+            int totalIPVerifications = uniqueIPAddresses.Count;
             List<ContinentIPStatsDTO> continentIPStats = uniqueIPAddresses
             .Select(u =>
             {
-                var json = u.ProxyVpnResponseParam;
-                string timezone = json.RootElement.TryGetProperty("timezone", out var tzProp) ? tzProp.GetString() ?? "Unknown/Unknown" : "Unknown/Unknown";
+                JsonDocument? json = u.ProxyVpnResponseParam;
+                string timezone = json.RootElement.TryGetProperty("timezone", out JsonElement tzProp) ? tzProp.GetString() ?? "Unknown/Unknown" : "Unknown/Unknown";
                 string continent = timezone.Contains('/') ? timezone.Split('/')[0] : "Unknown";
                 return continent;
             })
@@ -215,26 +214,25 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             })
             .ToList();
 
-
-            int highRiskIPs = latestEntries
+            int highRiskIPs = uniqueIPAddresses
             .Count(u =>
             {
-                var json = u.ProxyVpnResponseParam;
-                return json.RootElement.TryGetProperty("fraudScore", out var score) && score.GetInt32() > 75;
+                JsonDocument? json = u.ProxyVpnResponseParam;
+                return json.RootElement.TryGetProperty("fraudScore", out JsonElement score) && score.GetInt32() > 75;
             });
 
-            double averageFraudScore = latestEntries.Count != 0 ? latestEntries.Average(u =>
+            double averageFraudScore = uniqueIPAddresses.Count != 0 ? uniqueIPAddresses.Average(u =>
             {
-                var json = u.ProxyVpnResponseParam;
-                return json.RootElement.TryGetProperty("fraudScore", out var score) ? score.GetInt32() : 0;
+                JsonDocument? json = u.ProxyVpnResponseParam;
+                return json.RootElement.TryGetProperty("fraudScore", out JsonElement score) ? score.GetInt32() : 0;
             }) : 0;
 
-            int vpnProxyTorCount = latestEntries.Count != 0 ? latestEntries.Count(u =>
+            int vpnProxyTorCount = uniqueIPAddresses.Count != 0 ? uniqueIPAddresses.Count(u =>
             {
-                var json = u.ProxyVpnResponseParam;
-                return (json.RootElement.TryGetProperty("vpn", out var vpn) && vpn.GetBoolean()) ||
-                        (json.RootElement.TryGetProperty("proxy", out var proxy) && proxy.GetBoolean()) ||
-                        (json.RootElement.TryGetProperty("tor", out var tor) && tor.GetBoolean());
+                JsonDocument? json = u.ProxyVpnResponseParam;
+                return (json.RootElement.TryGetProperty("vpn", out JsonElement vpn) && vpn.GetBoolean()) ||
+                        (json.RootElement.TryGetProperty("proxy", out JsonElement proxy) && proxy.GetBoolean()) ||
+                        (json.RootElement.TryGetProperty("tor", out JsonElement tor) && tor.GetBoolean());
             }) : 0;
             double vpnProxyTorUsage = totalIPVerifications > 0 ? ((double)vpnProxyTorCount / totalIPVerifications * 100) : 0;
 
@@ -244,22 +242,23 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 AverageFraudScore = Math.Round(averageFraudScore, 2),
                 HighRiskIPs = highRiskIPs,
                 VPNProxyTorUsage = Math.Round(vpnProxyTorUsage, 2),
-                DashboardUsers = users.Where(u=>u.IsDeleted == false).Select(u => new DashboardUserDTO
+                DashboardUsers = users.Select(u => new DashboardUserDTO
                 {
                     UserId = u.Id,
-                    Email = u.Email
+                    Username = u.Username,
+                    Status = u.IsDeleted ? "Inactive" : u.IsBlocked ? "Blocked" : "Active",
                 }).ToList(),
                 ProxyVpnDetectionHistoryList = latestEntries.OrderBy(u => u.Id).Take(5).Select(x =>
                 {
-                    int fraudScore = x.ProxyVpnResponseParam.RootElement.TryGetProperty("fraudScore", out var scoreElement)
+                    int fraudScore = x.ProxyVpnResponseParam.RootElement.TryGetProperty("fraudScore", out JsonElement scoreElement)
                     ? scoreElement.GetInt16()
                     : 0;
 
                     string? riskLevel = fraudScore > 75 ? "High" :
                     fraudScore >= 25 ? "Medium" : "Low";
 
-                    bool isTor = x.ProxyVpnResponseParam.RootElement.TryGetProperty("tor", out var torElement) && torElement.GetBoolean();
-                    bool isVpn = x.ProxyVpnResponseParam.RootElement.TryGetProperty("vpn", out var vpnElement) && vpnElement.GetBoolean();
+                    bool isTor = x.ProxyVpnResponseParam.RootElement.TryGetProperty("tor", out JsonElement torElement) && torElement.GetBoolean();
+                    bool isVpn = x.ProxyVpnResponseParam.RootElement.TryGetProperty("vpn", out JsonElement vpnElement) && vpnElement.GetBoolean();
                     bool isProxy = x.ProxyVpnResponseParam.RootElement.TryGetProperty("proxy", out var proxyElement) && proxyElement.GetBoolean();
 
                     string? connectionType = isTor ? "TOR" :

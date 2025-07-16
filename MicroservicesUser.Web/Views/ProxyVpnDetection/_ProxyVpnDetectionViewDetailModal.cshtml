@@ -1,11 +1,13 @@
+@using Microsoft.AspNetCore.Html
 @model ProxyVpnDetectionViewDetailVM
 
 @{
-    Func<bool?, string> statusIcon = status => status == true
-    ? "<i class='bi bi-check-circle-fill text-success'></i>"
-    : status == false
-    ? "<i class='bi bi-x-circle-fill text-danger'></i>"
-    : "<i class='bi bi-question-circle-fill text-secondary'></i>";
+    Func<bool?, IHtmlContent> statusIcon = status => status switch
+    {
+        true => new HtmlString("<span>Yes</span>"),
+        false => new HtmlString("<span>No</span>"),
+        null => new HtmlString("<span>Unknown <i class='bi bi-question-lg ms-1'></i></span>"),
+    };
 }
 
 <div class="row">
@@ -27,7 +29,7 @@
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span>
-                            Proxy
+                            Is it using Proxy?
                             <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
                                 data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
                                 data-bs-content="Indicates if the IP is using a proxy server to mask(hide) its identity."></i>
@@ -36,7 +38,7 @@
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span>
-                            VPN
+                            Is it using VPN?
                             <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
                                 data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
                                 data-bs-content="Shows whether the IP is connected through a Virtual Private Network."></i>
@@ -44,12 +46,12 @@
                         <span>@Html.Raw(statusIcon(Model.Vpn))</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
-                        Active VPN
+                        Is it having Active VPN?
                         <span>@Html.Raw(statusIcon(Model.ActiveVpn))</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span>
-                            Tor
+                            Is it using Tor?
                             <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
                                 data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
                                 data-bs-content="The Tor network is a privacy-focused system that routes internet traffic through multiple servers to hide the user's location and identity. If true, it may indicate anonymous or suspicious behavior.">
@@ -59,13 +61,13 @@
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span>
-                            Active Tor
+                            Is it having Active Tor?
                         </span>
                         <span>@Html.Raw(statusIcon(Model.ActiveTor))</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span>
-                            Is Crawler
+                            Is it Crawler?
                             <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
                                 data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
                                 data-bs-content="Web crawler or crawler is an automated program used by search engines and other services to systematically browse the internet and collect data from websites."></i>
@@ -77,12 +79,12 @@
                         <span>@Html.Raw(statusIcon(Model.BotStatus))</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
-                        Is using Mobile?
+                        Is it using Mobile?
                         <span>@Html.Raw(statusIcon(Model.Mobile))</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">
                         <span>
-                            Recent Abuse
+                            Is it recently abused?
                             <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
                                 data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
                                 data-bs-content="Indicates if the IP has been involved in abusive behavior recently."></i>
@@ -101,7 +103,13 @@
             <div class="card-body">
                 <ul class="list-group list-group-flush border border-1 fw-bold">
                     <li class="list-group-item d-flex justify-content-between">
-                        ISP
+                        <span>
+                            ISP
+                            <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="An Internet Service Provider (ISP) is a company or organization that provides individuals and businesses access to the internet and related services.">
+                            </i>
+                        </span>
                         <span>@Model.ISP</span>
                     </li>
                     <li class="list-group-item d-flex justify-content-between">

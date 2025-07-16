@@ -16,6 +16,5 @@ namespace MicroservicesUser.Models.ViewModels.History
     public class EmailVerificationListHistoryVM : PaginationDTO
     {
         public List<EmailVerificationHistoryVM>? EmailVerificationHistoryListVM { get; set; }
-
     }
 }

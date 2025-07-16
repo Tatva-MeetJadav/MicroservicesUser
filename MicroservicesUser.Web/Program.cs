@@ -1,17 +1,16 @@
 using Microservices.BusinessLogic.Implementations;
 using Microservices.BusinessLogic.Interfaces;
-using Microservices.Common.AutoMapperProfiles;
 using MicroservicesUser.BusinessLogic.Implementations;
 using MicroservicesUser.BusinessLogic.Interfaces;
 using MicroservicesUser.BusinessLogic.ServerStorage.Interfaces;
 using MicroservicesUser.BusinessLogic.SignalRHubs;
-using MicroservicesUser.Common.AutoMapperProfiles;
 using MicroservicesUser.DataAccess.Data;
 using MicroservicesUser.DataAccess.Repository.Implementations;
 using MicroservicesUser.DataAccess.Repository.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
 using System.Text;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -38,7 +37,8 @@ builder.Services.AddSingleton<ITokenStore, InMemoryTokenStore>();
 builder.Services.AddHostedService<TokenExpiryBackgroundService>();
 
 //Setting up automapper
-builder.Services.AddAutoMapper(typeof(DashboardProfile).Assembly);
+Assembly assembly = Assembly.Load("MicroservicesUser.Common");
+builder.Services.AddAutoMapper(assembly);
 
 //Setting up Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();

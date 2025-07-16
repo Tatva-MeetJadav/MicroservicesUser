@@ -31,13 +31,13 @@
                 </div>
                 <div class="offcanvas-body">
                     <aside class="mt-3 px-2 d-flex flex-column gap-2">
-                        <a class="px-3 py-1 sidebar-link text-start @(currentController == "Dashboard" ? "bg-primary text-white" : "text-black") rounded-1 text-decoration-none" role="button" asp-action="Index" asp-controller="Dashboard">
+                        <a class="px-3 py-1 sidebar-link text-start @(currentController == "Dashboard" ? "bg-primary text-white fw-bold" : "text-black") rounded-1 text-decoration-none" role="button" asp-action="Index" asp-controller="Dashboard">
                             Dashboard
                         </a>
-                        <a class="px-3 py-1 sidebar-link text-start @(currentController == "EmailVerification" ? "bg-primary text-white" : "text-black") rounded-1 text-black text-decoration-none" role="button" asp-action="Index" asp-controller="EmailVerification">
+                        <a class="px-3 py-1 sidebar-link text-start @(currentController == "EmailVerification" ? "bg-primary text-white fw-bold" : "text-black") rounded-1 text-black text-decoration-none" role="button" asp-action="Index" asp-controller="EmailVerification">
                             Email Verification
                         </a>
-                        <a class="px-3 py-1 sidebar-link text-start @(currentController == "History" ? "bg-primary text-white" : "text-black") rounded-1 text-decoration-none" role="button" asp-action="Index" asp-controller="History">
+                        <a class="px-3 py-1 sidebar-link text-start @(currentController == "History" ? "bg-primary text-white fw-bold" : "text-black") rounded-1 text-decoration-none" role="button" asp-action="Index" asp-controller="History">
                             History
                         </a>
                     </aside>
@@ -49,13 +49,13 @@
                         <img src="~/images/logo/new-logo.png" alt="App Logo" class="navbar-logo bg-white rounded-2" />
                     </div>
                     <aside class="mt-3 px-2 d-flex flex-column gap-2">
-                        <a class="px-3 py-1 sidebar-link text-start @(currentController == "Dashboard" ? "bg-primary text-white" : "text-black") rounded-1 text-decoration-none" role="button" asp-action="Index" asp-controller="Dashboard">
+                        <a class="px-3 py-1 sidebar-link text-start @(currentController == "Dashboard" ? "bg-primary text-white fw-bold" : "text-black") rounded-1 text-decoration-none" role="button" asp-action="Index" asp-controller="Dashboard">
                             Dashboard
                         </a>
-                        <a class="px-3 py-1 sidebar-link text-start @(currentController == "EmailVerification" ? "bg-primary text-white" : "text-black") rounded-1 text-black text-decoration-none" role="button" asp-action="Index" asp-controller="EmailVerification">
+                        <a class="px-3 py-1 sidebar-link text-start @(currentController == "EmailVerification" ? "bg-primary text-white fw-bold" : "text-black") rounded-1 text-black text-decoration-none" role="button" asp-action="Index" asp-controller="EmailVerification">
                             Email Verification
                         </a>
-                        <a class="px-3 py-1 sidebar-link text-start @(currentController == "History" ? "bg-primary text-white" : "text-black") rounded-1 text-decoration-none" role="button" asp-action="Index" asp-controller="History">
+                        <a class="px-3 py-1 sidebar-link text-start @(currentController == "History" ? "bg-primary text-white fw-bold" : "text-black") rounded-1 text-decoration-none" role="button" asp-action="Index" asp-controller="History">
                             History
                         </a>
                     </aside>
@@ -64,7 +64,7 @@
         }
         
         <div class="px-0 main-content @(currentAction == "UserProfile" ? "full-width" :"")">
-            <div class="d-flex @(currentAction == "UserProfile" ? "justify-content-end":"justify-content-between")  align-content-center py-2 bg-primary position-sticky top-0 navbar-content">
+            <div class="d-flex shadow-sm @(currentAction == "UserProfile" ? "justify-content-end":"justify-content-between")  align-content-center py-2 bg-primary position-sticky top-0 navbar-content">
                 <button class="btn d-md-none  @(currentAction == "UserProfile" ? "d-none":"") ms-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
                     <i class="bi bi-list fs-4 text-white"></i>
                 </button>
@@ -98,7 +98,7 @@
                 </div>
             </div>
        
-            <div class="container-fluid">
+            <div class="container-fluid append-container">
                 <main role="main" class="pb-3">
                     @RenderBody()
                 </main>

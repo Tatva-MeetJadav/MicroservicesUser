@@ -25,6 +25,8 @@ namespace MicroservicesUser.Models.Models
 
         [Column(TypeName = "varchar(20)")]
         public Status Status { get; set; }
+        
+        public bool IsDeleted { get; set; }
     }
 }
 

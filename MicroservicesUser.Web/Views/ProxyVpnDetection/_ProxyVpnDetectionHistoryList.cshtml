@@ -39,7 +39,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Detailed View</h5>
+                <h5 class="modal-title text-primary fw-bold">Detailed View</h5>
                 <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
@@ -62,9 +62,9 @@
             </tr>
         </thead>
         <tbody>
-            @if (Model.ProxyVpnDetectionHistoryList != null)
+            @if (Model.ProxyVpnDetectionHistoryList != null && Model.ProxyVpnDetectionHistoryList.Count != 0)
             {
-                @foreach (var user in Model.ProxyVpnDetectionHistoryList)
+                @foreach (ProxyVpnDetectionHistoryListVM user in Model.ProxyVpnDetectionHistoryList)
                 {
                     <tr class="border-bottom">
                         <td class="text-secondary">@serialNumber</td>
@@ -94,6 +94,12 @@
                     </tr>
                     serialNumber = serialNumber + 1;
                 }
+            }
+            else
+            {
+                <tr class="border-bottom">
+                    <td colspan="8" class="text-center">No records found.</td>
+                </tr>
             }
 
         </tbody>

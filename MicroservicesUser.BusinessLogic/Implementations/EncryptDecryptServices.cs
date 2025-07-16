@@ -26,13 +26,13 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         {
             byte[] key = Convert.FromBase64String(_configuration["EncryptId:Key"] ?? string.Empty);
             byte[] iv = Convert.FromBase64String(_configuration["EncryptId:IV"] ?? string.Empty);
-            using var aes = Aes.Create();
+            using Aes aes = Aes.Create();
             aes.Key = key;
             aes.IV = iv;
-            using var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-            using var ms = new MemoryStream();
-            using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-            using (var sw = new StreamWriter(cs))
+            using ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+            using MemoryStream ms = new();
+            using (CryptoStream cs = new(ms, encryptor, CryptoStreamMode.Write))
+            using (StreamWriter sw = new(cs))
             {
                 sw.Write(id.ToString());
             }
@@ -51,13 +51,13 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                 case 3: incoming += "="; break;
             }
             byte[] buffer = Convert.FromBase64String(incoming);
-            using var aes = Aes.Create();
+            using Aes aes = Aes.Create();
             aes.Key = key;
             aes.IV = iv;
-            using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-            using var ms = new MemoryStream(buffer);
-            using var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read);
-            using var sr = new StreamReader(cs);
+            using ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+            using MemoryStream ms = new(buffer);
+            using CryptoStream cs = new(ms, decryptor, CryptoStreamMode.Read);
+            using StreamReader sr = new(cs);
             string decrypted = sr.ReadToEnd();
             return int.Parse(decrypted);
         }

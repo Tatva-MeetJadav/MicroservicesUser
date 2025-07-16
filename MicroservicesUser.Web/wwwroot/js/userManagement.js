@@ -133,7 +133,6 @@ $(document).on("click", ".sort-filter", function () {
     } else {
         orderOfSorting = "asc";
     }
-    var currentPage = parseInt($(".pagination-info").data("current-page"));
     var pageSize = $(".items-per-page").val();
-    fetchUserList(currentPage, pageSize);
+    fetchUserList(1, pageSize);
 });

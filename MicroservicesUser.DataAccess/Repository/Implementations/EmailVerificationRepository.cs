@@ -1,3 +1,4 @@
+using System.Text.Json;
 using MicroservicesUser.DataAccess.Data;
 using MicroservicesUser.DataAccess.Repository.Interfaces;
 using MicroservicesUser.Models.DTO;
@@ -40,7 +41,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             if (paginationVM.ColumnNameForFilter == "Valid" && paginationVM.FilterValue == "True")
             {
                 result = result.Where(u =>
-                u.EmailResponseParam.RootElement.TryGetProperty("valid", out var validProp) &&
+                u.EmailResponseParam.RootElement.TryGetProperty("valid", out JsonElement validProp) &&
                 validProp.GetBoolean()).ToList();
             }
 
@@ -64,11 +65,5 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             return (result, count);
         }
 
-        public async Task DeleteByUserId(int id)
-        {
-            List<EmailVerification> emailVerifications = await _dbContext.EmailVerifications.Where(x => x.UserId == id).ToListAsync();
-            _dbContext.RemoveRange(emailVerifications);
-            await _dbContext.SaveChangesAsync();
-        }
     }
 }

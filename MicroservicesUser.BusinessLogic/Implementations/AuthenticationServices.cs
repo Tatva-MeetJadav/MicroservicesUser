@@ -45,13 +45,21 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             User? ifAlreadyExist = await _userRepository.GetByEmailAsync(registerVM.Email);
             if (ifAlreadyExist == null)
             {
-                string passwordHash = _encryptDecryptServices.EncryptPassword(registerVM.Password);
-                registerVM.Password = passwordHash;
-                User user = _mapper.Map<User>(registerVM);
-                user.CreatedAt = DateTime.UtcNow.ToLocalTime();
-                user.UpdatedAt = DateTime.UtcNow.ToLocalTime();
-                await _userRepository.AddAsync(user);
-                return Messages.SuccessMessage;
+                User? ifAlreadyExistWithUsername = await _userRepository.GetByUsernameAsync(registerVM.Username);
+                if (ifAlreadyExistWithUsername == null)
+                {
+                    string passwordHash = _encryptDecryptServices.EncryptPassword(registerVM.Password);
+                    registerVM.Password = passwordHash;
+                    User user = _mapper.Map<User>(registerVM);
+                    user.CreatedAt = DateTime.UtcNow.ToLocalTime();
+                    user.UpdatedAt = DateTime.UtcNow.ToLocalTime();
+                    await _userRepository.AddAsync(user);
+                    return Messages.SuccessMessage;
+                }
+                else
+                {
+                    return Messages.DuplicateUsername;
+                }
             }
             else
             {
@@ -92,7 +100,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                                         CreatedAt = DateTime.UtcNow.ToLocalTime(),
                                         Status = Status.Success,
                                         ProxyVpnRequestParam = JsonDocument.Parse(JsonConvert.SerializeObject(requestDTO)),
-                                        ProxyVpnResponseParam = JsonDocument.Parse(JsonConvert.SerializeObject("{}")),
+                                        ProxyVpnResponseParam = JsonDocument.Parse(JsonConvert.SerializeObject(new ProxyAndVpnDetectionRequestDTO())),
                                     };
                                     await _proxyVpnDetectionRepository.AddAsync(proxyAndVpnDetectionFailed);
                                 }

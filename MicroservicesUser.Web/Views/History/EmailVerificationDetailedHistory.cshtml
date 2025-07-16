@@ -275,7 +275,7 @@
                                 @if (responseVM?.MxRecords != null && responseVM.MxRecords.Any())
                                 {
                                     <ul class="mb-0 ps-3">
-                                        @foreach (var mx in responseVM.MxRecords)
+                                        @foreach (string mx in responseVM.MxRecords)
                                         {
                                             <li>@mx</li>
                                         }
@@ -299,7 +299,7 @@
                                 @if (responseVM?.ARecords != null && responseVM.ARecords.Any())
                                 {
                                     <ul class="mb-0 ps-3">
-                                        @foreach (var a in responseVM.ARecords)
+                                        @foreach (string a in responseVM.ARecords)
                                         {
                                             <li>@a</li>
                                         }

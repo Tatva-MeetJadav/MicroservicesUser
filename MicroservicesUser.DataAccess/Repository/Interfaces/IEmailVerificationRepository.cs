@@ -8,6 +8,5 @@ namespace MicroservicesUser.DataAccess.Repository.Interfaces
         Task AddAsync(EmailVerification emailVerification);
         Task<(List<EmailVerification>, int)> GetListByUserId(int userId, PaginationDTO paginationVM);
         Task<EmailVerification> GetAsync(int id);
-        Task DeleteByUserId(int id);
     }
 }

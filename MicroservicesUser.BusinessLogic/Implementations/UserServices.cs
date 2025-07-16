@@ -13,15 +13,11 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly IEncryptDecryptServices _encryptDecryptServices;
-        private readonly IEmailVerificationRepository _emailVerificationRepository;
-        private readonly IProxyVpnDetectionRepository _proxyVpnDetectionRepository;
-        public UserServices(IUserRepository userRepository, IMapper mapper, IEncryptDecryptServices encryptDecryptServices, IEmailVerificationRepository emailVerificationRepository, IProxyVpnDetectionRepository proxyVpnDetectionRepository)
+        public UserServices(IUserRepository userRepository, IMapper mapper, IEncryptDecryptServices encryptDecryptServices)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _encryptDecryptServices = encryptDecryptServices;
-            _emailVerificationRepository = emailVerificationRepository;
-            _proxyVpnDetectionRepository = proxyVpnDetectionRepository;
         }
 
         public async Task<UserListVM> GetUserList(PaginationDTO paginationDTO)
@@ -57,8 +53,6 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             user!.IsDeleted = true;
             user.IsBlocked = true;
             user.UpdatedAt = DateTime.UtcNow.ToLocalTime();
-            await _emailVerificationRepository.DeleteByUserId(originalId);
-            await _proxyVpnDetectionRepository.DeleteByUserId(originalId);
             await _userRepository.UpdateAsync(user);
             UserVM userVM = _mapper.Map<UserVM>(user);
             return userVM;

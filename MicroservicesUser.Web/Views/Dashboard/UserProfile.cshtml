@@ -6,7 +6,7 @@
 <div class="container-fluid mt-3">
     <div class="w-100">
         <div>
-            <div class="form-card">
+            <div class="form-card bg-light">
                 <div class="profile-card">
                     <div class="profile-header-section">
                         <div class="d-flex gap-3 align-items-center">
@@ -61,7 +61,7 @@
                             <span class="text-danger" asp-validation-for="LastName"></span>
                         </div>
 
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-4 col-12">
                             <label for="ProfilePhoto" class="form-label icon-label">
                                 <i class="bi bi-camera text-primary"></i>
                                 Profile Photo
@@ -71,7 +71,7 @@
                             <span class="profilePhotoError text-danger"></span>
                         </div>
 
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-4 col-12">
                             <label for="PhoneNumber" class="form-label icon-label">
                                 <i class="bi bi-telephone text-primary"></i>
                                 Phone Number
@@ -80,7 +80,15 @@
                                 placeholder="Enter your phone number" />
                             <span class="text-danger" asp-validation-for="PhoneNumber"></span>
                         </div>
-
+                        <div class="col-md-4 col-12">
+                            <label for="PhoneNumber" class="form-label icon-label">
+                                <i class="bi bi-person-circle"></i>
+                                Username
+                            </label>
+                            <input type="text" class="form-control" asp-for="Username"
+                                placeholder="Enter your username" />
+                            <span class="text-danger" asp-validation-for="Username"></span>
+                        </div>
                         <div class="col-12">
                             <label for="Address" class="form-label icon-label">
                                 <i class="bi bi-geo-alt text-primary"></i>

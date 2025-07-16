@@ -1,3 +1,4 @@
+@using Microsoft.AspNetCore.Html
 @{
     int totalPages = (int)Math.Ceiling((double)Model.TotalItems / Model.PageSize);
     int currentPage = Model.CurrentPage;
@@ -20,6 +21,23 @@
             _ => "Unknown"
         };
     }
+}
+@{
+    Func<string, IHtmlContent> sortArrow = column =>
+    {
+        if (Model.ColumnNameForSorting != column)
+        {
+            return HtmlString.Empty;
+        }
+        else if (Model.OrderOfSorting == "asc")
+        {
+            return new HtmlString("<i class='bi bi-caret-up-fill ms-1'></i>");
+        }
+        else
+        {
+            return new HtmlString("<i class='bi bi-caret-down-fill ms-1'></i>");
+        }
+    };
 }
 
 @model LogListVM
@@ -54,6 +72,7 @@
                 title="Click to sort by Logged On" role="button">
                 <i class="bi bi-clock-history"></i>
                 Logged On
+                @sortArrow("CreatedAt")
             </th>
             <th scope="col" class="text-white text-nowrap">
                 <i class="bi bi-laptop"></i>
@@ -69,7 +88,7 @@
             {
                 @if (Model.Logs != null)
                 {
-                    @foreach (var item in Model.Logs)
+                    @foreach (LogVM item in Model.Logs)
                     {
                         <tr>
                             <td class="text-nowrap">@serialNumber</td>

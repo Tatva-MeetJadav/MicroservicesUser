@@ -25,5 +25,7 @@ namespace MicroservicesUser.Models.Models
 
         public User? User { get; set; }
 
+        public bool IsDeleted { get; set; }
+
     }
 }

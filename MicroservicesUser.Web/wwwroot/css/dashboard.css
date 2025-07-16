@@ -23,27 +23,6 @@
   min-height: 100vh;
 }
 
-.page-header {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem 2rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  margin-bottom: 2rem;
-}
-
-.page-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0;
-}
-
-.page-subtitle {
-  color: #64748b;
-  margin: 0;
-  font-size: 1rem;
-}
-
 .nav-pills .nav-link {
   border-radius: 8px;
   padding: 0.75rem 1.25rem;
@@ -300,4 +279,3 @@
   font-size: 1rem;
   margin: 0;
 }
-

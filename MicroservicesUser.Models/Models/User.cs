@@ -46,6 +46,7 @@ namespace MicroservicesUser.Models.Models
 
         public string? ProfilePhotoGeneratedName { get; set; }
 
-
+        [StringLength(128)]
+        public string? Username { get; set; }
     }
 }

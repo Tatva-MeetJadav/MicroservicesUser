@@ -8,6 +8,5 @@ namespace MicroservicesUser.DataAccess.Repository.Interfaces
         Task AddAsync(ProxyVpnDetection proxyVpnDetection);
         Task<ProxyVpnDetectionDashboardDTO> GetListAsync(ProxyVpnDetectionHistoryRequestDTO requestDto);
         Task<ProxyVpnDetection?> GetAsync(int id);
-        Task DeleteByUserId(int id);
     }
 }

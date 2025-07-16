@@ -1,5 +1,6 @@
 @using MicroservicesUser.Models.ViewModels.Dashboard
 @using System.Text.Json
+@using MicroservicesUser.Models.ViewModels.History
 @model EmailVerificationDashboardVM
 <div class="page-header">
     <div class="d-flex px-3 justify-content-start align-items-start flex-wrap">
@@ -23,7 +24,6 @@
             </div>
         </div>
     </div>
-
     <div class="col-12 col-sm-6 col-xl-3">
         <div class="stat-card success">
             <div class="d-flex justify-content-between align-items-start">
@@ -37,7 +37,6 @@
             </div>
         </div>
     </div>
-
     <div class="col-12 col-sm-6 col-xl-3">
         <div class="stat-card warning">
             <div class="d-flex justify-content-between align-items-start">
@@ -96,7 +95,7 @@
             </div>
 
             <div class="activity-list">
-                @foreach (var item in Model.EmailVerificationList!)
+                @foreach (EmailVerificationHistoryVM item in Model.EmailVerificationList!)
                 {
                     <div class="activity-item">
                         <div class="activity-icon @(item.ResponseStatus == "Success" ? "success" : "danger")">

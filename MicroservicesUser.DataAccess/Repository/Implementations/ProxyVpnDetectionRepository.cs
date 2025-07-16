@@ -1,3 +1,4 @@
+using System.Text.Json;
 using MicroservicesUser.DataAccess.Data;
 using MicroservicesUser.DataAccess.Repository.Interfaces;
 using MicroservicesUser.Models.DTO;
@@ -20,13 +21,6 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteByUserId(int id)
-        {
-            List<ProxyVpnDetection> proxyVpnDetections = await _context.ProxyVpnDetections.Where(u => u.UserId == id).ToListAsync();
-            _context.ProxyVpnDetections.RemoveRange(proxyVpnDetections);
-            await _context.SaveChangesAsync();
-        }
-
         public async Task<ProxyVpnDetection?> GetAsync(int id)
         {
             return await _context.ProxyVpnDetections.FirstOrDefaultAsync(u => u.Id == id);
@@ -46,25 +40,25 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             List<ProxyVpnDetection> latestEntries = data
             .GroupBy(u =>
             {
-                var json = u.ProxyVpnRequestParam;
-                var ip = json.RootElement.TryGetProperty("IpAddress", out var ipProp) ? ipProp.GetString() : "unknown";
+                JsonDocument json = u.ProxyVpnRequestParam;
+                string? ip = json.RootElement.TryGetProperty("IpAddress", out JsonElement ipProp) ? ipProp.GetString() : "unknown";
                 return new { u.UserId, IpAddress = ip };
             })
-            .Select(g => g.OrderBy(u => u.CreatedAt).First())
+            .Select(g => g.OrderByDescending(u => u.CreatedAt).First())
             .ToList();
 
             List<ProxyVpnDetectionHistoryListDTO> filteredEntries = latestEntries.Select(x =>
             {
-                int fraudScore = x.ProxyVpnResponseParam.RootElement.TryGetProperty("fraudScore", out var scoreElement)
+                int fraudScore = x.ProxyVpnResponseParam.RootElement.TryGetProperty("fraudScore", out JsonElement scoreElement)
                     ? scoreElement.GetInt16()
                     : 0;
 
                 string? riskLevel = fraudScore > 75 ? "High" :
                                     fraudScore >= 25 ? "Medium" : "Low";
 
-                bool isTor = x.ProxyVpnResponseParam.RootElement.TryGetProperty("tor", out var torElement) && torElement.GetBoolean();
-                bool isVpn = x.ProxyVpnResponseParam.RootElement.TryGetProperty("vpn", out var vpnElement) && vpnElement.GetBoolean();
-                bool isProxy = x.ProxyVpnResponseParam.RootElement.TryGetProperty("proxy", out var proxyElement) && proxyElement.GetBoolean();
+                bool isTor = x.ProxyVpnResponseParam.RootElement.TryGetProperty("tor", out JsonElement torElement) && torElement.GetBoolean();
+                bool isVpn = x.ProxyVpnResponseParam.RootElement.TryGetProperty("vpn", out JsonElement vpnElement) && vpnElement.GetBoolean();
+                bool isProxy = x.ProxyVpnResponseParam.RootElement.TryGetProperty("proxy", out JsonElement proxyElement) && proxyElement.GetBoolean();
 
                 string? connectionType = isTor ? "TOR" :
                                          isVpn ? "VPN" :

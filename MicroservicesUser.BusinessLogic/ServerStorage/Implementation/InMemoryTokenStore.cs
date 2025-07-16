@@ -17,7 +17,7 @@ public class InMemoryTokenStore : ITokenStore
 
     public IEnumerable<(string userId, string token, DateTime expiresAt)> GetExpiredTokens(DateTime utcNow)
     {
-        foreach (var kvp in _tokens)
+        foreach (KeyValuePair<string, (string UserId, DateTime ExpiresAt)> kvp in _tokens)
         {
             if (kvp.Value.ExpiresAt <= utcNow)
             {
@@ -28,10 +28,10 @@ public class InMemoryTokenStore : ITokenStore
 
     public (string userId, string token, DateTime expiresAt)? GetNextExpiringToken()
     {
-        var next = _tokens.OrderByDescending(kvp => kvp.Value.ExpiresAt).FirstOrDefault();
+        KeyValuePair<string, (string UserId, DateTime ExpiresAt)> next = _tokens.OrderByDescending(kvp => kvp.Value.ExpiresAt).FirstOrDefault();
         if (next.Key != null)
         {
-            var (userId, expiresAt) = next.Value;
+            (string userId, DateTime expiresAt) = next.Value;
             return (userId, next.Key, expiresAt);
         }
         return null;

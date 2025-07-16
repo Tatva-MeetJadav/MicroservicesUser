@@ -29,9 +29,8 @@ $('#showResultBtn').on('click', function () {
 
 $('#dropdownSearch').on('keyup', function () {
     let searchTerm = $(this).val().toLowerCase();
-
     $('#dropdownMenu li').each(function () {
-        let emailSpan = $(this).find('span').last(); // Assuming email is in the last span
+        let emailSpan = $(this).find('span').last();
         if (emailSpan.length) {
             let emailText = emailSpan.text().toLowerCase();
             if (emailText.includes(searchTerm)) {
@@ -42,22 +41,6 @@ $('#dropdownSearch').on('keyup', function () {
         }
     });
 });
-
-
-$('#selectAllUsers').on('change', function () {
-    let isChecked = $(this).is(':checked');
-    $('#dropdownMenu input[type="checkbox"]').prop('checked', isChecked);
-});
-
-
-$('#dropdownMenu input[type="checkbox"]').on('change', function () {
-    if (!$(this).is('#selectAllUsers')) {
-        let allChecked = $('#dropdownMenu input[type="checkbox"]').not('#selectAllUsers').length ===
-            $('#dropdownMenu input[type="checkbox"]:checked').not('#selectAllUsers').length;
-        $('#selectAllUsers').prop('checked', allChecked);
-    }
-});
-
 
 function fetchProxyVpnDetectionHistoryList(page, pageSize) {
     var searchQuery = $('input[name="searchQueryForHistory"]').val();
@@ -146,3 +129,52 @@ $(document).on('click', '.view-detail-eye', function () {
 $(document).ready(function () {
     renderPieChart();
 })
+
+$('#selectAllActive').on('change', function () {
+    var isChecked = $(this).is(':checked');
+    $('.active-checkbox').prop('checked', isChecked);
+    updateGlobalSelectAll();
+});
+
+$('#selectAllBlocked').on('change', function () {
+    var isChecked = $(this).is(':checked');
+    $('.blocked-checkbox').prop('checked', isChecked);
+    updateGlobalSelectAll();
+});
+
+$('#selectAllInactive').on('change', function () {
+    var isChecked = $(this).is(':checked');
+    $('.inactive-checkbox').prop('checked', isChecked);
+    updateGlobalSelectAll();
+});
+
+$('#selectAllUsers').on('change', function () {
+    var isChecked = $(this).is(':checked');
+    $('.user-checkbox').prop('checked', isChecked);
+    $('#selectAllActive, #selectAllBlocked, #selectAllInactive').prop('checked', isChecked);
+});
+
+
+$('.user-checkbox').on('change', function () {
+    updateGroupCheckbox('active');
+    updateGroupCheckbox('blocked');
+    updateGroupCheckbox('inactive');
+    updateGlobalSelectAll();
+});
+
+function updateGroupCheckbox(group) {
+    var all = $('.' + group + '-checkbox');
+    var checked = all.filter(':checked');
+    var groupSelectAllId = '#selectAll' + capitalize(group);
+    $(groupSelectAllId).prop('checked', all.length === checked.length);
+}
+
+function updateGlobalSelectAll() {
+    var all = $('.user-checkbox');
+    var checked = all.filter(':checked');
+    $('#selectAllUsers').prop('checked', all.length === checked.length);
+}
+
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}

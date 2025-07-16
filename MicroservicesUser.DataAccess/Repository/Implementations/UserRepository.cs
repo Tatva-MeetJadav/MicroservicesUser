@@ -24,6 +24,16 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             return await _context.Users.FirstOrDefaultAsync(x => x.Email == email && x.IsDeleted == false);
         }
 
+        public async Task<User?> GetByUsernameAsync(string username)
+        {
+            return await _context.Users.FirstOrDefaultAsync(x => x.Username == username && x.IsDeleted == false);
+        }
+
+        public async Task<User?> GetByUsernameAndNotById(string username, int id)
+        {
+            return await _context.Users.FirstOrDefaultAsync(x => x.Username == username && x.Id != id && x.IsDeleted == false);
+        }
+
         public async Task<User?> GetByIdAsync(int id)
         {
             return await _context.Users.FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted == false);
@@ -47,10 +57,6 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             {
                 users = users.Where(x => x.Email.ToLower().Contains(paginationDTO.SearchQuery.ToLower()) || x.FirstName.ToLower().Contains(paginationDTO.SearchQuery.ToLower()) || x.LastName.ToLower().Contains(paginationDTO.SearchQuery.ToLower())).ToList();
             }
-            users = users.OrderBy(u => u.Id).ToList();
-            int totalCount = users.Count;
-            users = users.Skip((paginationDTO.CurrentPage - 1) * paginationDTO.PageSize).Take(paginationDTO.PageSize).ToList();
-
             if (paginationDTO.OrderOfSorting == "asc")
             {
                 if (paginationDTO.ColumnNameForSorting == "User")
@@ -64,6 +70,10 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 else if (paginationDTO.ColumnNameForSorting == "Status")
                 {
                     users = users.OrderBy(u => u.IsBlocked).ThenBy(u => u.IsDeleted).ToList();
+                }
+                else
+                {
+                    users = users.OrderByDescending(u => u.CreatedAt).ToList();
                 }
             }
             else
@@ -81,6 +91,9 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                     users = users.OrderByDescending(u => u.IsDeleted).ThenByDescending(u => u.IsBlocked).ToList();
                 }
             }
+            int totalCount = users.Count;
+            users = users.Skip((paginationDTO.CurrentPage - 1) * paginationDTO.PageSize).Take(paginationDTO.PageSize).ToList();
+
             return (users, totalCount);
         }
     }

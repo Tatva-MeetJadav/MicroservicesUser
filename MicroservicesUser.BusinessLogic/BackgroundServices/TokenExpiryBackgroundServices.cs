@@ -18,11 +18,11 @@ public class TokenExpiryBackgroundService : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            var nextToken = _tokenStore.GetNextExpiringToken();
+            (string userId, string token, DateTime expiresAt)? nextToken = _tokenStore.GetNextExpiringToken();
             if (nextToken != null)
             {
-                var (userId, token, expiresAt) = nextToken.Value;
-                var now = DateTime.UtcNow.ToLocalTime();
+                (string userId, string token, DateTime expiresAt) = nextToken.Value;
+                DateTime now = DateTime.UtcNow.ToLocalTime();
                 if (expiresAt <= now)
                 {
                     await _hubContext.Clients.User(userId).SendAsync("ForceLogout", cancellationToken: stoppingToken);

@@ -47,11 +47,15 @@ namespace MicroservicesUser.BusinessLogic.Implementations
 
         public async Task<string> EditUserProfile(ProfileVM profileVM, IFormFile file)
         {
+            User? ifExistAlreadyUsername = await _userRepository.GetByUsernameAndNotById(profileVM.Username, profileVM.Id);
+            if (ifExistAlreadyUsername != null)
+            {
+                return Messages.DuplicateUsername;
+            }
             User? user = await _userRepository.GetByIdAsync(profileVM.Id);
             if (user != null)
             {
                 _mapper.Map(profileVM, user);
-
                 if (file != null)
                 {
                     string imageUrl = await UploadFile.UploadPhotoAsync(file, _webHostEnvironment.WebRootPath, _configuration["PhotosPath:ProfilePhoto"] ?? string.Empty) ?? string.Empty;

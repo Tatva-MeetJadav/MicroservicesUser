@@ -5,10 +5,6 @@ $('.sidebar-toggle').on('click', function () {
     mainContent.toggleClass('full-width');
 });
 
-$(function () {
-    $('[data-bs-toggle="popover"]').popover();
-});
-
 $('.changePasswordModal').on('show.bs.modal', function () {
     var form = $('.change-password-form');
     form[0].reset();
