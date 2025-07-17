@@ -1,11 +1,12 @@
 ﻿using MicroservicesUser.BusinessLogic.Interfaces;
+using MicroservicesUser.Models.DTO;
+using MicroservicesUser.Models.ViewModels.Dashboard;
 using MicroservicesUser.Models.ViewModels.EmailVerification;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MicroservicesUser.Web.Controllers
 {
-    [Authorize(Roles = "User")]
     public class EmailVerificationController : Controller
     {
         private readonly IEmailVerificationServices _emailVerificationServices;
@@ -14,12 +15,14 @@ namespace MicroservicesUser.Web.Controllers
             _emailVerificationServices = emailVerificationServices;
         }
 
+        [Authorize(Roles = "User")]
         [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
 
+        [Authorize(Roles = "User")]
         [HttpPost]
         public async Task<IActionResult> Index(EmailVerificationRequestVM emailVerificationVM)
         {
@@ -33,6 +36,22 @@ namespace MicroservicesUser.Web.Controllers
             {
                 return StatusCode(500, new { result = "failed" });
             }
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AdminEmailVerification()
+        {
+            List<int> userId = new();
+            AdminEmailVerificationDashboardVM dashboardVM = await _emailVerificationServices.GetAdminEmailVerificationDashboard(userId);
+            return View(dashboardVM);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> GetEmailVerificationHistory([FromBody] AdminEmailVerificationHistoryRequestDTO requestDTO)
+        {
+            AdminEmailVerificationDashboardVM dashboardVM = await _emailVerificationServices.GetAdminEmailVerificationHistoryList(requestDTO);
+            return PartialView("_AdminEmailVerificationHistoryList", dashboardVM);
         }
     }
 }

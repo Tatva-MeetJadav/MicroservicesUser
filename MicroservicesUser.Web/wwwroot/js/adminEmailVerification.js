@@ -1,3 +1,68 @@
+function renderChart() {
+    var chartCanvas = $('#verificationLineChart');
+    var labels = JSON.parse(chartCanvas.attr('data-labels') || '[]');
+    var dataPoints = JSON.parse(chartCanvas.attr('data-scans') || '[]');
+    var ctx = chartCanvas[0].getContext('2d');
+    var verificationLineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Verified Emails',
+                data: dataPoints,
+                borderColor: 'rgba(54, 162, 235, 1)',
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                fill: true,
+                tension: 0.3,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                borderWidth: 2,
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Time',
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 10 },
+                    title: {
+                        display: true,
+                        text: 'Scans',
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: { display: true, position: 'top' },
+                tooltip: { mode: 'index', intersect: false }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            }
+        }
+    });
+
+    return verificationLineChart;
+}
+
+$(document).ready(function () {
+    renderChart();
+});
+
 var currentlySelectedUserIds = [];
 var connectionType = "";
 var riskLevel = "";
@@ -42,7 +107,7 @@ $('#dropdownSearch').on('keyup', function () {
     });
 });
 
-function fetchProxyVpnDetectionHistoryList(page, pageSize) {
+function fetchEmailVerificationHistoryList(page, pageSize) {
     var searchQuery = $('input[name="searchQueryForHistory"]').val();
     var paginationDTO =
     {
@@ -50,7 +115,7 @@ function fetchProxyVpnDetectionHistoryList(page, pageSize) {
         currentPage: page,
         pageSize: pageSize,
     }
-    var proxyVpnDetectionHistoryDTO =
+    var emailVerificationHistoryDTO =
     {
         userIds: currentlySelectedUserIds,
         paginationDTO: paginationDTO,
@@ -58,20 +123,20 @@ function fetchProxyVpnDetectionHistoryList(page, pageSize) {
         riskStatus: riskLevel
     }
     $.ajax({
-        url: "/ProxyVpnDetection/GetProxyVpnDetectionHistory",
+        url: "/EmailVerification/GetEmailVerificationHistory",
         type: "POST",
         contentType: "application/json",
         traditional: true,
-        data: JSON.stringify(proxyVpnDetectionHistoryDTO),
+        data: JSON.stringify(emailVerificationHistoryDTO),
         success: function (response) {
-            $(".proxy-vpn-detection-history-list").html(response);
+            $(".email-verification-history-list").html(response);
         },
     });
 }
 
 
 $(document).on("change", ".items-per-page", function () {
-    fetchProxyVpnDetectionHistoryList(1, $(this).val());
+    fetchEmailVerificationHistoryList(1, $(this).val());
 });
 
 $(document).on("click", ".prev-page", function () {
@@ -81,7 +146,7 @@ $(document).on("click", ".prev-page", function () {
         return false;
     }
     var currentPage = parseInt($(".pagination-info").data("current-page"));
-    fetchProxyVpnDetectionHistoryList(currentPage - 1, $(".items-per-page").val());
+    fetchEmailVerificationHistoryList(currentPage - 1, $(".items-per-page").val());
 });
 
 $(document).on("click", ".next-page", function () {
@@ -91,37 +156,31 @@ $(document).on("click", ".next-page", function () {
         return false;
     }
     var currentPage = parseInt($(".pagination-info").data("current-page"));
-    fetchProxyVpnDetectionHistoryList(currentPage + 1, $(".items-per-page").val());
+    fetchEmailVerificationHistoryList(currentPage + 1, $(".items-per-page").val());
 });
 
 $(document).on('input', '.search-query', function () {
     var pageSize = $(".items-per-page").val();
-    fetchProxyVpnDetectionHistoryList(1, pageSize);
+    fetchEmailVerificationHistoryList(1, pageSize);
 })
 
 $(document).on("click", ".page-index", function () {
     var page = parseInt($(this).data("page"));
     var pageSize = $(".items-per-page").val();
-    fetchProxyVpnDetectionHistoryList(page, pageSize);
+    fetchEmailVerificationHistoryList(page, pageSize);
 });
 
-$(document).on('change', '.risk-filter, .connection-filter', function () {
-    var risk = $('.risk-filter').val();
-    var connection = $('.connection-filter').val();
-    connectionType = connection;
-    riskLevel = risk;
-    fetchProxyVpnDetectionHistoryList(1, $(".items-per-page").val());
-});
+
 
 $(document).on('click', '.view-detail-eye', function () {
     var id = parseInt($(this).find('input').val());
     $.ajax({
-        url: "/EmailVerification/GetEmailVerificationDetail",
+        url: "/ProxyVpnDetection/GetProxyVpnViewDetail",
         type: "GET",
         data: { id: id },
         success: function (response) {
-            $(".email-verification-view-detail-body").html(response);
-            $('.view-detail-proxy-vpn-detection').modal('show');
+            $(".proxy-vpn-view-detail-body").html(response);
+            $('.view-detail-email-verification').modal('show');
         },
     });
 });

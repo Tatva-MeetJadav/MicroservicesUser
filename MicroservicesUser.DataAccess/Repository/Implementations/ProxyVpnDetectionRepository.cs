@@ -53,17 +53,13 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                     ? scoreElement.GetInt16()
                     : 0;
 
-                string? riskLevel = fraudScore > 75 ? "High" :
-                                    fraudScore >= 25 ? "Medium" : "Low";
+                string? riskLevel = fraudScore > 75 ? "High" : fraudScore >= 25 ? "Medium" : "Low";
 
                 bool isTor = x.ProxyVpnResponseParam.RootElement.TryGetProperty("tor", out JsonElement torElement) && torElement.GetBoolean();
                 bool isVpn = x.ProxyVpnResponseParam.RootElement.TryGetProperty("vpn", out JsonElement vpnElement) && vpnElement.GetBoolean();
                 bool isProxy = x.ProxyVpnResponseParam.RootElement.TryGetProperty("proxy", out JsonElement proxyElement) && proxyElement.GetBoolean();
 
-                string? connectionType = isTor ? "TOR" :
-                                         isVpn ? "VPN" :
-                                         isProxy ? "Proxy" :
-                                         "Normal";
+                string? connectionType = isTor ? "TOR" : isVpn ? "VPN" : isProxy ? "Proxy" : "Normal";
 
                 return new ProxyVpnDetectionHistoryListDTO
                 {

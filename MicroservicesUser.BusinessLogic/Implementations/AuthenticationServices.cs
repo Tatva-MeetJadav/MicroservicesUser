@@ -98,7 +98,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                                     {
                                         UserId = user.Id,
                                         CreatedAt = DateTime.UtcNow.ToLocalTime(),
-                                        Status = Status.Success,
+                                        Status = Status.Failed,
                                         ProxyVpnRequestParam = JsonDocument.Parse(JsonConvert.SerializeObject(requestDTO)),
                                         ProxyVpnResponseParam = JsonDocument.Parse(JsonConvert.SerializeObject(new ProxyAndVpnDetectionRequestDTO())),
                                     };

@@ -16,6 +16,116 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             _dbContext = _DbContext;
         }
 
+        public async Task<AdminEmailVerificationDashboardDTO> GetAdminEmailVerificationDashboardAsync(List<int> userIds)
+        {
+            DateTime now = DateTime.Now;
+            DateTime today = DateTime.Today;
+
+            IQueryable<EmailVerification> baseQuery = _dbContext.EmailVerifications
+                .Where(ev => userIds.Contains(ev.UserId) || userIds.Count == 0);
+
+            List<User> users = _dbContext.Users.Where(u => userIds.Contains(u.Id) || userIds.Count == 0).ToList();
+
+            int currentInterval = (int)((now - today).TotalHours / 3);
+            var intervalCounts = Enumerable.Range(0, currentInterval + 1)
+                .Select(i =>
+                {
+                    DateTime intervalStart = today.AddHours(i * 3);
+                    DateTime intervalEnd = intervalStart.AddHours(3);
+                    string label = $"{intervalStart:hh:mm tt}";
+                    int count = baseQuery.Count(ev =>
+                        ev.CreatedAt >= intervalStart && ev.CreatedAt < intervalEnd);
+                    return new { label, count };
+                })
+                .ToList();
+
+
+            List<EmailVerificationDateTimeStatesDTO> ChartData = intervalCounts
+            .Select(x => new EmailVerificationDateTimeStatesDTO
+            {
+                EmailVerificationCount = x.count,
+                CreatedAt = x.label
+            }).ToList();
+
+
+            int totalItems = await baseQuery.CountAsync();
+            List<EmailVerification> emailVerifications = await baseQuery
+                .Take(5)
+                .Include(ev => ev.User)
+                .ToListAsync();
+            List<AdminEmailVerificationHistoryListDTO> historyList = new();
+            int validCount = 0;
+            int fraudScoreSum = 0;
+            int fraudScoreCount = 0;
+            int successVerifications = emailVerifications.Count(ev => ev.Status == Status.Success);
+
+            foreach (EmailVerification ev in emailVerifications)
+            {
+                JsonElement responseJson = ev.EmailResponseParam.RootElement;
+                JsonElement requestJson = ev.EmailRequestParam.RootElement;
+
+                string? email = null;
+                bool valid = false;
+                int fraudScore = 0;
+
+                if (requestJson.TryGetProperty("Email", out JsonElement emailProp))
+                {
+                    email = emailProp.GetString();
+                }
+
+                if (responseJson.TryGetProperty("valid", out JsonElement validProp))
+                {
+                    valid = validProp.GetBoolean();
+                }
+
+                if (responseJson.TryGetProperty("fraudScore", out JsonElement scoreProp))
+                {
+                    fraudScore = scoreProp.GetInt32();
+                    fraudScoreSum += fraudScore;
+                    fraudScoreCount++;
+                }
+
+                if (valid)
+                {
+                    validCount++;
+                }
+
+                AdminEmailVerificationHistoryListDTO historyItem = new AdminEmailVerificationHistoryListDTO
+                {
+                    Id = ev.Id,
+                    Username = ev.User?.Username ?? "N/A",
+                    VerifiedEmail = email,
+                    FraudScore = fraudScore,
+                    ScannedStatus = ev.Status.ToString(),
+                    Valid = valid
+                };
+
+                historyList.Add(historyItem);
+            }
+
+            double averageFraudScore = fraudScoreCount > 0 ? (double)fraudScoreSum / fraudScoreCount : 0;
+            double successRate = totalItems > 0 ? (double)successVerifications / totalItems * 100 : 0;
+
+            AdminEmailVerificationDashboardDTO result = new()
+            {
+                TotalEmailVerifications = totalItems,
+                ValidEmails = validCount,
+                AverageFraudScore = Math.Round(averageFraudScore, 2),
+                SuccessRate = Math.Round(successRate, 2),
+                EmailVerificationHistoryList = historyList,
+                TotalItems = totalItems,
+                EmailVerificationDateTimeStates = ChartData,
+                DashboardUsers = users.Select(u => new DashboardUserDTO
+                {
+                    UserId = u.Id,
+                    Username = u.Username,
+                    Status = u.IsDeleted ? "Inactive" : u.IsBlocked ? "Blocked" : "Active",
+                }).ToList(),
+            };
+            return result;
+        }
+
+
         public async Task<ChartDTO> GetEmailVerificationChartByRangeAsync(int userId, string range)
         {
             List<int> scans = new();
@@ -28,13 +138,13 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
 
             if (range == "today")
             {
-                int currentInterval = (int)((now - today).TotalHours / 2);
+                int currentInterval = (int)((now - today).TotalHours / 3);
                 var intervalCounts = Enumerable.Range(0, currentInterval + 1)
                     .Select(i =>
                     {
-                        DateTime intervalStart = today.AddHours(i * 2);
-                        DateTime intervalEnd = intervalStart.AddHours(2);
-                        string label = $"{intervalStart:hh:mm tt}-{intervalEnd.AddMinutes(-1):hh:mm tt}";
+                        DateTime intervalStart = today.AddHours(i * 3);
+                        DateTime intervalEnd = intervalStart.AddHours(3);
+                        string label = $"{intervalStart:hh:mm tt}";
                         int count = allScans.Count(ev =>
                             ev.CreatedAt >= intervalStart && ev.CreatedAt < intervalEnd);
                         return new { label, count };
@@ -122,7 +232,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 successRate = counts.SuccessCount * 100.0 / counts.TotalCount;
             }
 
-            int currentInterval = (int)((now - today).TotalHours / 2);
+            int currentInterval = (int)((now - today).TotalHours / 3);
 
             List<EmailVerification> todayVerifications = await _dbContext.EmailVerifications
             .Where(u => u.UserId == userId && u.CreatedAt >= today)
@@ -132,9 +242,9 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             List<(string label, int count)> intervalCounts = Enumerable.Range(0, currentInterval + 1)
             .Select(i =>
             {
-                DateTime intervalStart = today.AddHours(i * 2);
-                DateTime intervalEnd = intervalStart.AddHours(2);
-                string label = $"{intervalStart:hh:mm tt}-{intervalEnd.AddMinutes(-1):hh:mm tt}";
+                DateTime intervalStart = today.AddHours(i * 3);
+                DateTime intervalEnd = intervalStart.AddHours(3);
+                string label = $"{intervalStart:hh:mm tt}";
                 int count = todayVerifications.Where(u => u.UserId == userId).Count(ev =>
                     ev.CreatedAt >= intervalStart && ev.CreatedAt < intervalEnd);
                 return (label, count);

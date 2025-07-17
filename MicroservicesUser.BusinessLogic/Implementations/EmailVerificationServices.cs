@@ -1,10 +1,12 @@
 ﻿using System.Text.Json;
+using AutoMapper;
 using MicroservicesUser.BusinessLogic.Interfaces;
 using MicroservicesUser.Common.ResourcesFiles;
 using MicroservicesUser.DataAccess.Repository.Interfaces;
 using MicroservicesUser.Models.DTO;
 using MicroservicesUser.Models.Enums;
 using MicroservicesUser.Models.Models;
+using MicroservicesUser.Models.ViewModels.Dashboard;
 using MicroservicesUser.Models.ViewModels.EmailVerification;
 using MicroservicesUser.Models.ViewModels.History;
 using Microsoft.Extensions.Configuration;
@@ -19,14 +21,18 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         private readonly IEmailVerificationRepository _emailVerificationRepository;
         private readonly IJwtServices _jwtServices;
         private readonly IEncryptDecryptServices _encryptDecryptServices;
+        private readonly IDashboardRepository _dashboardRepository;
+        private readonly IMapper _mapper;
 
-        public EmailVerificationServices(IGenericAPIClientServices apiClient, IConfiguration configuration, IEmailVerificationRepository emailVerificationRepository, IJwtServices jwtServices, IEncryptDecryptServices encryptDecryptServices)
+        public EmailVerificationServices(IGenericAPIClientServices apiClient, IConfiguration configuration, IEmailVerificationRepository emailVerificationRepository, IJwtServices jwtServices, IEncryptDecryptServices encryptDecryptServices, IDashboardRepository dashboardRepository, IMapper mapper)
         {
             _apiClient = apiClient;
             _configuration = configuration;
             _emailVerificationRepository = emailVerificationRepository;
             _jwtServices = jwtServices;
             _encryptDecryptServices = encryptDecryptServices;
+            _dashboardRepository = dashboardRepository;
+            _mapper = mapper;
         }
 
         public async Task<EmailVerificationListHistoryVM> GetEmailVerificationListHistory(PaginationDTO PaginationDTO, string token)
@@ -120,6 +126,20 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                 ResponseVM = responseVM,
                 CreatedAt = emailVerification!.CreatedAt
             };
+        }
+
+        public async Task<AdminEmailVerificationDashboardVM> GetAdminEmailVerificationDashboard(List<int> userIds)
+        {
+            AdminEmailVerificationDashboardDTO dashboardDTO = await _dashboardRepository.GetAdminEmailVerificationDashboardAsync(userIds);
+            AdminEmailVerificationDashboardVM dashboardVM = _mapper.Map<AdminEmailVerificationDashboardVM>(dashboardDTO);
+            return dashboardVM;
+        }
+
+        public async Task<AdminEmailVerificationDashboardVM> GetAdminEmailVerificationHistoryList(AdminEmailVerificationHistoryRequestDTO requestDTO)
+        {
+            AdminEmailVerificationDashboardDTO dashboardDTO = await _emailVerificationRepository.GetEmailVerificationHistoryList(requestDTO);
+            AdminEmailVerificationDashboardVM dashboardVM = _mapper.Map<AdminEmailVerificationDashboardVM>(dashboardDTO);
+            return dashboardVM;
         }
     }
 }
