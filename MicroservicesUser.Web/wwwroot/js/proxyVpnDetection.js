@@ -10,7 +10,6 @@ $('#showResultBtn').on('click', function () {
             selectedUserIds.push(parseInt($(this).val()));
         }
     });
-
     currentlySelectedUserIds = selectedUserIds;
     $.ajax({
         url: '/ProxyVpnDetection/GetDashboardData',
@@ -116,16 +115,15 @@ $(document).on('change', '.risk-filter, .connection-filter', function () {
 $(document).on('click', '.view-detail-eye', function () {
     var id = parseInt($(this).find('input').val());
     $.ajax({
-        url: "/EmailVerification/GetEmailVerificationDetail",
+        url: "/ProxyVpnDetection/GetProxyVpnViewDetail",
         type: "GET",
         data: { id: id },
         success: function (response) {
-            $(".email-verification-view-detail-body").html(response);
+            $(".proxy-vpn-view-detail-body").html(response);
             $('.view-detail-proxy-vpn-detection').modal('show');
         },
     });
 });
-
 $(document).ready(function () {
     renderPieChart();
 })

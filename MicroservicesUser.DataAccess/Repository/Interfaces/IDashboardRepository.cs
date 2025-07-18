@@ -8,6 +8,7 @@ namespace MicroservicesUser.DataAccess.Repository.Interfaces
         Task<ChartDTO> GetEmailVerificationChartByRangeAsync(int userId, string range);
         Task<ProxyVpnDetectionDashboardDTO> GetProxyVpnDetectionDashboard(List<int>? userId);
         Task<AdminEmailVerificationDashboardDTO> GetAdminEmailVerificationDashboardAsync(List<int> userIds);
+        Task<List<EmailVerificationDateTimeStatesDTO>> GetAdminEmailVerificationChart(List<int> userIds, string range);
 
     }
 }

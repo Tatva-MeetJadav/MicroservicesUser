@@ -47,6 +47,22 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 CreatedAt = x.label
             }).ToList();
 
+            List<EmailVerification> allEmailVerifications = await baseQuery.ToListAsync();
+            int validCount = allEmailVerifications.Count(ev =>
+            ev.EmailResponseParam.RootElement.TryGetProperty("valid", out var validCountVal)
+            && validCountVal.GetBoolean());
+
+            int fraudScoreCount = allEmailVerifications.Count(ev =>
+           ev.EmailResponseParam.RootElement.TryGetProperty("fraudScore", out JsonElement fraudScoreProp) && fraudScoreProp.TryGetInt32(out int fraudScore));
+            int fraudScoreSum = allEmailVerifications.Sum(ev =>
+            {
+                if (ev.EmailResponseParam.RootElement.TryGetProperty("fraudScore", out JsonElement fraudScoreProp) &&
+                    fraudScoreProp.TryGetInt32(out int fraudScore))
+                {
+                    return fraudScore;
+                }
+                return 0;
+            });
 
             int totalItems = await baseQuery.CountAsync();
             List<EmailVerification> emailVerifications = await baseQuery
@@ -54,11 +70,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 .Include(ev => ev.User)
                 .ToListAsync();
             List<AdminEmailVerificationHistoryListDTO> historyList = new();
-            int validCount = 0;
-            int fraudScoreSum = 0;
-            int fraudScoreCount = 0;
-            int successVerifications = emailVerifications.Count(ev => ev.Status == Status.Success);
-
+            int successVerifications = baseQuery.Count(ev => ev.Status == Status.Success);
             foreach (EmailVerification ev in emailVerifications)
             {
                 JsonElement responseJson = ev.EmailResponseParam.RootElement;
@@ -81,8 +93,6 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 if (responseJson.TryGetProperty("fraudScore", out JsonElement scoreProp))
                 {
                     fraudScore = scoreProp.GetInt32();
-                    fraudScoreSum += fraudScore;
-                    fraudScoreCount++;
                 }
 
                 if (valid)
@@ -90,14 +100,15 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                     validCount++;
                 }
 
-                AdminEmailVerificationHistoryListDTO historyItem = new AdminEmailVerificationHistoryListDTO
+                AdminEmailVerificationHistoryListDTO historyItem = new()
                 {
                     Id = ev.Id,
                     Username = ev.User?.Username ?? "N/A",
                     VerifiedEmail = email,
                     FraudScore = fraudScore,
                     ScannedStatus = ev.Status.ToString(),
-                    Valid = valid
+                    Valid = valid,
+                    UserStatus = ev.User!.IsDeleted ? "Inactive" : ev.User.IsBlocked ? "Blocked" : "Active"
                 };
 
                 historyList.Add(historyItem);
@@ -390,6 +401,84 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 TotalItems = latestEntries.Count,
                 ContinentIPStats = continentIPStats
             };
+        }
+
+        public async Task<List<EmailVerificationDateTimeStatesDTO>> GetAdminEmailVerificationChart(List<int> userIds, string range)
+        {
+            List<int> scans = new();
+            List<string> labels = new();
+            DateTime now = DateTime.Now;
+            DateTime today = DateTime.Today;
+
+            IQueryable<EmailVerification> allScans = _dbContext.EmailVerifications
+                .Where(e => userIds.Contains(e.UserId) || userIds.Count == 0);
+
+            if (range == "today")
+            {
+                int currentInterval = (int)((now - today).TotalHours / 3);
+                var intervalCounts = Enumerable.Range(0, currentInterval + 1)
+                    .Select(i =>
+                    {
+                        DateTime intervalStart = today.AddHours(i * 3);
+                        DateTime intervalEnd = intervalStart.AddHours(3);
+                        string label = $"{intervalStart:hh:mm tt}";
+                        int count = allScans.Count(ev =>
+                            ev.CreatedAt >= intervalStart && ev.CreatedAt < intervalEnd);
+                        return new { label, count };
+                    })
+                    .ToList();
+
+                labels = intervalCounts.Select(x => x.label).ToList();
+                scans = intervalCounts.Select(x => x.count).ToList();
+            }
+            else if (range == "currentMonth")
+            {
+                var daysInMonth = DateTime.DaysInMonth(now.Year, now.Month);
+                for (int day = 1; day <= daysInMonth; day++)
+                {
+                    DateTime date = new(now.Year, now.Month, day);
+                    DateTime nextDate = date.AddDays(1);
+                    string label = date.ToString("dd MMM");
+                    int count = await allScans.CountAsync(ev => ev.CreatedAt >= date && ev.CreatedAt < nextDate);
+                    labels.Add(label);
+                    scans.Add(count);
+                }
+            }
+            else if (range == "monthly")
+            {
+                for (int month = 1; month <= 12; month++)
+                {
+                    DateTime monthStart = new(now.Year, month, 1);
+                    DateTime monthEnd = monthStart.AddMonths(1);
+                    string label = monthStart.ToString("MMM");
+                    int count = await allScans.CountAsync(ev => ev.CreatedAt >= monthStart && ev.CreatedAt < monthEnd);
+                    labels.Add(label);
+                    scans.Add(count);
+                }
+            }
+            else if (range == "yearly")
+            {
+                int startYear = now.Year - 4;
+                for (int year = startYear; year <= now.Year; year++)
+                {
+                    DateTime yearStart = new(year, 1, 1);
+                    DateTime yearEnd = yearStart.AddYears(1);
+                    string label = year.ToString();
+                    int count = await allScans.CountAsync(ev => ev.CreatedAt >= yearStart && ev.CreatedAt < yearEnd);
+                    labels.Add(label);
+                    scans.Add(count);
+                }
+            }
+            List<EmailVerificationDateTimeStatesDTO> resultDto = new();
+            for (int i = 0; i < Math.Min(labels.Count, scans.Count); i++)
+            {
+                resultDto.Add(new EmailVerificationDateTimeStatesDTO
+                {
+                    EmailVerificationCount = scans[i],
+                    CreatedAt = labels[i]
+                });
+            }
+            return resultDto;
         }
     }
 }

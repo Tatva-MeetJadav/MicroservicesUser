@@ -12,5 +12,6 @@ namespace MicroservicesUser.BusinessLogic.Interfaces
         Task<EmailVerificationDetailVM> GetEmailDetailedHistory(string id);
         Task<AdminEmailVerificationDashboardVM> GetAdminEmailVerificationDashboard(List<int> userIds);
         Task<AdminEmailVerificationDashboardVM> GetAdminEmailVerificationHistoryList(AdminEmailVerificationHistoryRequestDTO requestDTO);
+        Task<List<EmailVerificationDateTimeStatesVM>> GetAdminEmailVerificationChart(List<int> userIds, string range);
     }
 }

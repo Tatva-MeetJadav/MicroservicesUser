@@ -23,6 +23,7 @@ namespace MicroservicesUser.Common.AutoMapperProfiles
             CreateMap<AdminEmailVerificationDashboardDTO, AdminEmailVerificationDashboardVM>();
             CreateMap<EmailVerificationDateTimeStatesDTO, EmailVerificationDateTimeStatesVM>();
             CreateMap<AdminEmailVerificationHistoryListDTO, AdminEmailVerificationHistoryListVM>();
+            CreateMap<PaginationDTO, AdminEmailVerificationDashboardDTO>();
         }
     }
 }

@@ -18,6 +18,7 @@ namespace MicroservicesUser.Models.DTO
         public string? Username { get; set; }
         public string? VerifiedEmail { get; set; }
         public int? FraudScore { get; set; }
+        public string? UserStatus { get; set; }
         public string? ScannedStatus { get; set; }
         public bool Valid { get; set; }
     }

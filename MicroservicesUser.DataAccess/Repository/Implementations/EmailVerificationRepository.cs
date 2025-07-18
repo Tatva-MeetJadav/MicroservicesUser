@@ -1,4 +1,5 @@
 using System.Text.Json;
+using AutoMapper;
 using MicroservicesUser.DataAccess.Data;
 using MicroservicesUser.DataAccess.Repository.Interfaces;
 using MicroservicesUser.Models.DTO;
@@ -10,9 +11,11 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
     public class EmailVerificationRepository : IEmailVerificationRepository
     {
         private readonly MicroservicesUserDbContext _dbContext;
-        public EmailVerificationRepository(MicroservicesUserDbContext dbContext)
+        private readonly IMapper _mapper;
+        public EmailVerificationRepository(MicroservicesUserDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
         public async Task AddAsync(EmailVerification emailVerification)
         {
@@ -45,25 +48,27 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
 
             if (requestDto.Valid != null)
             {
-                data = data.Where(x => x.EmailResponseParam.RootElement.GetProperty("valid").GetBoolean() == requestDto.Valid).ToList();
+                data = data.Where(x => x.EmailResponseParam.RootElement.TryGetProperty("valid", out JsonElement validProp) && (requestDto.Valid == validProp.GetBoolean())).ToList();
             }
             List<EmailVerification> paginatedEntries = data
                 .Skip((requestDto.PaginationDTO!.CurrentPage - 1) * requestDto.PaginationDTO.PageSize)
                 .Take(requestDto.PaginationDTO.PageSize)
                 .ToList();
 
-            return new AdminEmailVerificationDashboardDTO
+            AdminEmailVerificationDashboardDTO dashboardDTO = _mapper.Map<AdminEmailVerificationDashboardDTO>(requestDto.PaginationDTO);
+            dashboardDTO.TotalItems = data.Count;
+            dashboardDTO.EmailVerificationHistoryList = paginatedEntries.Select(ev => new AdminEmailVerificationHistoryListDTO
             {
-                EmailVerificationHistoryList = paginatedEntries.Select(ev => new AdminEmailVerificationHistoryListDTO
-                {
-                    Id = ev.Id,
-                    Username = ev.User?.Username ?? "N/A",
-                    VerifiedEmail = ev.EmailResponseParam.RootElement.TryGetProperty("valid", out JsonElement emailProp) ? emailProp.ToString() : string.Empty,
-                    FraudScore = Convert.ToInt16(ev.EmailResponseParam.RootElement.TryGetProperty("fraudScore", out JsonElement fraudScoreProp) ? fraudScoreProp.ToString() : "0"),
-                    ScannedStatus = ev.Status.ToString(),
-                    Valid = ev.EmailResponseParam.RootElement.TryGetProperty("valid", out JsonElement validProp) ? validProp.GetBoolean() : false
-                }).ToList()
-            };
+                Id = ev.Id,
+                Username = ev.User?.Username ?? "N/A",
+                UserStatus = ev.User!.IsDeleted ? "Inactive" : ev.User.IsBlocked ? "Blocked" : "Active",
+                VerifiedEmail = ev.EmailRequestParam.RootElement.TryGetProperty("Email", out JsonElement emailProp) ? emailProp.ToString() : string.Empty,
+                FraudScore = Convert.ToInt16(ev.EmailResponseParam.RootElement.TryGetProperty("fraudScore", out JsonElement fraudScoreProp) ? fraudScoreProp.ToString() : "0"),
+                ScannedStatus = ev.Status.ToString(),
+                Valid = ev.EmailResponseParam.RootElement.TryGetProperty("valid", out JsonElement validProp) && validProp.GetBoolean()
+            }).ToList();
+
+            return dashboardDTO;
         }
 
         public async Task<(List<EmailVerification>, int)> GetListByUserId(int userId, PaginationDTO paginationVM)

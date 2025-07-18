@@ -335,3 +335,6 @@ table td {
   transition: all 0.2s ease;
   font-size: 0.875rem;
 }
+.text-slightly-small {
+  font-size: 15px;
+}

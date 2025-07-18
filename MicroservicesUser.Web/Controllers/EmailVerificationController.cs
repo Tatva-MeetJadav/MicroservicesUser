@@ -48,10 +48,27 @@ namespace MicroservicesUser.Web.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
+        public async Task<IActionResult> GetAdminDashboardData(List<int> userIds)
+        {
+            AdminEmailVerificationDashboardVM dashboardVM = await _emailVerificationServices.GetAdminEmailVerificationDashboard(userIds);
+            return PartialView("_AdminEmailVerificationDashboard", dashboardVM);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
         public async Task<IActionResult> GetEmailVerificationHistory([FromBody] AdminEmailVerificationHistoryRequestDTO requestDTO)
         {
             AdminEmailVerificationDashboardVM dashboardVM = await _emailVerificationServices.GetAdminEmailVerificationHistoryList(requestDTO);
             return PartialView("_AdminEmailVerificationHistoryList", dashboardVM);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> GetChartData(List<int> userIds, string range)
+        {
+            List<EmailVerificationDateTimeStatesVM> resulVm = await _emailVerificationServices.GetAdminEmailVerificationChart(userIds, range
+            );
+            return Json(resulVm);
         }
     }
 }

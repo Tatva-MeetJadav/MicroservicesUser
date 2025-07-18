@@ -141,5 +141,12 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             AdminEmailVerificationDashboardVM dashboardVM = _mapper.Map<AdminEmailVerificationDashboardVM>(dashboardDTO);
             return dashboardVM;
         }
+
+        public async Task<List<EmailVerificationDateTimeStatesVM>> GetAdminEmailVerificationChart(List<int> userIds, string range)
+        {
+            List<EmailVerificationDateTimeStatesDTO> dto = await _dashboardRepository.GetAdminEmailVerificationChart(userIds, range);
+            List<EmailVerificationDateTimeStatesVM> resultVm = _mapper.Map<List<EmailVerificationDateTimeStatesVM>>(dto);
+            return resultVm;
+        }
     }
 }

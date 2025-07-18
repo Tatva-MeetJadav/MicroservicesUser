@@ -60,18 +60,20 @@
         <div class="bg-white p-2 rounded-2 shadow-sm h-100">
             <div class="d-flex gap-1 align-items-center mt-1 mb-2 ps-1">
                 <i class="bi bi-hourglass fs-5 fw-bold"></i>
-                <h5 class="mb-0 fw-bold ">Proxy and Vpn Detection history List</h5>
+                <h5 class="mb-0 fw-bold ">Proxy and Vpn Detection History</h5>
             </div>
-
-            <div class="row mb-3 justify-content-end align-items-center">
+            <div class="row justify-content-end align-items-center mt-3">
                 <div class="col-md-6 col-xxl-4 fw-semibold">
-                    <label for="riskFilter" class="form-label">Search</label>
-                    <input type="text" class="form-control search-query" placeholder="Enter the email for search..."
-                        name="searchQueryForHistory">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control search-query" placeholder="Enter the email for search..."
+                            name="searchQueryForHistory">
+                    </div>
+
                 </div>
                 <div class="col-md-3 col-xxl-3 fw-semibold">
-                    <label for="riskFilter" class="form-label">Risk Status</label>
                     <select class="form-select risk-filter" role="button">
+                        <option value="" selected hidden>Risk</option>
                         <option value="">All</option>
                         <option value="Low">Low</option>
                         <option value="Medium">Medium</option>
@@ -79,8 +81,8 @@
                     </select>
                 </div>
                 <div class="col-md-3 col-xxl-3 fw-semibold">
-                    <label for="connectionFilter" class="form-label">Connection Type</label>
                     <select class="form-select connection-filter" role="button">
+                        <option value="" selected hidden>Connection Type</option>
                         <option value="">All</option>
                         <option value="VPN">VPN</option>
                         <option value="Proxy">Proxy</option>
@@ -89,8 +91,7 @@
                     </select>
                 </div>
             </div>
-
-            <div class="proxy-vpn-detection-history-list">
+            <div class="proxy-vpn-detection-history-list mt-2">
                 @await Html.PartialAsync("_ProxyVpnDetectionHistoryList", Model)
             </div>
         </div>
@@ -102,6 +103,7 @@
                 <i class="bi bi-pie-chart fs-5 fw-bold"></i>
                 <h5 class="mb-0 fw-bold ">Continent Wise IP Distributions</h5>
             </div>
+            
             <div id="ipStats3DPieChart"></div>
             <div data-pie-chart-data='@Html.Raw(JsonSerializer.Serialize(Model.ContinentIPStats))'
                 class="pie-chart-data-container"></div>
