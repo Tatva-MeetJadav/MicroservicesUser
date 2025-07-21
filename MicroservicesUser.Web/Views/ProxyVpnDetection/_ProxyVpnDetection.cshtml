@@ -62,14 +62,13 @@
                 <i class="bi bi-hourglass fs-5 fw-bold"></i>
                 <h5 class="mb-0 fw-bold ">Proxy and Vpn Detection History</h5>
             </div>
-            <div class="row justify-content-end align-items-center mt-3">
+            <div class="row gy-2 gy-md-0 justify-content-end align-items-center mt-3">
                 <div class="col-md-6 col-xxl-4 fw-semibold">
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-search"></i></span>
                         <input type="text" class="form-control search-query" placeholder="Enter the email for search..."
                             name="searchQueryForHistory">
                     </div>
-
                 </div>
                 <div class="col-md-3 col-xxl-3 fw-semibold">
                     <select class="form-select risk-filter" role="button">
@@ -103,7 +102,7 @@
                 <i class="bi bi-pie-chart fs-5 fw-bold"></i>
                 <h5 class="mb-0 fw-bold ">Continent Wise IP Distributions</h5>
             </div>
-            
+
             <div id="ipStats3DPieChart"></div>
             <div data-pie-chart-data='@Html.Raw(JsonSerializer.Serialize(Model.ContinentIPStats))'
                 class="pie-chart-data-container"></div>

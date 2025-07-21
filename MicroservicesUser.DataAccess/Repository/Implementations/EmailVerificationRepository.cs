@@ -46,10 +46,19 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 data = data.Where(x => x.Status.ToString() == requestDto.ScannedStatus).ToList();
             }
 
-            if (requestDto.Valid != null)
+            if (!string.IsNullOrEmpty(requestDto.Valid))
             {
-                data = data.Where(x => x.EmailResponseParam.RootElement.TryGetProperty("valid", out JsonElement validProp) && (requestDto.Valid == validProp.GetBoolean())).ToList();
+                if (requestDto.Valid == "Unknown")
+                {
+                    data = data.Where(x => !x.EmailResponseParam.RootElement.TryGetProperty("valid", out JsonElement validProp)).ToList();
+                }
+                else
+                {
+                    data = data.Where(x => x.EmailResponseParam.RootElement.TryGetProperty("valid", out JsonElement validProp) && (requestDto.Valid == validProp.ToString())).ToList();
+                }
+
             }
+
             List<EmailVerification> paginatedEntries = data
                 .Skip((requestDto.PaginationDTO!.CurrentPage - 1) * requestDto.PaginationDTO.PageSize)
                 .Take(requestDto.PaginationDTO.PageSize)
@@ -65,7 +74,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 VerifiedEmail = ev.EmailRequestParam.RootElement.TryGetProperty("Email", out JsonElement emailProp) ? emailProp.ToString() : string.Empty,
                 FraudScore = Convert.ToInt16(ev.EmailResponseParam.RootElement.TryGetProperty("fraudScore", out JsonElement fraudScoreProp) ? fraudScoreProp.ToString() : "0"),
                 ScannedStatus = ev.Status.ToString(),
-                Valid = ev.EmailResponseParam.RootElement.TryGetProperty("valid", out JsonElement validProp) && validProp.GetBoolean()
+                Valid = ev.EmailResponseParam.RootElement.TryGetProperty("valid", out JsonElement validProp) ? validProp.ToString() : string.Empty,
             }).ToList();
 
             return dashboardDTO;

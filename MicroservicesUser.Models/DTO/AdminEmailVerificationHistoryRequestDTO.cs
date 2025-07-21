@@ -5,6 +5,6 @@ namespace MicroservicesUser.Models.DTO
         public List<int>? UserIds { get; set; }
         public PaginationDTO? PaginationDTO { get; set; }
         public string? ScannedStatus { get; set; }
-        public bool? Valid { get; set; }
+        public string? Valid { get; set; }
     }
 }

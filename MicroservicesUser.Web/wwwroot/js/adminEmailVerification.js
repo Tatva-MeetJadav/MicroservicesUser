@@ -64,10 +64,17 @@ function renderChart(passedLabels, passedDataPoints) {
 
 $(document).ready(function () {
     renderChart();
+    $('.dashboard-dropdown-user-id').each(function () {
+        let checkbox = $(this).closest('li').find('input[type="checkbox"]');
+        if (checkbox.is(':checked')) {
+            currentlySelectedUserIds.push(parseInt($(this).val()));
+        }
+    });
 });
 
 $(document).on('click', '#showResultBtn', function () {
     let selectedUserIds = [];
+    currentlySelectedUserIds = [];
     $('.dashboard-dropdown-user-id').each(function () {
         let checkbox = $(this).closest('li').find('input[type="checkbox"]');
         if (checkbox.is(':checked')) {
@@ -117,7 +124,6 @@ function fetchEmailVerificationHistoryList(page, pageSize) {
         currentPage: page,
         pageSize: pageSize,
     }
-    console.log(valid);
     var emailVerificationHistoryDTO =
     {
         userIds: currentlySelectedUserIds,
@@ -177,11 +183,11 @@ $(document).on("click", ".page-index", function () {
 $(document).on('click', '.view-detail-eye', function () {
     var id = parseInt($(this).find('input').val());
     $.ajax({
-        url: "/ProxyVpnDetection/GetProxyVpnViewDetail",
+        url: "/EmailVerification/GetAdminEmailVerificationViewDetail",
         type: "GET",
         data: { id: id },
         success: function (response) {
-            $(".proxy-vpn-view-detail-body").html(response);
+            $(".email-verification-view-detail-body").html(response);
             $('.view-detail-email-verification').modal('show');
         },
     });
@@ -240,15 +246,7 @@ $(document).on('change', '.scanned-status-filter, .valid-filter', function () {
     var scannedStatusFilter = $('.scanned-status-filter').val();
     scannedStatus = scannedStatusFilter;
     var validValue = $('.valid-filter').val();
-    if (validValue == "True") {
-        valid = true;
-    }
-    else if (validValue == "False") {
-        valid = false;
-    }
-    else {
-        valid = null;
-    }
+    valid = validValue;
     fetchEmailVerificationHistoryList(1, parseInt($(".items-per-page").val()));
 });
 

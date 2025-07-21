@@ -8,22 +8,20 @@
 </div>
 
 @{
-    // Helper for status icons
     Func<bool?, string> statusIcon = status => status == true
-    ? "<i class='bi bi-check-circle-fill text-success'></i>"
+    ? "Yes"
     : status == false
-    ? "<i class='bi bi-x-circle-fill text-danger'></i>"
-    : "<i class='bi bi-question-circle-fill text-secondary'></i>";
+    ? "No"
+    : "Unknown";
 
     Func<string, string> deliverabilityIcon = level =>
     level?.ToLower() switch
     {
         "high" => "<i class='bi bi-arrow-up-circle-fill text-success'></i>",
-        "medium" => "<i class='bi bi-arrow-right-circle-fill text-warning'></i>",
+        "medium" => "<i class='bi bi-dash-circle-fill text-warning'></i>",
         "low" => "<i class='bi bi-arrow-down-circle-fill text-danger'></i>",
         _ => "<i class='bi bi-question-circle-fill text-secondary'></i>"
     };
-
     EmailVerificationResponseVM responseVM = Model?.ResponseVM ?? new EmailVerificationResponseVM();
 }
 
@@ -243,25 +241,30 @@
                             First Name
                             <span>@responseVM?.FirstName</span>
                         </li>
+
                         <li class="list-group-item d-flex justify-content-between">
                             <span>
-                                SPF Record
+                                Has SPF Record?
                                 <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
                                     data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
                                     data-bs-content="A Sender Policy Framework record that helps prevent spammers from sending emails on behalf of your domain.">
                                 </i>
                             </span>
-                            <span>@responseVM?.SpfRecord</span>
+                            <span>
+                                @Html.Raw(statusIcon(responseVM?.SpfRecord))
+                            </span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between">
                             <span>
-                                DMARC Record
+                                Has DMARC Record?
                                 <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
                                     data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
                                     data-bs-content="A Domain-based Message Authentication, Reporting & Conformance record specifying how email from your domain should be handled if it fails authentication.">
                                 </i>
                             </span>
-                            <span>@responseVM?.DmarcRecord</span>
+                            <span>
+                                @Html.Raw(statusIcon(responseVM?.DmarcRecord))
+                            </span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between">
                             <span>

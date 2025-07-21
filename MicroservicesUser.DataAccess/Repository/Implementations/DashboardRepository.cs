@@ -16,15 +16,15 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             _dbContext = _DbContext;
         }
 
-        public async Task<AdminEmailVerificationDashboardDTO> GetAdminEmailVerificationDashboardAsync(List<int> userIds)
+        public async Task<AdminEmailVerificationDashboardDTO> GetAdminEmailVerificationDashboardAsync(List<int>? userIds)
         {
             DateTime now = DateTime.Now;
             DateTime today = DateTime.Today;
 
             IQueryable<EmailVerification> baseQuery = _dbContext.EmailVerifications
-                .Where(ev => userIds.Contains(ev.UserId) || userIds.Count == 0);
+                 .Where(u => userIds == null || userIds.Contains(u.UserId));
 
-            List<User> users = _dbContext.Users.Where(u => userIds.Contains(u.Id) || userIds.Count == 0).ToList();
+            List<User> users = _dbContext.Users.ToList();
 
             int currentInterval = (int)((now - today).TotalHours / 3);
             var intervalCounts = Enumerable.Range(0, currentInterval + 1)
@@ -107,7 +107,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                     VerifiedEmail = email,
                     FraudScore = fraudScore,
                     ScannedStatus = ev.Status.ToString(),
-                    Valid = valid,
+                    Valid = valid.ToString(),
                     UserStatus = ev.User!.IsDeleted ? "Inactive" : ev.User.IsBlocked ? "Blocked" : "Active"
                 };
 
@@ -403,7 +403,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             };
         }
 
-        public async Task<List<EmailVerificationDateTimeStatesDTO>> GetAdminEmailVerificationChart(List<int> userIds, string range)
+        public async Task<List<EmailVerificationDateTimeStatesDTO>> GetAdminEmailVerificationChart(List<int>? userIds, string range)
         {
             List<int> scans = new();
             List<string> labels = new();
@@ -411,7 +411,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             DateTime today = DateTime.Today;
 
             IQueryable<EmailVerification> allScans = _dbContext.EmailVerifications
-                .Where(e => userIds.Contains(e.UserId) || userIds.Count == 0);
+                .Where(e => userIds!.Contains(e.UserId));
 
             if (range == "today")
             {

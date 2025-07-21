@@ -32,7 +32,6 @@
                 <button type="button" class="btn btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body bg-light email-verification-view-detail-body">
-                <div class="alert alert-info">Details will appear here on click.</div>
             </div>
         </div>
     </div>
@@ -86,17 +85,18 @@
                             }
                             else
                             {
-                                <span>-</span>
+                                <span>Unknown</span>
                             }
                         </td>
                         <td class="text-secondary">
                             <div class="text-center">
                                 @if (item.ScannedStatus == "Success")
                                 {
-                                    <button class="btn-view">
+                                    <button class="btn-view view-detail-eye">
                                         <i class="fas fa-eye" role="button"></i>
+                                        <input type="hidden" value="@item.Id">
                                     </button>
-                                    <input type="hidden" value="@item.Id">
+
                                 }
                                 else
                                 {
@@ -111,7 +111,7 @@
             else
             {
                 <tr class="border-bottom">
-                    <td colspan="6" class="text-center">No records found.</td>
+                    <td colspan="8" class="text-center">No records found.</td>
                 </tr>
             }
         </tbody>

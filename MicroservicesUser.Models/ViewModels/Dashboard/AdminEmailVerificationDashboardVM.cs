@@ -21,7 +21,7 @@ namespace MicroservicesUser.Models.ViewModels.Dashboard
         public int? FraudScore { get; set; }
         public string? UserStatus { get; set; }
         public string? ScannedStatus { get; set; }
-        public bool Valid { get; set; }
+        public string? Valid { get; set; }
     }
     public class EmailVerificationDateTimeStatesVM
     {

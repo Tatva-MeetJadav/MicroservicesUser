@@ -6,6 +6,7 @@ using MicroservicesUser.DataAccess.Repository.Interfaces;
 using MicroservicesUser.Models.DTO;
 using MicroservicesUser.Models.Enums;
 using MicroservicesUser.Models.Models;
+using MicroservicesUser.Models.ViewModels;
 using MicroservicesUser.Models.ViewModels.Dashboard;
 using MicroservicesUser.Models.ViewModels.EmailVerification;
 using MicroservicesUser.Models.ViewModels.History;
@@ -128,7 +129,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             };
         }
 
-        public async Task<AdminEmailVerificationDashboardVM> GetAdminEmailVerificationDashboard(List<int> userIds)
+        public async Task<AdminEmailVerificationDashboardVM> GetAdminEmailVerificationDashboard(List<int>? userIds)
         {
             AdminEmailVerificationDashboardDTO dashboardDTO = await _dashboardRepository.GetAdminEmailVerificationDashboardAsync(userIds);
             AdminEmailVerificationDashboardVM dashboardVM = _mapper.Map<AdminEmailVerificationDashboardVM>(dashboardDTO);
@@ -142,11 +143,18 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             return dashboardVM;
         }
 
-        public async Task<List<EmailVerificationDateTimeStatesVM>> GetAdminEmailVerificationChart(List<int> userIds, string range)
+        public async Task<List<EmailVerificationDateTimeStatesVM>> GetAdminEmailVerificationChart(List<int>? userIds, string range)
         {
             List<EmailVerificationDateTimeStatesDTO> dto = await _dashboardRepository.GetAdminEmailVerificationChart(userIds, range);
             List<EmailVerificationDateTimeStatesVM> resultVm = _mapper.Map<List<EmailVerificationDateTimeStatesVM>>(dto);
             return resultVm;
+        }
+
+        public async Task<AdminEmailVerificationDetailVM> GetAdminEmailVerificationDetail(int id)
+        {
+            EmailVerification emailVerification = await _emailVerificationRepository.GetAsync(id);
+            AdminEmailVerificationDetailVM result = JsonConvert.DeserializeObject<AdminEmailVerificationDetailVM>(emailVerification.EmailResponseParam.RootElement.GetRawText()) ?? new AdminEmailVerificationDetailVM();
+            return result;
         }
     }
 }

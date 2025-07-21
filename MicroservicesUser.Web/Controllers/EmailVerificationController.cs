@@ -1,5 +1,6 @@
 ﻿using MicroservicesUser.BusinessLogic.Interfaces;
 using MicroservicesUser.Models.DTO;
+using MicroservicesUser.Models.ViewModels;
 using MicroservicesUser.Models.ViewModels.Dashboard;
 using MicroservicesUser.Models.ViewModels.EmailVerification;
 using Microsoft.AspNetCore.Authorization;
@@ -41,8 +42,7 @@ namespace MicroservicesUser.Web.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AdminEmailVerification()
         {
-            List<int> userId = new();
-            AdminEmailVerificationDashboardVM dashboardVM = await _emailVerificationServices.GetAdminEmailVerificationDashboard(userId);
+            AdminEmailVerificationDashboardVM dashboardVM = await _emailVerificationServices.GetAdminEmailVerificationDashboard(null);
             return View(dashboardVM);
         }
 
@@ -64,11 +64,19 @@ namespace MicroservicesUser.Web.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<IActionResult> GetChartData(List<int> userIds, string range)
+        public async Task<IActionResult> GetChartData(List<int>? userIds, string range)
         {
             List<EmailVerificationDateTimeStatesVM> resulVm = await _emailVerificationServices.GetAdminEmailVerificationChart(userIds, range
             );
             return Json(resulVm);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> GetAdminEmailVerificationViewDetail(int id)
+        {
+            AdminEmailVerificationDetailVM result = await _emailVerificationServices.GetAdminEmailVerificationDetail(id);
+            return PartialView("_AdminEmailVerificationDetailedView", result);
         }
     }
 }

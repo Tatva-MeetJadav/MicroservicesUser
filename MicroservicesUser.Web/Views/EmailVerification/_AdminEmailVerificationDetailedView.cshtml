@@ -1,0 +1,293 @@
+@using MicroservicesUser.Models.ViewModels
+@model AdminEmailVerificationDetailVM
+@{
+
+    Func<bool?, string> statusIcon = status => status == true
+    ? "Yes"
+    : status == false
+    ? "No"
+    : "Unknown";
+
+    Func<string, string> deliverabilityIcon = level =>
+    level?.ToLower() switch
+    {
+        "high" => "<i class='bi bi-arrow-up-circle-fill text-success'></i>",
+        "medium" => "<i class='bi bi-dash-circle-fill text-warning'></i>",
+        "low" => "<i class='bi bi-arrow-down-circle-fill text-danger'></i>",
+        _ => "<i class='bi bi-question-circle-fill text-secondary'></i>"
+    };
+
+}
+
+<div class="row mt-3">
+    <div class="col-lg-6 col-12 mb-3">
+        <div class="card shadow-sm bg-light">
+            <div class="card-header fw-bold fs-5 bg-primary text-white">
+                General details
+            </div>
+
+            <div class="card-body">
+                <ul class="list-group list-group-flush border border-1 fw-bold">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Is Valid Email?
+                        <span>@Html.Raw(statusIcon(Model.Valid))</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Is Timed Out (Can't be verify)?
+                        <span>@Html.Raw(statusIcon(Model.TimedOut))</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Is Temporary Email?
+                        <span>@Html.Raw(statusIcon(Model.Disposable))</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Is Non-personal?
+                        <span>@Html.Raw(statusIcon(Model.Generic))</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Has Common Domain?
+                        <span>@Html.Raw(statusIcon(Model.Common))</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Has Catch-all Domain?
+                            <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="Indicates if the email domain accepts emails for any address (catch-all).">
+                            </i>
+                        </span>
+                        <span>@Html.Raw(statusIcon(Model.CatchAll))</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            SMTP Score
+                            <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="A score indicating how likely the email server will accept this address and deliver messages.">
+                            </i>
+                        </span>
+                        <span>@Model.SmtpScore</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Overall Score
+                            <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="A combined score that reflects the overall quality and validity of the email address.">
+                            </i>
+                        </span>
+                        <span>@Model.OverallScore</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Email Deliverability
+                        </span>
+                        <div class="d-flex align-items-center gap-2">
+                            <span>@Model.Deliverability</span>
+                            <span>@Html.Raw(deliverabilityIcon(Model!.Deliverability!))</span>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Fraud Score
+                            <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="A score showing the risk that this email is fraudulent or suspicious. Higher means more risk.">
+                            </i>
+                        </span>
+                        <span>@Model.FraudScore</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Spam Trap Score
+                            <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="A score showing the likelihood that this email address is a spam trap, which can negatively affect deliverability.">
+                            </i>
+                        </span>
+                        <span>@Model.SpamTrapScore</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6 col-12 mb-3">
+        <div class="card h-100 shadow-sm bg-light">
+            <div class="card-header bg-danger text-white fw-bold fs-5">
+                Security & Risk
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush border border-1 fw-bold">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Has Valid DNS (Domain Name System)
+                        <span>@Html.Raw(statusIcon(Model.DnsValid))</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                            Honeypot
+                            <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="Indicates if the email address is flagged as a honeypot—an address used to catch spammers.">
+                            </i>
+                        </span>
+                        <span>@Html.Raw(statusIcon(Model.Honeypot))</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                            Frequent Complainer
+                            <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="Indicates if the email belongs to someone known for reporting emails as spam.">
+                            </i>
+                        </span>
+                        <span>@Html.Raw(statusIcon(Model.FrequentComplainer))</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                            Suspect
+                            <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="Indicates if this email shows suspicious patterns or behavior.">
+                            </i>
+                        </span>
+                        <span>@Html.Raw(statusIcon(Model.Suspect))</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                            Recent Abuse (Blacklist)
+                        </span>
+                        <span>@Html.Raw(statusIcon(Model.RecentAbuse))</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                            Is Leaked
+                        </span>
+                        <span>@Html.Raw(statusIcon(Model.Leaked))</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                            Risky TLD (Top Level Domain)
+                            <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="Shows if the email's domain extension is commonly associated with spam or fraud (e.g., .xyz, .top).">
+                            </i>
+                        </span>
+                        <span>@Html.Raw(statusIcon(Model.RiskyTld))</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 mb-3">
+        <div class="card shadow-sm bg-light">
+            <div class="card-header bg-primary fw-bold fs-5 text-white">
+                Email Details
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush border border-1 fw-bold">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            First seen
+                        </span>
+                        <span>@Model?.FirstSeen?.Iso.ToString("dd/MM/yyyy hh:mm tt") (@Model?.FirstSeen?.Human)</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Sanitized Email
+                            <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="The email address after removing invalid or suspicious characters.">
+                            </i>
+                        </span>
+                        <span>@Model?.SanitizedEmail</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Suggested Domain
+                        </span>
+                        <span>@Model?.SuggestedDomain</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        First Name
+                        <span>@Model?.FirstName</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Has SPF Record?
+                            <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="A Sender Policy Framework record that helps prevent spammers from sending emails on behalf of your domain.">
+                            </i>
+                        </span>
+                        <span>
+                            @Html.Raw(statusIcon(Model?.SpfRecord))
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            Has DMARC Record?
+                            <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="A Domain-based Message Authentication, Reporting & Conformance record specifying how email from your domain should be handled if it fails authentication.">
+                            </i>
+                        </span>
+                        <span>
+                            @Html.Raw(statusIcon(Model?.DmarcRecord))
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            MX Records
+                            <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="Mail Exchange records; specify the mail servers responsible for receiving emails for this domain.">
+                            </i>
+                        </span>
+                        <span>
+                            @if (Model?.MxRecords != null && Model.MxRecords.Any())
+                            {
+                                <ul class="mb-0 ps-3">
+                                    @foreach (string mx in Model.MxRecords)
+                                    {
+                                        <li>@mx</li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>
+                            A Records
+                            <i tabindex="0" class="bi bi-question-circle-fill text-primary ms-1" role="button"
+                                data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                data-bs-content="Address records; map domain names to their corresponding IP addresses.">
+                            </i>
+                        </span>
+                        <span>
+                            @if (Model?.ARecords != null && Model.ARecords.Any())
+                            {
+                                <ul class="mb-0 ps-3">
+                                    @foreach (string a in Model.ARecords)
+                                    {
+                                        <li>@a</li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <span>-</span>
+                            }
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/pophoverScript.js"></script>
