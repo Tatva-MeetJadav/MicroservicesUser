@@ -9,13 +9,10 @@ namespace MicroservicesUser.DataAccess.Data
         public MicroservicesUserDbContext(DbContextOptions<MicroservicesUserDbContext> options) : base(options) { }
 
         public DbSet<User> Users { get; set; }
-
         public DbSet<EmailVerification> EmailVerifications { get; set; }
-
         public DbSet<Admin> Admins { get; set; }
-
         public DbSet<ProxyVpnDetection> ProxyVpnDetections { get; set; }
-
+        public DbSet<HelpAndSupport> HelpAndSupports { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

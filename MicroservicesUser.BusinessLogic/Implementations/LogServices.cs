@@ -24,6 +24,11 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             LogListVM logListVM = _mapper.Map<LogListVM>(paginationDTO);
             logListVM.Logs = logVMs;
             logListVM.TotalItems = totalCount;
+            if (string.IsNullOrEmpty(paginationDTO.ColumnNameForSorting))
+            {
+                logListVM.ColumnNameForSorting = "CreatedAt";
+                logListVM.OrderOfSorting = "desc";
+            }
             return logListVM;
         }
     }

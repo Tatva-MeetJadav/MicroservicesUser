@@ -1,0 +1,54 @@
+@{
+    ViewData["Title"] = "Support Ticket History";
+    Layout = "_AdminLayout";
+}
+
+<link rel="stylesheet" href="~/css/helpAndSupport.css">
+<div class="container-fluid mt-4 px-4">
+    <div class="mb-3 page-header">
+        <h1 class="page-title">Manage HelpDesk</h1>
+        <p class="page-subtitle mt-2">View user support requests here</p>
+    </div>
+    <div class="row g-3">
+        <div class="col-md-4">
+            <input type="text" name="searchQueryForSupport" class="form-control search-query"
+                placeholder="Search subject, message, or username..." />
+        </div>
+        <div class="col-md-2">
+            <select name="category" class="form-select column-filter" role="button" data-column="Category">
+                <option value="" selected hidden>Category</option>
+                <option value="">All</option>
+                <option value="GeneralInquiry">General Inquiry</option>
+                <option value="AccountIssues">Account Issues</option>
+                <option value="FeatureRequest">Feature Request</option>
+                <option value="BugReport">Bug Report</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <label class="input-group-text">From</label>
+                <input type="date" name="fromDate" class="form-control date-filter" data-filter="from" />
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <label class="input-group-text">To</label>
+                <input type="date" name="toDate" class="form-control date-filter" data-filter="to" />
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-primary support-list-filter">Filter</button>
+                <button type="button" class="btn btn-secondary clear-all-filters">Clear</button>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid px-0 mt-3 load-admin-support-list">
+        @await Html.PartialAsync("_AdminSupportList")
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="~/js/helpAndSupport.js"></script>
+}

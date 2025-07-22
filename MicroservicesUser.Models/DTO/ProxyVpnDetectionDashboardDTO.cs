@@ -15,7 +15,8 @@
     public class ProxyVpnDetectionHistoryListDTO
     {
         public int? Id { get; set; }
-        public string? Email { get; set; }
+        public string? Username { get; set; }
+        public string? Status { get; set; }
         public string? IpAddress { get; set; }
         public string? RiskStatus { get; set; }
         public string VPNProxyTor { get; set; } = "Normal";

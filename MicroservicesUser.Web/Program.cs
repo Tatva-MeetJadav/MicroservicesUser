@@ -47,6 +47,7 @@ builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IProxyVpnDetectionRepository, ProxyVpnDetectionRepository>();
 builder.Services.AddScoped<ILogRepository, LogRepository>();
+builder.Services.AddScoped<IHelpAndSupportRepository, HelpAndSupportRepository>();
 
 //Setting up business services
 builder.Services.AddScoped<IJwtServices, JwtServices>();
@@ -59,6 +60,7 @@ builder.Services.AddScoped<IEncryptDecryptServices, EncryptDecryptServices>();
 builder.Services.AddScoped<IProxyVpnDetectionServices, ProxyVpnDetectionServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<ILogServices, LogServices>();
+builder.Services.AddScoped<IHelpAndSupportServices, HelpAndSupportServices>();
 
 
 

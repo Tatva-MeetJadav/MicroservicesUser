@@ -23,8 +23,8 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                 new Claim(ClaimTypes.NameIdentifier, id.ToString()),
                 new Claim(ClaimTypes.Role,role)
             };
-            double hours = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Hours"]);
-            DateTime time = DateTime.UtcNow.AddHours(hours);
+            double seconds = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Seconds"]);
+            DateTime time = DateTime.Now.AddSeconds(seconds);
             JwtSecurityToken token = new(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
@@ -45,6 +45,22 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         {
             string role = new JwtSecurityTokenHandler().ReadJwtToken(token).Claims.First(claim => claim.Type == ClaimTypes.Role).Value;
             return role;
+        }
+        public DateTime GetExpiryTime(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(token);
+
+            var expClaim = jwt.Payload.Exp;
+
+            if (expClaim.HasValue)
+            {
+                return DateTimeOffset.FromUnixTimeSeconds(expClaim.Value).UtcDateTime.ToLocalTime();
+            }
+            else
+            {
+                return DateTime.MinValue;
+            }
         }
     }
 

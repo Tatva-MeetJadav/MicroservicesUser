@@ -4,6 +4,7 @@ using System.Text.Json;
 using MicroservicesUser.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MicroservicesUser.Migrations.Migrations
 {
     [DbContext(typeof(MicroservicesUserDbContext))]
-    partial class MicroservicesUserDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250722035449_FixSnapshot")]
+    partial class FixSnapshot
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,37 +116,6 @@ namespace MicroservicesUser.Migrations.Migrations
                     b.ToTable("EmailVerifications");
                 });
 
-            modelBuilder.Entity("MicroservicesUser.Models.Models.HelpAndSupport", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Category")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Subject")
-                        .HasColumnType("text");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("HelpAndSupport");
-                });
-
             modelBuilder.Entity("MicroservicesUser.Models.Models.ProxyVpnDetection", b =>
                 {
                     b.Property<int>("Id")
@@ -229,7 +201,7 @@ namespace MicroservicesUser.Migrations.Migrations
                         .HasColumnType("character varying(128)");
 
                     b.Property<DateTime?>("PasswordResetTokenExpiry")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ProfilePhotoGeneratedName")
                         .HasColumnType("text");
@@ -247,17 +219,6 @@ namespace MicroservicesUser.Migrations.Migrations
                 });
 
             modelBuilder.Entity("MicroservicesUser.Models.Models.EmailVerification", b =>
-                {
-                    b.HasOne("MicroservicesUser.Models.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("MicroservicesUser.Models.Models.HelpAndSupport", b =>
                 {
                     b.HasOne("MicroservicesUser.Models.Models.User", "User")
                         .WithMany()

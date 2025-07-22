@@ -4,6 +4,7 @@ using System.Text.Json;
 using MicroservicesUser.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MicroservicesUser.Migrations.Migrations
 {
     [DbContext(typeof(MicroservicesUserDbContext))]
-    partial class MicroservicesUserDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250721124515_AddingHelpAndSupportTable")]
+    partial class AddingHelpAndSupportTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -121,13 +124,6 @@ namespace MicroservicesUser.Migrations.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Category")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp without time zone");
-
                     b.Property<string>("Message")
                         .HasColumnType("text");
 
@@ -229,7 +225,7 @@ namespace MicroservicesUser.Migrations.Migrations
                         .HasColumnType("character varying(128)");
 
                     b.Property<DateTime?>("PasswordResetTokenExpiry")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ProfilePhotoGeneratedName")
                         .HasColumnType("text");

@@ -1,0 +1,91 @@
+@{
+    ViewData["Title"] = "Help & Support";
+}
+@model HelpAndSupportVM
+<link rel="stylesheet" href="~/css/helpAndSupport.css" asp-append-version="true">
+<div class="container-fluid">
+
+    <div class="row justify-content-center">
+        <div class="col-9 mt-5">
+            <div class="bg-white rounded-2 shadow-sm p-4">
+                <div class="text-center">
+                    <h3 class="display-5 fw-bold">Help & Support</h3>
+                </div>
+                <h4 class="my-4 text-primary d-flex align-items-center">
+                    <i class="bi bi-chat-left-text-fill me-3 fs-3"></i> Submit a Support Request
+                </h4>
+                <form method="post" asp-controller="HelpAndSupport" asp-action="HelpAndSupport" class="help-and-support-form">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="firstName" class="form-label">First Name *</label>
+                            <div class="icon-input-wrapper">
+                                <input type="text" class="form-control ps-5" id="firstName" name="FirstName"
+                                    value="@Model.FirstName" readonly required />
+                                <i class="bi bi-person-fill input-icon"></i>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="lastName" class="form-label">Last Name *</label>
+                            <div class="icon-input-wrapper">
+                                <input type="text" class="form-control ps-5" id="lastName" name="LastName"
+                                    value="@Model.LastName" readonly required />
+                                <i class="bi bi-person-fill input-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="username" class="form-label">Username *</label>
+                            <input type="text" class="form-control" id="username" name="Username"
+                                value="@Model.Username" readonly required />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email Address *</label>
+                            <div class="icon-input-wrapper">
+                                <input type="email" class="form-control ps-5" id="email" name="Email"
+                                    value="@Model.Email" readonly required />
+                                <i class="bi bi-envelope-fill input-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Category *</label>
+                            <select name="Category" class="form-select" required role="button">
+                                <option value="GeneralInquiry">General Inquiry</option>
+                                <option value="AccountIssues">Account Issues</option>
+                                <option value="FeatureRequest">Feature Request</option>
+                                <option value="BugReport">Bug Report</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <div class="icon-input-wrapper">
+                                <input type="tel" class="form-control ps-5" id="phone" name="Phone" value="@Model.PhoneNumber"
+                                    readonly />
+                                <i class="bi bi-telephone-fill input-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">Subject *</label>
+                        <input type="text" class="form-control" id="subject" name="Subject"
+                            placeholder="Brief description of your issue" required />
+                    </div>
+                    <div class="mb-4">
+                        <label for="message" class="form-label">Message *</label>
+                        <textarea id="message" name="Message" rows="6" class="form-control"
+                            placeholder="Please provide detailed information about your issue or question. Include any error messages, steps to reproduce the problem, and any other relevant details."
+                            required></textarea>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary d-flex align-items-center px-4 py-2"
+                            id="submitBtn">
+                            <i class="bi bi-send-fill me-2"></i> Submit Request
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

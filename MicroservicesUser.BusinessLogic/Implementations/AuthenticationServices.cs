@@ -80,8 +80,8 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                         if (_encryptDecryptServices.VerifyPassword(loginVM.Password, dbPassword))
                         {
                             string token = _jwtServices.GenerateJwtToken(user.Id, Messages.UserRole);
-                            double hours = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Hours"]);
-                            DateTime expiresAt = DateTime.Now.AddHours(hours);
+                            double seconds = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Seconds"]);
+                            DateTime expiresAt = DateTime.Now.AddSeconds(seconds);
                             _tokenStore.AddToken(user.Id.ToString(), token, expiresAt);
                             if (ipAddress == Messages.LocalIpAddress)
                             {
@@ -140,8 +140,8 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                     if (_encryptDecryptServices.VerifyPassword(loginVM.Password, dbPassword))
                     {
                         string token = _jwtServices.GenerateJwtToken(admin.Id, admin.Role.ToString());
-                        double hours = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Hours"]);
-                        DateTime expiresAt = DateTime.Now.AddHours(hours);
+                        double seconds = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Seconds"]);
+                        DateTime expiresAt = DateTime.Now.AddSeconds(seconds);
                         _tokenStore.AddToken(admin.Id.ToString(), token, expiresAt);
                         return token;
                     }
@@ -167,7 +167,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                     string token = GenerateToken.GenerateGuid();
                     _emailServices.SendEmail(loginVM.Email, token, false);
                     user.PasswordResetToken = token;
-                    user.PasswordResetTokenExpiry = DateTime.UtcNow.AddHours(1);
+                    user.PasswordResetTokenExpiry = DateTime.Now.AddHours(1);
                     await _userRepository.UpdateAsync(user);
                     return Messages.SuccessMessage;
                 }
@@ -184,7 +184,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                     string token = GenerateToken.GenerateGuid();
                     _emailServices.SendEmail(loginVM.Email, token, true);
                     admin.PasswordResetToken = token;
-                    admin.PasswordResetTokenExpiry = DateTime.UtcNow.AddHours(1);
+                    admin.PasswordResetTokenExpiry = DateTime.Now.AddHours(1);
                     await _adminRepository.UpdateAsync(admin);
                     return Messages.SuccessMessage;
                 }
@@ -200,7 +200,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             if (isAdmin == false)
             {
                 User? user = await _userRepository.GetByPasswordResetToken(token);
-                if (user != null && user.PasswordResetTokenExpiry > DateTime.UtcNow && !string.IsNullOrEmpty(token))
+                if (user != null && user.PasswordResetTokenExpiry > DateTime.Now && !string.IsNullOrEmpty(token))
                 {
                     return Messages.SuccessMessage;
                 }
@@ -212,7 +212,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             else
             {
                 Admin? admin = await _adminRepository.GetByResetPasswordToken(token);
-                if (admin != null && admin.PasswordResetTokenExpiry > DateTime.UtcNow && !string.IsNullOrEmpty(token))
+                if (admin != null && admin.PasswordResetTokenExpiry > DateTime.Now && !string.IsNullOrEmpty(token))
                 {
                     return Messages.SuccessMessage;
                 }
@@ -266,8 +266,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         public void AddInMemoryToken(string token)
         {
             int id = _jwtServices.GetUserId(token);
-            double hours = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Hours"]);
-            DateTime expiresAt = DateTime.Now.AddHours(hours);
+            DateTime expiresAt = _jwtServices.GetExpiryTime(token);
             _tokenStore.AddToken(id.ToString(), token, expiresAt);
         }
     }

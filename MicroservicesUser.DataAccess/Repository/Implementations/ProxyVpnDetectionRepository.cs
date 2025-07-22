@@ -64,10 +64,11 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 return new ProxyVpnDetectionHistoryListDTO
                 {
                     Id = x.Id,
-                    Email = x.User!.Email,
+                    Username = x.User!.Username,
                     IpAddress = x.ProxyVpnRequestParam.RootElement.GetProperty("IpAddress").ToString(),
                     RiskStatus = riskLevel,
                     VPNProxyTor = connectionType,
+                    Status = x.User.IsDeleted ? "Inactive" : x.User.IsBlocked ? "Blocked" : "Active"
                 };
             })
             .Where(dto =>

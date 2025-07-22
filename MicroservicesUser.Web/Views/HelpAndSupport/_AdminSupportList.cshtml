@@ -1,0 +1,132 @@
+@model HelpAndSupportListVM
+
+@{
+    int totalPages = (int)Math.Ceiling((double)Model.TotalItems / Model.PageSize);
+    int currentPage = Model.CurrentPage;
+    int startPage = Math.Max(2, currentPage - 1);
+    int endPage = Math.Min(totalPages - 1, currentPage + 1);
+    int serialNumber = Model.CurrentPage * Model.PageSize - Model.PageSize + 1;
+}
+
+@{
+    string GetCategoryBadgeClass(string category) => category switch
+    {
+        "BugReport" => "bg-danger text-white",
+        "AccountIssues" => "bg-warning text-dark",
+        "FeatureRequest" => "bg-info text-dark",
+        "GeneralInquiry" => "bg-secondary text-white",
+        _ => "bg-light text-dark"
+    };
+
+    string GetCategoryIcon(string category) => category switch
+    {
+        "BugReport" => "fa-tools",
+        "AccountIssues" => "fa-user",
+        "FeatureRequest" => "fa-lightbulb",
+        "GeneralInquiry" => "fa-question-circle",
+        _ => "fa-tag"
+    };
+
+    string GetCategoryText(string category) => category switch
+    {
+        "BugReport" => "Bug Report",
+        "AccountIssues" => "Account Issue",
+        "FeatureRequest" => "Feature Request",
+        "GeneralInquiry" => "General Inquiry",
+        _ => ""
+    };
+
+}
+<div class="my-2 p-2 rounded-2 border border-1 bg-white @(Model.TotalItems == 0 ? "d-none" : "")">
+    <div class="d-flex flex-sm-row flex-column justify-content-between gap-2 align-items-center">
+        <div class="d-flex align-items-center gap-2">
+            <div><span>Items Per Page</span></div>
+            <div>
+                <select class="form-select items-per-page form-select-sm" role="button">
+                    <option value="5" selected="@(Model.PageSize == 5)">5</option>
+                    <option value="10" selected="@(Model.PageSize == 10)">10</option>
+                    <option value="15" selected="@(Model.PageSize == 15)">15</option>
+                    <option value="20" selected="@(Model.PageSize == 20)">20</option>
+                </select>
+            </div>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            <span class="me-2 pagination-info" data-current-page="@currentPage">
+                Showing @((currentPage - 1) * Model.PageSize + 1)-@((currentPage - 1) * Model.PageSize
+                                + Model.HelpAndSupport!.Count)
+                of
+                @Model.TotalItems
+            </span>
+            <button class="btn prev-page btn-primary @(currentPage == 1 ? "disabled" : "")">
+                <i class="bi bi-chevron-left"></i>
+                <span>Previous</span>
+            </button>
+
+            @if (totalPages > 1)
+            {
+                <nav>
+                    <ul class="pagination mb-0">
+                        <li class="page-item @(currentPage == 1 ? "active" : "")">
+                            <button class="page-link page-index" data-page="1">1</button>
+                        </li>
+
+                        @if (startPage > 2)
+                        {
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        }
+
+                        @for (int i = startPage; i <= endPage; i++)
+                        {
+                            <li class="page-item @(currentPage == i ? "active" : "")">
+                                <button class="page-link page-index" data-page="@i">@i</button>
+                            </li>
+                        }
+
+                        @if (endPage < totalPages - 1)
+                        {
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        }
+
+                        <li class="page-item @(currentPage == totalPages ? "active" : "")">
+                            <button class="page-link page-index" data-page="@totalPages">@totalPages</button>
+                        </li>
+                    </ul>
+                </nav>
+            }
+
+            <button
+                class="btn next-page btn-primary @(currentPage* Model.PageSize >= Model.TotalItems ? "disabled" : "")">
+                <span>Next</span>
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</div>
+@foreach (var ticket in Model.HelpAndSupport!)
+{
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+            <div class="d-flex gap-2 align-items-center">
+                <div class="card-title fs-4 fw-bold mb-0">@ticket.Subject</div>
+                <div class="card-subtitle fs-5 mb-0">
+                    <span class="badge rounded-pill @GetCategoryBadgeClass(ticket.Category)">
+                        <i class="fas @GetCategoryIcon(ticket.Category)"></i>
+                        @GetCategoryText(ticket.Category)
+                    </span>
+                </div>
+            </div>
+
+            <p class="card-text mt-2">@ticket.Message</p>
+            <div class="d-flex gap-3 align-items-center text-muted small mt-3">
+                <div>
+                    <i class="fas fa-user me-1"></i>
+                    <strong>@ticket.Username</strong>
+                </div>
+                <div>
+                    <i class="fas fa-calendar-alt me-1"></i>
+                    Submitted on: @ticket.CreatedAt.ToString("dd/MM/yyyy hh:mm tt")
+                </div>
+            </div>
+        </div>
+    </div>
+}

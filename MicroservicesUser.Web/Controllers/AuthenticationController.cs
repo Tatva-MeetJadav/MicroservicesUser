@@ -59,8 +59,8 @@ namespace MicroservicesUser.Web.Controllers
             }
             else
             {
-                double hours = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Hours"]);
-                DateTime expiresAt = DateTime.Now.AddHours(hours);
+                double seconds = Convert.ToDouble(_configuration["AuthTokenExpiryTime:Seconds"]);
+                DateTime expiresAt = DateTime.Now.AddSeconds(seconds);
                 CookieOptions cookieOptions = new()
                 {
                     HttpOnly = true,

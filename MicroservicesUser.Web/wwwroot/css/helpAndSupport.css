@@ -1,0 +1,55 @@
+.help-and-support-form .form-control[readonly],
+.form-select[readonly] {
+  background-color: #e9ecef;
+  opacity: 1;
+  cursor: not-allowed;
+}
+.help-and-support-form .icon-input-wrapper {
+  position: relative;
+}
+.help-and-support-form .icon-input-wrapper .input-icon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #adb5bd;
+  pointer-events: none;
+  font-size: 1rem;
+}
+.help-and-support-form textarea {
+  resize: none;
+}
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+  border-width: 0.15em;
+}
+.main-content {
+  background-color: #eeeeee;
+}
+#submitBtn:hover {
+  transform: scale(1.03);
+}
+.active > .page-link,
+.page-link.active,
+.active > .page-link:focus,
+.page-link.active:focus,
+.active > .page-link:hover,
+.page-link.active:hover {
+  z-index: 3;
+  background-color: var(--primaryBackgroundColor);
+  border-color: var(--primaryBorderColor);
+  box-shadow: 0 0 0;
+}
+.page-link,
+.page-link:hover {
+  color: var(--primaryTextColor) !important;
+}
+
+.page-link:focus {
+  box-shadow: none;
+}
+
+.page-item.active .page-link {
+  color: white !important;
+}

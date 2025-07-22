@@ -73,7 +73,7 @@ $(document).on("click", ".sort-filter", function () {
 });
 
 $(document).on('click', '.btn-view', function () {
-    var button = $(this); // Button that triggered the modal
+    var button = $(this);
     var exception = button.data('exception');
     var modal = $('#exceptionModal');
     modal.find('#exceptionText').text(exception || "No exception details available.");
