@@ -73,7 +73,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 }
                 else
                 {
-                    users = users.OrderByDescending(u => u.CreatedAt).ToList();
+                    users = users.OrderBy(u => u.CreatedAt).ToList();
                 }
             }
             else
@@ -89,6 +89,10 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 else if (paginationDTO.ColumnNameForSorting == "Status")
                 {
                     users = users.OrderByDescending(u => u.IsDeleted).ThenByDescending(u => u.IsBlocked).ToList();
+                }
+                else
+                {
+                    users = users.OrderByDescending(u => u.CreatedAt).ToList();
                 }
             }
             int totalCount = users.Count;

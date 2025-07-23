@@ -14,21 +14,22 @@
                 <h4 class="my-4 text-primary d-flex align-items-center">
                     <i class="bi bi-chat-left-text-fill me-3 fs-3"></i> Submit a Support Request
                 </h4>
-                <form method="post" asp-controller="HelpAndSupport" asp-action="HelpAndSupport" class="help-and-support-form">
+                <form method="post" asp-controller="HelpAndSupport" asp-action="HelpAndSupport"
+                    class="help-and-support-form">
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
                             <label for="firstName" class="form-label">First Name *</label>
                             <div class="icon-input-wrapper">
-                                <input type="text" class="form-control ps-5" id="firstName" name="FirstName"
-                                    value="@Model.FirstName" readonly required />
+                                <input type="text" class="form-control ps-5" 
+                                    value="@Model.FirstName" readonly asp-for="@Model.FirstName" />
                                 <i class="bi bi-person-fill input-icon"></i>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <label for="lastName" class="form-label">Last Name *</label>
                             <div class="icon-input-wrapper">
-                                <input type="text" class="form-control ps-5" id="lastName" name="LastName"
-                                    value="@Model.LastName" readonly required />
+                                <input type="text" class="form-control ps-5" 
+                                    value="@Model.LastName" readonly asp-for="@Model.LastName"  />
                                 <i class="bi bi-person-fill input-icon"></i>
                             </div>
                         </div>
@@ -36,14 +37,14 @@
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
                             <label for="username" class="form-label">Username *</label>
-                            <input type="text" class="form-control" id="username" name="Username"
-                                value="@Model.Username" readonly required />
+                            <input type="text" class="form-control"
+                                value="@Model.Username" readonly asp-for="@Model.Username"  />
                         </div>
                         <div class="col-md-6">
                             <label for="email" class="form-label">Email Address *</label>
                             <div class="icon-input-wrapper">
-                                <input type="email" class="form-control ps-5" id="email" name="Email"
-                                    value="@Model.Email" readonly required />
+                                <input type="email" class="form-control ps-5" 
+                                    value="@Model.Email" readonly asp-for="@Model.Email"  />
                                 <i class="bi bi-envelope-fill input-icon"></i>
                             </div>
                         </div>
@@ -51,7 +52,7 @@
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
                             <label class="form-label">Category *</label>
-                            <select name="Category" class="form-select" required role="button">
+                            <select asp-for="@Model.Category" class="form-select" required role="button">
                                 <option value="GeneralInquiry">General Inquiry</option>
                                 <option value="AccountIssues">Account Issues</option>
                                 <option value="FeatureRequest">Feature Request</option>
@@ -61,22 +62,23 @@
                         <div class="col-md-6">
                             <label for="phone" class="form-label">Phone Number</label>
                             <div class="icon-input-wrapper">
-                                <input type="tel" class="form-control ps-5" id="phone" name="Phone" value="@Model.PhoneNumber"
-                                    readonly />
+                                <input type="tel" class="form-control ps-5" value="@Model.PhoneNumber" readonly />
                                 <i class="bi bi-telephone-fill input-icon"></i>
                             </div>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="subject" class="form-label">Subject *</label>
-                        <input type="text" class="form-control" id="subject" name="Subject"
-                            placeholder="Brief description of your issue" required />
+                        <input type="text" class="form-control" asp-for="@Model.Subject"
+                            placeholder="Brief description of your issue" />
+                        <span asp-validation-for="@Model.Subject" class="text-danger"></span>
                     </div>
                     <div class="mb-4">
                         <label for="message" class="form-label">Message *</label>
-                        <textarea id="message" name="Message" rows="6" class="form-control"
-                            placeholder="Please provide detailed information about your issue or question. Include any error messages, steps to reproduce the problem, and any other relevant details."
-                            required></textarea>
+                        <textarea asp-for="@Model.Message"  rows="4" class="form-control"
+                            placeholder="Please provide detailed information about your issue or question. Include any error messages, steps to reproduce the problem, and any other relevant details.">
+                        </textarea>
+                        <span asp-validation-for="@Model.Message" class="text-danger"></span>
                     </div>
                     <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-primary d-flex align-items-center px-4 py-2"

@@ -1,6 +1,5 @@
-using Microservices.BusinessLogic.Implementations;
-using Microservices.BusinessLogic.Interfaces;
 using MicroservicesUser.BusinessLogic.Implementations;
+using Microservices.BusinessLogic.Interfaces;
 using MicroservicesUser.BusinessLogic.Interfaces;
 using MicroservicesUser.BusinessLogic.ServerStorage.Interfaces;
 using MicroservicesUser.BusinessLogic.SignalRHubs;
@@ -61,6 +60,7 @@ builder.Services.AddScoped<IProxyVpnDetectionServices, ProxyVpnDetectionServices
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<ILogServices, LogServices>();
 builder.Services.AddScoped<IHelpAndSupportServices, HelpAndSupportServices>();
+builder.Services.AddScoped<IViewRenderService, ViewRenderService>();
 
 
 

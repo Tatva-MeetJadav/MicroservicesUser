@@ -27,7 +27,8 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         private readonly IAdminRepository _adminRepository;
         private readonly IGenericAPIClientServices _apiClient;
         private readonly IProxyVpnDetectionRepository _proxyVpnDetectionRepository;
-        public AuthenticationServices(IMapper mapper, IUserRepository userRepository, IJwtServices jwtServices, IEmailServices emailServices, ITokenStore tokenStore, IConfiguration configuration, IEncryptDecryptServices encryptDecryptServices, IAdminRepository adminRepository, IGenericAPIClientServices apiClient, IProxyVpnDetectionRepository proxyVpnDetectionRepository)
+        private readonly IViewRenderService _viewRenderService;
+        public AuthenticationServices(IMapper mapper, IUserRepository userRepository, IJwtServices jwtServices, IEmailServices emailServices, ITokenStore tokenStore, IConfiguration configuration, IEncryptDecryptServices encryptDecryptServices, IAdminRepository adminRepository, IGenericAPIClientServices apiClient, IProxyVpnDetectionRepository proxyVpnDetectionRepository, IViewRenderService viewRenderService)
         {
             _mapper = mapper;
             _userRepository = userRepository;
@@ -39,6 +40,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             _adminRepository = adminRepository;
             _apiClient = apiClient;
             _proxyVpnDetectionRepository = proxyVpnDetectionRepository;
+            _viewRenderService = viewRenderService;
         }
         public async Task<string> RegisterUser(RegisterVM registerVM)
         {
@@ -165,7 +167,9 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                 if (user != null)
                 {
                     string token = GenerateToken.GenerateGuid();
-                    _emailServices.SendEmail(loginVM.Email, token, false);
+                    ResetPasswordEmailVM resetVM = new() { ResetLinkUrl = _configuration["ResetPasswordLink:Route"] + "?token=" + token };
+                    string htmlContent = await _viewRenderService.RenderToStringAsync("EmailTemplates/ResetPassword", resetVM);
+                    await _emailServices.SendEmailAsync(loginVM.Email, "Regarding reset password", htmlContent);
                     user.PasswordResetToken = token;
                     user.PasswordResetTokenExpiry = DateTime.Now.AddHours(1);
                     await _userRepository.UpdateAsync(user);
@@ -182,7 +186,9 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                 if (admin != null)
                 {
                     string token = GenerateToken.GenerateGuid();
-                    _emailServices.SendEmail(loginVM.Email, token, true);
+                    ResetPasswordEmailVM resetVM = new() { ResetLinkUrl = _configuration["ResetPasswordLink:AdminRoute"] + "?token=" + token };
+                    string htmlContent = await _viewRenderService.RenderToStringAsync("EmailTemplates/ResetPassword", resetVM);
+                    await _emailServices.SendEmailAsync(loginVM.Email, "Regarding reset password", htmlContent);
                     admin.PasswordResetToken = token;
                     admin.PasswordResetTokenExpiry = DateTime.Now.AddHours(1);
                     await _adminRepository.UpdateAsync(admin);

@@ -36,6 +36,7 @@ namespace MicroservicesUser.Models.Models
         [StringLength(128)]
         public string? PasswordResetToken { get; set; }
 
+        [Column(TypeName = "timestamp without time zone")]
         public DateTime? PasswordResetTokenExpiry { get; set; }
 
     }

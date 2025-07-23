@@ -1,8 +1,8 @@
 var currentRow;
 var blockId;
 var deleteId;
-var columnNameForSorting = "";
-var orderOfSorting = "asc";
+var columnNameForSorting = "CreatedAt";
+var orderOfSorting = "desc";
 function fetchUserList(page, pageSize) {
     var searchQuery = $('input[name="searchQueryForUsers"]').val();
     var paginationDTO =
@@ -67,7 +67,7 @@ $(document).on('click', '.btn-view', function () {
     var userFullName = row.find('.user-details h6').text();
     var userEmail = row.find('td:nth-child(2)').text();
     var userPhone = row.find('td:nth-child(3)').text();
-    var userStatus = row.find('td:nth-child(4) .status-badge').text().trim();
+    var userStatus = row.find('td:nth-child(5) .status-badge').text().trim();
     var userAddress = row.find('.user-address').val();
     var userAvatar = row.find('.user-avatar').attr('src');
     var username = row.find('.user-username').data('username');
@@ -131,7 +131,7 @@ $(document).on('click', '#confirmDeleteUserBtn', function () {
 $(document).on("click", ".sort-filter", function () {
     columnNameForSorting = $(this).data("column");
     if (orderOfSorting == "asc") {
-        orderOfSorting = "dsc";
+        orderOfSorting = "desc";
     } else {
         orderOfSorting = "asc";
     }

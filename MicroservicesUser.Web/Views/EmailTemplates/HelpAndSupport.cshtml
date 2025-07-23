@@ -1,0 +1,62 @@
+@model MicroservicesUser.Models.ViewModels.HelpAndSupportVM
+@{
+    Layout = "";
+}
+@{
+    string GetCategoryText(string category) => category switch
+    {
+        "BugReport" => "Bug Report",
+        "AccountIssues" => "Account Issue",
+        "FeatureRequest" => "Feature Request",
+        "GeneralInquiry" => "General Inquiry",
+        _ => ""
+    };
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Support Request Notification</title>
+</head>
+<body style="margin:0; padding:0; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333;">
+
+    <div style="width: 100%; background-color: #ffffff; padding: 30px;">
+        <!-- Header -->
+        <div style="padding: 24px;background-color: teal;color:white;border-radius: 8px;">
+            <h2 style="margin: 0; font-size: 24px;">📥 New Support Request</h2>
+            <p style="margin: 5px 0 0;">A user has submitted a new support inquiry.</p>
+        </div>
+
+        <!-- Body -->
+        <div style="padding: 30px 25px;">
+            <p style="margin-top: 0;">Dear Admin,</p>
+            <p>You have received a new help and support request. Below are the details:</p>
+            <!-- Details Section -->
+            <div style="margin-top: 20px; background-color: #f4f6fb; padding: 20px; border-radius: 8px;">
+                <p style="margin: 8px 0;"><strong>👤 Username:</strong> @Model.Username</p>
+                <p style="margin: 8px 0;"><strong>📋 Subject:</strong> @Model.Subject</p>
+                <p style="margin: 8px 0;"><strong>📂 Category:</strong> @GetCategoryText(Model.Category)</p>
+                <p style="margin: 8px 0;"><strong>📅 Submitted:</strong> @Model.CreatedAt.ToString("dd-MM-yyyy hh:mm tt")</p>
+            </div>
+
+            <!-- Message Section -->
+            <div style="margin-top: 30px;">
+                <h4 style="margin-bottom: 10px; font-size: 16px; color: #444;">💬 User Message:</h4>
+                <div style="background: #ffefef; padding: 15px; border-left: 4px solid #ff6a00; border-radius: 6px; color: #333; line-height: 1.6;">
+                    @Model.Message
+                </div>
+            </div>
+
+            <!-- Footer Note -->
+            <div style="margin-top: 30px; border-top: 1px solid #ddd; padding-top: 20px;">
+                <p style="font-size: 14px; color: #777;">
+                    Please review this request and respond to the user accordingly via the admin portal or your support tools.
+                </p>
+                <p style="font-size: 13px; color: #bbb;">
+                    This is an automated message from the support system.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

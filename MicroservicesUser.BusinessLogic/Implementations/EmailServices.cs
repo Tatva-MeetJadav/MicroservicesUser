@@ -1,51 +1,51 @@
+using Microservices.BusinessLogic.Interfaces;
+using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Net.Mail;
-using Microservices.BusinessLogic.Interfaces;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 
-namespace Microservices.BusinessLogic.Implementations
+namespace MicroservicesUser.BusinessLogic.Implementations
 {
     public class EmailServices : IEmailServices
     {
-        private readonly IConfiguration _configuration;
-        private readonly IWebHostEnvironment _env;
-        public EmailServices(IConfiguration configuration, IWebHostEnvironment env)
+        private readonly SmtpClient _smtpClient;
+        private readonly string _fromAddress;
+
+        public EmailServices(IConfiguration configuration)
         {
-            _configuration = configuration;
-            _env = env;
+            string host = configuration["EmailConfiguration:Host"] ?? string.Empty;
+            string senderEmail = configuration["EmailConfiguration:SenderEmail"] ?? string.Empty;
+            string password = configuration["EmailConfiguration:Password"] ?? string.Empty;
+            int port = int.Parse(configuration["EmailConfiguration:Port"] ?? "587");
+            _fromAddress = senderEmail;
+            _smtpClient = new SmtpClient(host, port)
+            {
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false
+            };
+            if (!string.IsNullOrEmpty(password))
+            {
+                _smtpClient.Credentials = new NetworkCredential(senderEmail, password);
+            }
         }
+
         public void SendEmail(string email, string token, bool isAdmin)
         {
-            string subject = "Regarding Forgot Password";
-            SmtpClient client = new(_configuration["EmailConfiguration:Host"], Convert.ToInt16(_configuration["EmailConfiguration:Port"]));
-            client.EnableSsl = true;
-            client.UseDefaultCredentials = false;
-            client.Credentials = new NetworkCredential(_configuration["EmailConfiguration:SenderEmail"], _configuration["EmailConfiguration:Password"]);
+            throw new NotImplementedException();
+        }
 
-            MailMessage mailMessage = new MailMessage();
-            mailMessage.From = new MailAddress(_configuration["EmailConfiguration:SenderEmail"] ?? string.Empty);
-            mailMessage.IsBodyHtml = true;
-            mailMessage.To.Add(email);
-            string resetLink;
-            if (isAdmin)
+        public async Task SendEmailAsync(string toEmail, string subject, string htmlContent)
+        {
+            var mailMessage = new MailMessage
             {
-                resetLink = _configuration["ResetPasswordLink:AdminRoute"] + "?token=" + token;
-            }
-            else
-            {
-                resetLink = _configuration["ResetPasswordLink:Route"] + "?token=" + token;
-            }
+                From = new MailAddress(_fromAddress),
+                Subject = subject,
+                Body = htmlContent,
+                IsBodyHtml = true,
+            };
+            mailMessage.To.Add(toEmail);
 
-            string path = Path.Combine(_env.WebRootPath, "Templates", "ResetPasswordLinkEmail.html");
-
-            if (File.Exists(path))
-            {
-                string emailBody = File.ReadAllText(path);
-                mailMessage.Body = emailBody.Replace("{{ResetPasswordLink}}", resetLink);
-            }
-            mailMessage.Subject = subject;
-            client.Send(mailMessage);
+            await _smtpClient.SendMailAsync(mailMessage);
         }
     }
 }

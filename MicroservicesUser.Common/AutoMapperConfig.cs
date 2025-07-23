@@ -66,7 +66,8 @@ namespace MicroservicesUser.Common
             CreateMap<HelpAndSupport, HelpAndSupportVM>()
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User!.Username));
             CreateMap<PaginationDTO, HelpAndSupportListVM>();
-            
+
+
             //Log
             CreateMap<Log, LogVM>();
             CreateMap<PaginationDTO, LogListVM>();

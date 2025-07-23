@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microservices.BusinessLogic.Interfaces;
 using MicroservicesUser.BusinessLogic.Interfaces;
 using MicroservicesUser.Common.ResourcesFiles;
 using MicroservicesUser.DataAccess.Repository.Interfaces;
@@ -14,12 +15,18 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         private readonly IJwtServices _jwtServices;
         private readonly IMapper _mapper;
         private readonly IHelpAndSupportRepository _helpAndSupportRepository;
-        public HelpAndSupportServices(IUserRepository userRepository, IJwtServices jwtServices, IMapper mapper, IHelpAndSupportRepository helpAndSupportRepository)
+        private readonly IEmailServices _emailServices;
+        private readonly IViewRenderService _viewRenderService;
+        private readonly IAdminRepository _adminRepository;
+        public HelpAndSupportServices(IUserRepository userRepository, IJwtServices jwtServices, IMapper mapper, IHelpAndSupportRepository helpAndSupportRepository, IEmailServices emailServices, IViewRenderService viewRenderService, IAdminRepository adminRepository)
         {
             _userRepository = userRepository;
             _jwtServices = jwtServices;
             _mapper = mapper;
             _helpAndSupportRepository = helpAndSupportRepository;
+            _emailServices = emailServices;
+            _viewRenderService = viewRenderService;
+            _adminRepository = adminRepository;
         }
 
         public async Task<string> AddHelpAndSupport(HelpAndSupportVM helpAndSupportVM, string token)
@@ -28,6 +35,15 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             HelpAndSupport helpAndSupport = _mapper.Map<HelpAndSupport>(helpAndSupportVM);
             helpAndSupport.UserId = id;
             helpAndSupport.CreatedAt = DateTime.Now;
+            helpAndSupportVM.CreatedAt = DateTime.Now;
+            string AdminHtmlContent = await _viewRenderService.RenderToStringAsync("EmailTemplates/HelpAndSupport", helpAndSupportVM);
+            string UserhtmlContent = await _viewRenderService.RenderToStringAsync("EmailTemplates/HelpAndSupportForUser", helpAndSupportVM);
+            await _emailServices.SendEmailAsync(helpAndSupportVM.Email, "Regarding request summary", UserhtmlContent);
+            List<Admin> supportAdmins = await _adminRepository.GetAdminListOfSupportRole();
+            foreach (Admin admin in supportAdmins)
+            {
+                await _emailServices.SendEmailAsync(admin.Email, "Regarding new support request!", AdminHtmlContent);
+            }
             await _helpAndSupportRepository.AddAsync(helpAndSupport);
             return Messages.SuccessMessage;
         }

@@ -35,9 +35,9 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
 
             helpAndSupports = helpAndSupports.Where(h => h.CreatedAt >= requestDTO.FromDate.ToDateTime(TimeOnly.MinValue) && h.CreatedAt <= requestDTO.ToDate.ToDateTime(TimeOnly.MaxValue));
             int totalCount = helpAndSupports.Count();
-
+            helpAndSupports = helpAndSupports.OrderByDescending(u => u.CreatedAt);
             helpAndSupports = helpAndSupports.Skip((requestDTO.PaginationDTO.CurrentPage - 1) * requestDTO.PaginationDTO.PageSize).Take(requestDTO.PaginationDTO.PageSize);
-            return (await helpAndSupports.OrderBy(u => u.Id).ToListAsync(), totalCount);
+            return (await helpAndSupports.ToListAsync(), totalCount);
         }
     }
 }

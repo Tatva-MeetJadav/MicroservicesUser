@@ -22,6 +22,11 @@ namespace MicroservicesUser.BusinessLogic.Implementations
 
         public async Task<UserListVM> GetUserList(PaginationDTO paginationDTO)
         {
+            if (string.IsNullOrEmpty(paginationDTO.ColumnNameForSorting))
+            {
+                paginationDTO.ColumnNameForSorting = "CreatedAt";
+                paginationDTO.OrderOfSorting = "desc";
+            }
             (List<User> users, int totalCount) = await _userRepository.GetListAsync(paginationDTO);
             List<UserVM> userVMs = _mapper.Map<List<UserVM>>(users);
             for (int i = 0; i < userVMs.Count; i++)

@@ -3,6 +3,7 @@
     public enum AdminRole
     {
         Admin,
-        Administrator
+        Administrator,
+        SupportAdmin
     }
 }

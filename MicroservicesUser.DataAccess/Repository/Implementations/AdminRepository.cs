@@ -2,6 +2,7 @@ using MicroservicesUser.DataAccess.Data;
 using MicroservicesUser.DataAccess.Repository.Interfaces;
 using MicroservicesUser.Models.Models;
 using Microsoft.EntityFrameworkCore;
+using MicroservicesUser.Models.Enums;
 
 namespace MicroservicesUser.DataAccess.Repository.Implementations
 {
@@ -32,6 +33,12 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
         public async Task<Admin?> GetByIdAsync(int id)
         {
             return await _context.Admins.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<List<Admin>> GetAdminListOfSupportRole()
+        {
+            List<Admin> admins = await _context.Admins.Where(u => u.Role == AdminRole.SupportAdmin).ToListAsync();
+            return admins;
         }
     }
 }
