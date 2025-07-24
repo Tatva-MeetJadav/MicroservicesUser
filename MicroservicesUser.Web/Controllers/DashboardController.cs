@@ -89,7 +89,7 @@ namespace MicroservicesUser.Web.Controllers
             return Json(result);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,SupportAdmin")]
         public async Task<IActionResult> AdminDashboard()
         {
             return View();
@@ -104,7 +104,7 @@ namespace MicroservicesUser.Web.Controllers
             return View(profileVM);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,SupportAdmin")]
         [HttpPost]
         public async Task<IActionResult> AdminProfile(ProfileVM profileVM, IFormFile profilePhoto)
         {
@@ -140,5 +140,22 @@ namespace MicroservicesUser.Web.Controllers
                 return Json(Messages.Failed);
             }
         }
+
+        [Authorize(Roles = "SupportAdmin")]
+        [HttpGet]
+        public async Task<ActionResult> GetUnreadNotifications()
+        {
+            AdminNotificationListVM result = await _dashboardServices.GetUnreadNotificationList();
+            return PartialView("_AdminNotification", result);
+        }
+
+        [Authorize(Roles = "SupportAdmin")]
+        [HttpPost]
+        public async Task<IActionResult> ReadAllNotifications()
+        {
+            await _dashboardServices.ReadAllNotifications();
+            return PartialView("_AdminNotification", new AdminNotificationListVM());
+        }
+
     }
 }

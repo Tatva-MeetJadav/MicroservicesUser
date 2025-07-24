@@ -22,9 +22,9 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         private readonly IConfiguration _configuration;
         private readonly IEncryptDecryptServices _encryptDecryptServices;
         private readonly IDashboardRepository _dashboardRepository;
-
+        private readonly INotificationRepository _notificationRepository;
         private readonly IAdminRepository _adminRepository;
-        public DashboardServices(IUserRepository userRepository, IJwtServices jwtServices, IMapper mapper, IWebHostEnvironment webHostEnvironment, IConfiguration configuration, IEncryptDecryptServices encryptDecryptServices, IDashboardRepository dashboardRepository, IAdminRepository adminRepository)
+        public DashboardServices(IUserRepository userRepository, IJwtServices jwtServices, IMapper mapper, IWebHostEnvironment webHostEnvironment, IConfiguration configuration, IEncryptDecryptServices encryptDecryptServices, IDashboardRepository dashboardRepository, IAdminRepository adminRepository, INotificationRepository notificationRepository)
         {
             _userRepository = userRepository;
             _jwtServices = jwtServices;
@@ -34,6 +34,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             _encryptDecryptServices = encryptDecryptServices;
             _dashboardRepository = dashboardRepository;
             _adminRepository = adminRepository;
+            _notificationRepository = notificationRepository;
         }
 
         public async Task<ProfileVM> GetUserProfile(string token)
@@ -178,10 +179,25 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             }
         }
 
-        // public async Task<AdminDashboardVM> GetAdminDashboard()
-        // {
-        //     AdminDashboardDTO dashboardDTO = await _dashboardRepository.GetEmailVerificationDashboardAsync();
+        public async Task<AdminNotificationListVM> GetUnreadNotificationList()
+        {
+            List<Notification> notifications = await _notificationRepository.GetUnreadNotificationList();
+            List<AdminNotificationVM> notificationVMs = _mapper.Map<List<AdminNotificationVM>>(notifications);
+            return new AdminNotificationListVM
+            {
+                AdminNotificationList = notificationVMs,
+                TotalCount = notifications.Count,
+            };
+        }
 
-        // }
+        public async Task ReadAllNotifications()
+        {
+            List<Notification> notifications = await _notificationRepository.GetUnreadNotificationList();
+            foreach (var notification in notifications)
+            {
+                notification.IsRead = true;
+            }
+            await _notificationRepository.UpdateListAsync(notifications);
+        }
     }
 }

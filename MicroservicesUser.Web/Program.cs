@@ -47,6 +47,7 @@ builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IProxyVpnDetectionRepository, ProxyVpnDetectionRepository>();
 builder.Services.AddScoped<ILogRepository, LogRepository>();
 builder.Services.AddScoped<IHelpAndSupportRepository, HelpAndSupportRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 
 //Setting up business services
 builder.Services.AddScoped<IJwtServices, JwtServices>();
@@ -118,10 +119,10 @@ builder.Services.AddAuthentication(options =>
 
 WebApplication app = builder.Build();
 app.MapHub<LogoutHub>("/logouthub");
+app.MapHub<NotificationHub>("/notificationHub");
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

@@ -338,3 +338,52 @@ table td {
 .text-slightly-small {
   font-size: 15px;
 }
+
+.notification-dropdown {
+  min-width: 350px;
+  max-height: 450px;
+  padding: 0.5rem;
+  overflow-y: auto;
+}
+
+.notification-item {
+  border-left: 4px solid var(--primaryBackgroundColor);
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.6rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
+}
+
+.notification-button {
+  position: relative;
+}
+
+.notification-item:hover {
+  background-color: #eaeaea;
+  text-decoration: none;
+}
+
+.notification-icon {
+  color: var(--primaryTextColor);
+  flex-shrink: 0;
+  font-size: 1.3rem;
+  margin-right: 0.8rem;
+}
+
+.notification-username {
+  color: var(--primaryTextColor);
+}
+
+.notification-time {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+/* Badge style enhanced */
+.notification-badge {
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 0.35em 0.55em;
+  box-shadow: 0 0 6px #dc3545aa;
+}

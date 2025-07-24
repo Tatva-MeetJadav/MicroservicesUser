@@ -12,6 +12,8 @@ using MicroservicesUser.Models.DTO;
 using System.Text.Json;
 using Newtonsoft.Json;
 using MicroservicesUser.Models.Enums;
+using Microsoft.AspNetCore.SignalR;
+using MicroservicesUser.BusinessLogic.SignalRHubs;
 
 namespace MicroservicesUser.BusinessLogic.Implementations
 {
@@ -28,7 +30,8 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         private readonly IGenericAPIClientServices _apiClient;
         private readonly IProxyVpnDetectionRepository _proxyVpnDetectionRepository;
         private readonly IViewRenderService _viewRenderService;
-        public AuthenticationServices(IMapper mapper, IUserRepository userRepository, IJwtServices jwtServices, IEmailServices emailServices, ITokenStore tokenStore, IConfiguration configuration, IEncryptDecryptServices encryptDecryptServices, IAdminRepository adminRepository, IGenericAPIClientServices apiClient, IProxyVpnDetectionRepository proxyVpnDetectionRepository, IViewRenderService viewRenderService)
+        private readonly IHubContext<NotificationHub> _hubContext;
+        public AuthenticationServices(IMapper mapper, IUserRepository userRepository, IJwtServices jwtServices, IEmailServices emailServices, ITokenStore tokenStore, IConfiguration configuration, IEncryptDecryptServices encryptDecryptServices, IAdminRepository adminRepository, IGenericAPIClientServices apiClient, IProxyVpnDetectionRepository proxyVpnDetectionRepository, IViewRenderService viewRenderService, IHubContext<NotificationHub> hubContext)
         {
             _mapper = mapper;
             _userRepository = userRepository;
@@ -41,6 +44,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             _apiClient = apiClient;
             _proxyVpnDetectionRepository = proxyVpnDetectionRepository;
             _viewRenderService = viewRenderService;
+            _hubContext = hubContext;
         }
         public async Task<string> RegisterUser(RegisterVM registerVM)
         {

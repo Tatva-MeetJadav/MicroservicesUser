@@ -1,0 +1,109 @@
+@model AdminNotificationListVM
+
+@functions {
+    string GetCategoryText(string category) => category switch
+    {
+        "BugReport" => "Bug Report",
+        "AccountIssues" => "Account Issue",
+        "FeatureRequest" => "Feature Request",
+        "GeneralInquiry" => "General Inquiry",
+        _ => "Other"
+    };
+
+    string GetCategoryBadgeClass(string category) => category switch
+    {
+        "BugReport" => "bg-danger text-white",
+        "AccountIssues" => "bg-warning text-dark",
+        "FeatureRequest" => "bg-info text-white",
+        "GeneralInquiry" => "bg-secondary text-white",
+        _ => "bg-light text-dark"
+    };
+
+    string GetCategoryIcon(string category) => category switch
+    {
+        "BugReport" => "bi-bug-fill",
+        "AccountIssues" => "bi-person-fill-exclamation",
+        "FeatureRequest" => "bi-lightbulb-fill",
+        "GeneralInquiry" => "bi-question-circle-fill",
+        _ => "bi-info-circle-fill"
+    };
+
+    public string GetTimeAgo(DateTime dateTime)
+    {
+        var timeSpan = DateTime.Now - dateTime;
+
+        if (timeSpan.TotalMinutes < 1)
+            return "just now";
+        if (timeSpan.TotalMinutes < 60)
+            return $"{(int)timeSpan.TotalMinutes} min ago";
+        if (timeSpan.TotalHours < 24)
+            return $"{(int)timeSpan.TotalHours} hr ago";
+        if (timeSpan.TotalDays < 7)
+            return $"{(int)timeSpan.TotalDays} days ago";
+        if (timeSpan.TotalDays < 30)
+            return $"{(int)(timeSpan.TotalDays / 7)} weeks ago";
+        if (timeSpan.TotalDays < 365)
+            return $"{(int)(timeSpan.TotalDays / 30)} months ago";
+
+        return $"{(int)(timeSpan.TotalDays / 365)} years ago";
+    }
+}
+
+<div class="mt-2 position-relative">
+    <a class="text-white text-decoration-none position-relative notification-button" role="button"
+        id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Notifications">
+        <i class="bi bi-bell fs-4"></i>
+        @if (Model.TotalCount > 0)
+        {
+            <span
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">
+                @Model.TotalCount
+                <span class="visually-hidden">unread notifications</span>
+            </span>
+        }
+    </a>
+
+    <ul class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="notificationDropdown" style="min-width: 350px;">
+        @if (Model.AdminNotificationList.Any())
+        {
+            <div class="notification-dropdown">
+                @foreach (var item in Model.AdminNotificationList)
+                {
+                    <li class="notification-item d-flex align-items-start mb-3">
+                        <i class="bi @GetCategoryIcon(item.Category) fs-4 me-3 text-secondary"></i>
+                        <div class="flex-grow-1">
+                            <div>
+                                <span class="notification-username fw-bold">@item.Username</span>
+                                sent you a support request
+                            </div>
+                            <div class="mt-1">
+                                <span class="badge @GetCategoryBadgeClass(item.Category)">
+                                    @GetCategoryText(item.Category)
+                                </span>
+                            </div>
+                            <small class="notification-time text-muted d-block mt-1">@GetTimeAgo(item.CreatedAt)</small>
+                        </div>
+                    </li>
+                }
+            </div>
+            <li>
+                <hr class="dropdown-divider">
+            </li>
+            <li>
+                <a class="dropdown-item mark-as-all-read-button d-flex align-items-center gap-1 justify-content-center"
+                    role="button">
+                    <span>Mark all as read</span>
+                    <i class="bi bi-check2-all"></i>
+                </a>
+            </li>
+        }
+        else
+        {
+            <li class="dropdown-item d-flex align-items-center justify-content-center">
+                <div>
+                    <span class="fs-5">No notifications available.</span>
+                </div>
+            </li>
+        }
+    </ul>
+</div>

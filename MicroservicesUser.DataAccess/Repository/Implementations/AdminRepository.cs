@@ -40,5 +40,6 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             List<Admin> admins = await _context.Admins.Where(u => u.Role == AdminRole.SupportAdmin).ToListAsync();
             return admins;
         }
+
     }
 }

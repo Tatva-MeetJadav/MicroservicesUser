@@ -13,6 +13,7 @@ namespace MicroservicesUser.DataAccess.Data
         public DbSet<Admin> Admins { get; set; }
         public DbSet<ProxyVpnDetection> ProxyVpnDetections { get; set; }
         public DbSet<HelpAndSupport> HelpAndSupports { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -49,7 +49,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
 
             List<EmailVerification> allEmailVerifications = await baseQuery.ToListAsync();
             int validCount = allEmailVerifications.Count(ev =>
-            ev.EmailResponseParam.RootElement.TryGetProperty("valid", out var validCountVal)
+            ev.EmailResponseParam.RootElement.TryGetProperty("valid", out JsonElement validCountVal)
             && validCountVal.GetBoolean());
 
             int fraudScoreCount = allEmailVerifications.Count(ev =>
@@ -94,12 +94,6 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 {
                     fraudScore = scoreProp.GetInt32();
                 }
-
-                if (valid)
-                {
-                    validCount++;
-                }
-
                 AdminEmailVerificationHistoryListDTO historyItem = new()
                 {
                     Id = ev.Id,

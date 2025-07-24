@@ -67,6 +67,10 @@ namespace MicroservicesUser.Common
                 .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User!.Username));
             CreateMap<PaginationDTO, HelpAndSupportListVM>();
 
+            //Notification
+            CreateMap<Notification, AdminNotificationVM>()
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User!.Username))
+                .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.HelpAndSupport!.Category)); ;
 
             //Log
             CreateMap<Log, LogVM>();

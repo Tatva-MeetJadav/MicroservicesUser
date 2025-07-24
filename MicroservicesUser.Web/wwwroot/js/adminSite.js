@@ -1,16 +1,23 @@
-var connection = new signalR.HubConnectionBuilder()
+var logoutConnection = new signalR.HubConnectionBuilder()
     .withUrl("/logouthub")
     .build();
 
 
-connection.start().catch(function (err) {
+logoutConnection.start().catch(function (err) {
     return console.error(err.toString());
 });
-
-connection.on("ForceLogout", function () {
+logoutConnection.on("ForceLogout", function () {
     window.location.href = "/Authentication/AdminLogin";
 });
 
+var notificationConnection = new signalR.HubConnectionBuilder()
+    .withUrl("/notificationHub")
+    .build();
+-
+notificationConnection.start().catch(console.error);
+notificationConnection.on("ReceiveNotification", function () {
+    GetUnreadNotifications();
+});
 
 $(document).on('submit', '.change-password-form', function (e) {
     e.preventDefault();
@@ -44,4 +51,25 @@ $(document).ready(function () {
             $('.profile-image').attr('src', imagePath);
         },
     });
+    GetUnreadNotifications();
 });
+
+function GetUnreadNotifications() {
+    $.ajax({
+        url: '/Dashboard/GetUnreadNotifications',
+        method: 'GET',
+        success: function (data) {
+            $('.append-admin-notification').html(data);
+        },
+    });
+}
+
+$(document).on('click', '.mark-as-all-read-button', function () {
+    $.ajax({
+        url: '/Dashboard/ReadAllNotifications',
+        method: 'POST',
+        success: function (data) {
+            $('.append-admin-notification').html(data);
+        }
+    });
+})

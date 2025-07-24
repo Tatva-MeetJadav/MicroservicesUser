@@ -15,5 +15,7 @@ namespace MicroservicesUser.BusinessLogic.Interfaces
         Task<ProfileVM> GetAdminProfile(string token);
         Task<string> EditAdminProfile(ProfileVM profileVM, IFormFile formFile);
         Task<string> AdminChangePassword(ChangePasswordVM changePasswordVM, string token);
+        Task<AdminNotificationListVM> GetUnreadNotificationList();
+        Task ReadAllNotifications();
     }
 }
