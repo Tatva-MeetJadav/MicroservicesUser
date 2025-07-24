@@ -259,23 +259,3 @@
   color: #64748b;
   border: 2px dashed #e2e8f0;
 }
-
-.page-header {
-  background: white;
-  padding: 2rem 0 1rem 0;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.page-title {
-  color: #2c3e50;
-  font-weight: 700;
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-}
-
-.page-subtitle {
-  color: #6c757d;
-  font-size: 1rem;
-  margin: 0;
-}

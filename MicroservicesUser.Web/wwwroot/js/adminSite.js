@@ -13,7 +13,6 @@ logoutConnection.on("ForceLogout", function () {
 var notificationConnection = new signalR.HubConnectionBuilder()
     .withUrl("/notificationHub")
     .build();
--
 notificationConnection.start().catch(console.error);
 notificationConnection.on("ReceiveNotification", function () {
     GetUnreadNotifications();
@@ -51,7 +50,10 @@ $(document).ready(function () {
             $('.profile-image').attr('src', imagePath);
         },
     });
-    GetUnreadNotifications();
+    if ($('.append-admin-notification').length > 0) {
+        GetUnreadNotifications();
+    }
+
 });
 
 function GetUnreadNotifications() {
