@@ -100,7 +100,7 @@
                     @if(role == "SupportAdmin")
                     {
                         <div class="append-admin-notification">
-                            @await Html.PartialAsync("_AdminNotification", new AdminNotificationListVM())
+                            @await Component.InvokeAsync("Notifications")
                         </div>
                     }
                     <div class="dropdown pe-3">

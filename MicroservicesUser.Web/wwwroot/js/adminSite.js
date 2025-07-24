@@ -50,10 +50,6 @@ $(document).ready(function () {
             $('.profile-image').attr('src', imagePath);
         },
     });
-    if ($('.append-admin-notification').length > 0) {
-        GetUnreadNotifications();
-    }
-
 });
 
 function GetUnreadNotifications() {
