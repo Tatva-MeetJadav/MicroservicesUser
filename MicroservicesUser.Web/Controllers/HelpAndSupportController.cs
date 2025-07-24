@@ -38,7 +38,7 @@ namespace MicroservicesUser.Web.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,SupportAdmin")]
         [HttpGet]
         public async Task<IActionResult> AdminSupport()
         {
@@ -47,7 +47,7 @@ namespace MicroservicesUser.Web.Controllers
             return View(result);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,SupportAdmin")]
         [HttpPost]
         public async Task<IActionResult> GetHelpAndSupportList([FromBody] HelpAndSupportRequestDTO requestDTO)
         {

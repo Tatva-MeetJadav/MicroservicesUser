@@ -95,7 +95,7 @@ namespace MicroservicesUser.Web.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,SupportAdmin")]
         [HttpGet]
         public async Task<IActionResult> AdminProfile()
         {
@@ -121,7 +121,7 @@ namespace MicroservicesUser.Web.Controllers
             return RedirectToAction("AdminProfile", "Dashboard");
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,SupportAdmin")]
         [HttpPost]
         public async Task<JsonResult> AdminChangePassword(ChangePasswordVM changePasswordVM)
         {

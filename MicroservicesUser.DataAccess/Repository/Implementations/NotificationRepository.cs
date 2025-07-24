@@ -21,7 +21,7 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
 
         public Task<List<Notification>> GetUnreadNotificationList()
         {
-            return _context.Notifications.Where(u => u.IsRead == false).Include(u => u.User).Include(u => u.HelpAndSupport).ToListAsync();
+            return _context.Notifications.Where(u => u.IsRead == false).Include(u => u.User).Include(u => u.HelpAndSupport).OrderByDescending(u => u.CreatedAt).ToListAsync();
         }
 
         public async Task UpdateListAsync(List<Notification> notifications)

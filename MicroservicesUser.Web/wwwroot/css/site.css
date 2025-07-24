@@ -380,10 +380,15 @@ table td {
   color: #6c757d;
 }
 
-/* Badge style enhanced */
 .notification-badge {
   font-weight: 600;
   font-size: 0.75rem;
   padding: 0.35em 0.55em;
   box-shadow: 0 0 6px #dc3545aa;
+}
+
+.no-notifications:hover,
+.no-notifications:active {
+  color: black;
+  background-color: white;
 }

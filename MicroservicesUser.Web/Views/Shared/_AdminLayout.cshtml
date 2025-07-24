@@ -58,21 +58,25 @@
                         <a class="px-3 py-1 sidebar-link text-start @(currentController == "Dashboard" ? "bg-primary text-white fw-bold" : "text-black") rounded-1 text-decoration-none" role="button" asp-action="AdminDashboard" asp-controller="Dashboard">
                             Dashboard
                         </a>
-                        <a class="px-3 py-1 sidebar-link text-start @(currentController == "User" ? "bg-primary text-white  fw-bold" : "text-black") rounded-1 text-black text-decoration-none" role="button" asp-action="Index" asp-controller="User">
-                            Users
-                        </a>
-                        <a class="px-3 py-1 sidebar-link text-start @(currentController == "ProxyVpnDetection" ? "bg-primary text-white fw-bold" : "text-black") rounded-1 text-black text-decoration-none" role="button" asp-action="Index" asp-controller="ProxyVpnDetection">
-                            Proxy And Vpn Detection
-                        </a>
-                        <a class="px-3 py-1 sidebar-link text-start @(currentController == "EmailVerification" ? "bg-primary text-white fw-bold" : "text-black") rounded-1 text-black text-decoration-none" role="button" asp-action="AdminEmailVerification" asp-controller="EmailVerification">
-                            Email Verification
-                        </a>
-                        <a class="px-3 py-1 sidebar-link text-start @(currentController == "Log" ? "bg-primary text-white fw-bold" : "text-black") rounded-1 text-black text-decoration-none" role="button" asp-action="Index" asp-controller="Log">
-                            Logs
-                        </a>
+                        @if(role != "SupportAdmin")
+                        {
+                            <a class="px-3 py-1 sidebar-link text-start @(currentController == "User" ? "bg-primary text-white  fw-bold" : "text-black") rounded-1 text-black text-decoration-none" role="button" asp-action="Index" asp-controller="User">
+                                Users
+                            </a>
+                            <a class="px-3 py-1 sidebar-link text-start @(currentController == "ProxyVpnDetection" ? "bg-primary text-white fw-bold" : "text-black") rounded-1 text-black text-decoration-none" role="button" asp-action="Index" asp-controller="ProxyVpnDetection">
+                                Proxy And Vpn Detection
+                            </a>
+                            <a class="px-3 py-1 sidebar-link text-start @(currentController == "EmailVerification" ? "bg-primary text-white fw-bold" : "text-black") rounded-1 text-black text-decoration-none" role="button" asp-action="AdminEmailVerification" asp-controller="EmailVerification">
+                                Email Verification
+                            </a>
+                            <a class="px-3 py-1 sidebar-link text-start @(currentController == "Log" ? "bg-primary text-white fw-bold" : "text-black") rounded-1 text-black text-decoration-none" role="button" asp-action="Index" asp-controller="Log">
+                                Logs
+                            </a>
+                        }
                         <a class="px-3 py-1 sidebar-link text-start @(currentController == "HelpAndSupport" ? "bg-primary text-white fw-bold" : "text-black") rounded-1 text-black text-decoration-none" role="button" asp-action="AdminSupport" asp-controller="HelpAndSupport">
-                            Manage HelpDesk
+                                Manage HelpDesk
                         </a>
+                        
                     </aside>
                 </div>
             </div>
