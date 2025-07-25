@@ -93,6 +93,10 @@ namespace MicroservicesUser.Common
             CreateMap<AdminEmailVerificationHistoryListDTO, AdminEmailVerificationHistoryListVM>();
             CreateMap<PaginationDTO, AdminEmailVerificationDashboardDTO>();
 
+            //Dashboard
+            CreateMap<AdminDashboardDTO, AdminDashboardVM>();
+            CreateMap<UserRegistrationsChartDTO, UserRegistrationsChartVM>();
+            CreateMap<ServiceUsageChartDTO, ServiceUsageChartVM>();
         }
     }
 }

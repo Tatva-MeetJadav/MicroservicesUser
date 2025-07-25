@@ -259,3 +259,65 @@
   color: #64748b;
   border: 2px dashed #e2e8f0;
 }
+
+.api-usage-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.circle-wrapper {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+}
+
+.circle-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #333;
+}
+
+.circle-label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.circle-percent {
+  font-size: 36px;
+  font-weight: bold;
+  margin-top: 3px;
+}
+
+.bar-section {
+  margin-top: 1rem;
+}
+
+.bar-percentage {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.api-usage-progress {
+  height: 8px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.usage-text {
+  font-size: 13px;
+  color: #6c757d;
+  margin-top: 6px;
+}
+.stat-card.grey {
+  border-left-color: grey !important;
+}
+.stat-icon.grey {
+  background-color: grey !important;
+}
+.stat-number.grey {
+  color: grey !important;
+}

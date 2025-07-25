@@ -1,10 +1,18 @@
 @{
     Layout = "_AdminLayout";
 }
-
-@using MicroservicesUser.Models.ViewModels.Dashboard
 <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true">
-
+@using MicroservicesUser.Models.ViewModels.Dashboard
+@model AdminDashboardVM
+@{
+    double serviceUsagePercentage = (Model.ServiceUsageChart!.RequestCount / Model.ServiceUsageChart.DailyLimit) * 100;
+}
+<div class="d-none chart-data"
+    data-user-labels='@Html.Raw(Json.Serialize(Model.UserRegistrationsChart!.Select(x => x.CreatedAt)))'
+    data-user-counts='@Html.Raw(Json.Serialize(Model.UserRegistrationsChart!.Select(x => x.UserCount)))'
+    data-service-requestcount='@Model.ServiceUsageChart?.RequestCount'
+    data-service-dailylimit='@Model.ServiceUsageChart?.DailyLimit'>
+</div>
 <div class="admin-dashboard-container px-1 px-md-4 mt-4">
     <div class="mb-3 page-header">
         <h1 class="page-title">Dashboard</h1>
@@ -12,59 +20,116 @@
     </div>
     <div class="row gy-3">
         <div class="col-12 col-sm-6 col-lg-3">
-            <div class="stat-card primary">
+            <div class="stat-card success">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">Total User Registrations</div>
-                        <div class="stat-number primary">50</div>
+                        <div class="stat-number success">@Model.TotalUserRegistrations</div>
                     </div>
-                    <div class="stat-icon primary">
-                        <i class="bi bi-people-fill"></i>
+                    <div class="stat-icon success">
+                        <i class="bi bi-person-plus-fill"></i>
                     </div>
                 </div>
             </div>
         </div>
-
         <div class="col-12 col-sm-6 col-lg-3">
-            <div class="stat-card danger">
+            <div class="stat-card info">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">Total Email Verifications</div>
-                        <div class="stat-number danger">15</div>
+                        <div class="stat-number info">@Model.TotalEmailVerifications</div>
                     </div>
-                    <div class="stat-icon danger">
-                        <i class="bi bi-shield-fill-exclamation"></i>
+                    <div class="stat-icon info">
+                        <i class="bi bi-envelope-check-fill"></i>
                     </div>
                 </div>
             </div>
         </div>
-
         <div class="col-12 col-sm-6 col-lg-3">
             <div class="stat-card warning">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">Total Ip Verifications</div>
-                        <div class="stat-number warning">25%</div>
+                        <div class="stat-number warning">@Model.TotalIPVerifications</div>
                     </div>
                     <div class="stat-icon warning">
-                        <i class="bi bi-bar-chart-fill"></i>
+                        <i class="bi bi-shield-lock-fill"></i>
                     </div>
                 </div>
             </div>
         </div>
-
         <div class="col-12 col-sm-6 col-lg-3">
-            <div class="stat-card info">
+            <div class="stat-card grey">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">Total HelpDesk Requests</div>
-                        <div class="stat-number info">40%</div>
+                        <div class="stat-number grey">@Model.TotalHelpDeskRequest</div>
                     </div>
-                    <div class="stat-icon info">
-                        <i class="bi bi-house-lock-fill"></i>
+                    <div class="stat-icon grey">
+                        <i class="bi bi-headset"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-7">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="d-flex gap-1 align-items-center">
+                            <i class="bi bi-people fs-5"></i>
+                            <h5 class="card-title fw-bold mb-0">User Registrations Over Time</h5>
+                        </div>
+                        <select class="form-select form-select-sm w-auto chart-time-filter border-dark-subtle"
+                            role="button">
+                            <option value="today">Today</option>
+                            <option value="currentMonth">Current Month</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="yearly">Yearly(Last 5 years)</option>
+                        </select>
+                    </div>
+                    <canvas id="userChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-5">
+            <div class="card api-usage-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="d-flex gap-1 align-items-center">
+                            <i class="fas fa-plug fs-5"></i>
+                            <h5 class="card-title fw-bold mb-0">Service Usage</h5>
+                        </div>
+                        <select class="form-select form-select-sm w-auto chart-time-filter border-dark-subtle"
+                            role="button">
+                            <option value="today">Today</option>
+                            <option value="currentMonth">Current Month</option>
+                        </select>
+                    </div>
+
+                    <div class="circle-wrapper">
+                        <canvas id="apiUsageCircle"></canvas>
+                        <div class="circle-overlay">
+                            <div class="circle-label">Percent</div>
+                            <div id="circlePercent" class="circle-percent">75</div>
+                        </div>
+                    </div>
+                    <div class="bar-section mt-4 text-center">
+                        <div class="bar-percentage">@Math.Round(serviceUsagePercentage, 2)</div>
+                        <div class="progress api-usage-progress">
+                            <div class="progress-bar bg-warning api-bar" role="progressbar"></div>
+                        </div>
+                        <div class="usage-text">@Model.ServiceUsageChart!.RequestCount /
+                            @Model.ServiceUsageChart.DailyLimit
+                            requests used</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts
+{
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/js/adminDashboard.js"></script>
+}

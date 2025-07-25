@@ -92,7 +92,8 @@ namespace MicroservicesUser.Web.Controllers
         [Authorize(Roles = "Admin,SupportAdmin")]
         public async Task<IActionResult> AdminDashboard()
         {
-            return View();
+            AdminDashboardVM dashboardVM = await _dashboardServices.GetAdminDashboard();
+            return View(dashboardVM);
         }
 
         [Authorize(Roles = "Admin,SupportAdmin")]
@@ -157,5 +158,20 @@ namespace MicroservicesUser.Web.Controllers
             return PartialView("_AdminNotification", new AdminNotificationListVM());
         }
 
+        [Authorize(Roles = "Admin,SupportAdmin")]
+        [HttpGet]
+        public async Task<IActionResult> GetUserRegistrationsChartData(string range)
+        {
+            List<UserRegistrationsChartVM> chartVMs = await _dashboardServices.GetUserRegistrationsChart(range);
+            return Json(chartVMs);
+        }
+
+        [Authorize(Roles = "Admin,SupportAdmin")]
+        [HttpGet]
+        public async Task<IActionResult> GetServiceUsageChartData(string range)
+        {
+            ServiceUsageChartVM? chartVM = await _dashboardServices.GetServiceUsageChart(range);
+            return Json(chartVM);
+        }
     }
 }

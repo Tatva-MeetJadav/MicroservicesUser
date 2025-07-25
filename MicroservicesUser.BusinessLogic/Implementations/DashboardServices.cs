@@ -199,5 +199,25 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             }
             await _notificationRepository.UpdateListAsync(notifications);
         }
+
+        public async Task<AdminDashboardVM> GetAdminDashboard()
+        {
+            AdminDashboardDTO dashboardDTO = await _dashboardRepository.GetAdminDashboardDataAsync();
+            AdminDashboardVM dashboardVM = _mapper.Map<AdminDashboardVM>(dashboardDTO);
+            return dashboardVM;
+        }
+
+        public async Task<List<UserRegistrationsChartVM>> GetUserRegistrationsChart(string range)
+        {
+            List<UserRegistrationsChartDTO>? userChart = await _dashboardRepository.GetUserRegistrationsChartAsync(range);
+            List<UserRegistrationsChartVM> chartVMs = _mapper.Map<List<UserRegistrationsChartVM>>(userChart);
+            return chartVMs;
+        }
+        public async Task<ServiceUsageChartVM> GetServiceUsageChart(string range)
+        {
+            ServiceUsageChartDTO? userChart = await _dashboardRepository.GetServiceUsageChartAsync(range);
+            ServiceUsageChartVM chartVM = _mapper.Map<ServiceUsageChartVM>(userChart);
+            return chartVM;
+        }
     }
 }

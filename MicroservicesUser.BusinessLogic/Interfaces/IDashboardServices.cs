@@ -17,5 +17,8 @@ namespace MicroservicesUser.BusinessLogic.Interfaces
         Task<string> AdminChangePassword(ChangePasswordVM changePasswordVM, string token);
         Task<AdminNotificationListVM> GetUnreadNotificationList();
         Task ReadAllNotifications();
+        Task<AdminDashboardVM> GetAdminDashboard();
+        Task<List<UserRegistrationsChartVM>> GetUserRegistrationsChart(string range);
+        Task<ServiceUsageChartVM> GetServiceUsageChart(string range);
     }
 }

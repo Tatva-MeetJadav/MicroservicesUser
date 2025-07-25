@@ -106,9 +106,10 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                                         CreatedAt = DateTime.UtcNow.ToLocalTime(),
                                         Status = Status.Failed,
                                         ProxyVpnRequestParam = JsonDocument.Parse(JsonConvert.SerializeObject(requestDTO)),
-                                        ProxyVpnResponseParam = JsonDocument.Parse(JsonConvert.SerializeObject(new ProxyAndVpnDetectionRequestDTO())),
+                                        ProxyVpnResponseParam = JsonDocument.Parse(JsonConvert.SerializeObject(responseDTO)),
                                     };
                                     await _proxyVpnDetectionRepository.AddAsync(proxyAndVpnDetectionFailed);
+                                    return token;
                                 }
                                 ProxyVpnDetection proxyAndVpnDetection = new()
                                 {

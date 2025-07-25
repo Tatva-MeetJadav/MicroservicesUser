@@ -48,14 +48,10 @@ $(document).ready(function () {
         };
         chartInstance = new Chart(chartCanvas[0], config);
     }
-
-    // Initial chart render
     var chartDataDiv = $('.chart-data');
     var labels = JSON.parse(chartDataDiv.attr('data-labels'));
     var scans = JSON.parse(chartDataDiv.attr('data-scans'));
     renderChart(labels, scans);
-
-    // Handle dropdown change
     $('.chart-time-filter').on('change', function () {
         var range = $(this).val();
         $.ajax({

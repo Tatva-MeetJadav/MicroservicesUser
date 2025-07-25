@@ -475,5 +475,146 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             }
             return resultDto;
         }
+
+        public async Task<AdminDashboardDTO> GetAdminDashboardDataAsync()
+        {
+            int totalUsers = await _dbContext.Users.CountAsync();
+            int totalEmailVerifications = await _dbContext.EmailVerifications.CountAsync();
+            List<ProxyVpnDetection> proxyVpnDetections = await _dbContext.ProxyVpnDetections.ToListAsync();
+            int totalProxyVpnDetections = proxyVpnDetections.GroupBy(u =>
+            {
+                JsonDocument json = u.ProxyVpnRequestParam;
+                string? ip = json.RootElement.TryGetProperty("IpAddress", out JsonElement ipProp) ? ipProp.GetString() : "unknown";
+                return new { IpAddress = ip };
+            }).Count();
+            int totalHelpRequests = await _dbContext.HelpAndSupports.CountAsync();
+            List<UserRegistrationsChartDTO>? userChart = await GetUserRegistrationsChartAsync("today");
+            ServiceUsageChartDTO? serviceUsageChart = await GetServiceUsageChartAsync("today");
+
+            return new AdminDashboardDTO
+            {
+                TotalUserRegistrations = totalUsers,
+                TotalEmailVerifications = totalEmailVerifications,
+                TotalIPVerifications = totalProxyVpnDetections,
+                TotalHelpDeskRequest = totalHelpRequests,
+                UserRegistrationsChart = userChart,
+                ServiceUsageChart = serviceUsageChart
+            };
+        }
+
+        public async Task<List<UserRegistrationsChartDTO>> GetUserRegistrationsChartAsync(string range)
+        {
+            string normalizedRange = string.IsNullOrWhiteSpace(range) ? "today" : range.Trim().ToLower();
+            DateTime now = DateTime.Now;
+            DateTime today = now.Date;
+            List<string> labels = new();
+            List<int> counts = new();
+            IQueryable<User> usersQuery = _dbContext.Users;
+            if (normalizedRange == "today")
+            {
+                int currentHour = now.Hour;
+                for (int hour = 0; hour <= (currentHour); hour += 3)
+                {
+                    DateTime start = today.AddHours(hour);
+                    DateTime end = start.AddHours(3);
+                    string label = $"{start:h tt}-{end:h tt}";
+
+                    int count = await usersQuery.CountAsync(u => u.CreatedAt >= start && u.CreatedAt < end);
+                    labels.Add(label);
+                    counts.Add(count);
+                }
+            }
+            else if (normalizedRange == "currentmonth")
+            {
+                DateTime monthStart = new(now.Year, now.Month, 1);
+                int daysInMonth = DateTime.DaysInMonth(now.Year, now.Month);
+
+                for (int day = 1; day <= daysInMonth; day++)
+                {
+                    DateTime dayStart = new(now.Year, now.Month, day);
+                    DateTime dayEnd = dayStart.AddDays(1);
+                    string label = dayStart.ToString("dd MMM");
+
+                    int count = await usersQuery.CountAsync(u => u.CreatedAt >= dayStart && u.CreatedAt < dayEnd);
+                    labels.Add(label);
+                    counts.Add(count);
+                }
+            }
+            else if (normalizedRange == "monthly")
+            {
+                DateTime yearStart = new(now.Year, 1, 1);
+
+                for (int month = 1; month <= 12; month++)
+                {
+                    DateTime monthStart = new(now.Year, month, 1);
+                    DateTime monthEnd = monthStart.AddMonths(1);
+                    string label = monthStart.ToString("MMM");
+
+                    int count = await usersQuery.CountAsync(u => u.CreatedAt >= monthStart && u.CreatedAt < monthEnd);
+                    labels.Add(label);
+                    counts.Add(count);
+                }
+            }
+            else if (normalizedRange == "last5years" || normalizedRange == "yearly")
+            {
+                int startYear = now.Year - 4;
+                for (int year = startYear; year <= now.Year; year++)
+                {
+                    DateTime yearStart = new(year, 1, 1);
+                    DateTime yearEnd = yearStart.AddYears(1);
+                    string label = year.ToString();
+
+                    int count = await usersQuery.CountAsync(u => u.CreatedAt >= yearStart && u.CreatedAt < yearEnd);
+                    labels.Add(label);
+                    counts.Add(count);
+                }
+            }
+            else
+            {
+                DateTime startDate = now.AddDays(-30);
+                for (int i = 0; i <= 30; i++)
+                {
+                    DateTime dayStart = startDate.AddDays(i);
+                    DateTime dayEnd = dayStart.AddDays(1);
+                    string label = dayStart.ToString("yyyy-MM-dd");
+
+                    int count = await usersQuery.CountAsync(u => u.CreatedAt >= dayStart && u.CreatedAt < dayEnd);
+                    labels.Add(label);
+                    counts.Add(count);
+                }
+            }
+
+            var result = new List<UserRegistrationsChartDTO>();
+            for (int i = 0; i < labels.Count; i++)
+            {
+                result.Add(new UserRegistrationsChartDTO
+                {
+                    CreatedAt = labels[i],
+                    UserCount = counts[i]
+                });
+            }
+            return result;
+        }
+
+
+        public async Task<ServiceUsageChartDTO> GetServiceUsageChartAsync(string range)
+        {
+            string normalizedRange = string.IsNullOrWhiteSpace(range) ? "today" : range.Trim().ToLower();
+            DateTime now = DateTime.Now.Date;
+            DateTime currentMonthStart = new(now.Year, now.Month, 1);
+            DateTime startDate = normalizedRange == "today" ? now : currentMonthStart;
+
+            int dailyLimit = normalizedRange == "today" ? 35 : 1000;
+            int emailCount = await _dbContext.EmailVerifications
+                .CountAsync(ev => ev.Status == Status.Success && ev.CreatedAt >= startDate);
+            int proxyCount = await _dbContext.ProxyVpnDetections
+                .CountAsync(pv => pv.Status == Status.Success && pv.CreatedAt >= startDate);
+
+            return new ServiceUsageChartDTO
+            {
+                RequestCount = emailCount + proxyCount,
+                DailyLimit = dailyLimit
+            };
+        }
     }
 }
