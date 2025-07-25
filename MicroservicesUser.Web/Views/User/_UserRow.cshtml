@@ -1,6 +1,6 @@
 @model UserVM
 
-<td>
+<td class="text-nowrap">
     <div class="user-username" data-username="@Model.Username"></div>
     <div class="user-info">
         @if (!string.IsNullOrEmpty(Model.ProfilePhotoGeneratedName))
@@ -16,8 +16,8 @@
         </div>
     </div>
 </td>
-<td>@Model.Email</td>
-<td>
+<td class="text-nowrap">@Model.Email</td>
+<td class="text-nowrap">
     @if (!string.IsNullOrEmpty(Model.MobileNumber))
     {
         @Model.MobileNumber
@@ -27,8 +27,8 @@
         <i class="bi bi-dash-lg"></i>
     }
 </td>
-<td>@Model.CreatedAt.ToString("dd-MM-yyyy hh:mm tt")</td>
-<td>
+<td class="text-nowrap">@Model.CreatedAt.ToString("dd-MM-yyyy hh:mm tt")</td>
+<td class="text-nowrap">
     @if (!Model.IsDeleted)
     {
         @if (!Model.IsBlocked)
@@ -51,7 +51,7 @@
         </span>
     }
 </td>
-<td>
+<td class="text-nowrap">
     <div class="action-buttons">
         <button class="action-btn btn-view" title="View User" data-bs-toggle="modal" data-bs-target="#userDetailsModal">
             <i class="fas fa-eye"></i>

@@ -26,7 +26,7 @@ $(document).ready(function () {
                 tooltip: {
                     callbacks: {
                         label: function (context) {
-                            return `Count: ${context.raw}`;  // Tooltip displays the count
+                            return `Count: ${context.raw}`;
                         }
                     }
                 }
@@ -37,7 +37,7 @@ $(document).ready(function () {
                     ticks: { stepSize: 5 }
                 },
                 x: {
-                    type: 'category',  // Category scale for interval labels
+                    type: 'category',
                     title: { display: true, text: 'Time Intervals' }
                 }
             }
@@ -46,16 +46,12 @@ $(document).ready(function () {
 
     function updateServiceUsageChart(requestCount, dailyLimit) {
         var apiUsagePercent = dailyLimit > 0 ? Math.round((requestCount / dailyLimit) * 100) : 0;
-
         $('#circlePercent').text(apiUsagePercent + '%');
         apiUsageChart.data.datasets[0].data = [apiUsagePercent, 100 - apiUsagePercent];
         apiUsageChart.update();
-
         $('.api-bar').css('width', apiUsagePercent + '%');
-        $('.bar-percentage').text(apiUsagePercent + '%');
         $('.usage-text').text(requestCount + ' / ' + dailyLimit + ' requests used');
     }
-
     $('.api-usage-card select').on('change', function () {
         var selectedRange = $(this).val();
         $.ajax({
@@ -65,12 +61,12 @@ $(document).ready(function () {
             success: function (data) {
                 var requestCount = data.requestCount;
                 var dailyLimit = data.dailyLimit;
-                updateServiceUsageChart(requestCount, dailyLimit);  // Update the chart and progress bar
+                updateServiceUsageChart(requestCount, dailyLimit);
             }
         });
     });
 
-    $('.col-lg-7 .chart-time-filter').on('change', function () {
+    $('.user-registration-chart-dropdown').on('change', function () {
         var selectedRange = $(this).val();
         $.ajax({
             url: '/Dashboard/GetUserRegistrationsChartData',
@@ -89,13 +85,13 @@ $(document).ready(function () {
         type: 'doughnut',
         data: {
             datasets: [{
-                data: [apiUsageRequestCount, 100 - apiUsageRequestCount], // Default usage
+                data: [apiUsageRequestCount, 100 - apiUsageRequestCount],
                 backgroundColor: ['rgba(0, 123, 255, 0.7)', '#e9ecef'],
                 borderWidth: 0
             }]
         },
         options: {
-            cutout: '83%', 
+            cutout: '83%',
             plugins: {
                 tooltip: { enabled: false },
                 legend: { display: false }
@@ -103,6 +99,6 @@ $(document).ready(function () {
         }
     });
 
-    updateServiceUsageChart(apiUsageRequestCount, apiUsageDailyLimit);  // Initialize with data from server
+    updateServiceUsageChart(apiUsageRequestCount, apiUsageDailyLimit);
 
 });
