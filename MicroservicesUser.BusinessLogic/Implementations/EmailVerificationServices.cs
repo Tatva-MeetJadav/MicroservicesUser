@@ -41,8 +41,12 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             int id = _jwtServices.GetUserId(token);
             byte[] key = Convert.FromBase64String(_configuration["EncryptId:Key"] ?? string.Empty);
             byte[] iv = Convert.FromBase64String(_configuration["EncryptId:IV"] ?? string.Empty);
+            if (string.IsNullOrEmpty(PaginationDTO.ColumnNameForSorting))
+            {
+                PaginationDTO.OrderOfSorting = "desc";
+                PaginationDTO.ColumnNameForSorting = "CreatedAt";
+            }
             (List<EmailVerification> emailVerifications, int count) = await _emailVerificationRepository.GetListByUserId(id, PaginationDTO);
-
             List<EmailVerificationHistoryVM> emailVerificationHistoryListVMs = emailVerifications.Select(ev =>
             {
                 EmailVerificationResponseVM responseVM = JsonConvert.DeserializeObject<EmailVerificationResponseVM>(
@@ -67,6 +71,8 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                 EmailVerificationHistoryListVM = emailVerificationHistoryListVMs,
                 PageSize = PaginationDTO.PageSize,
                 CurrentPage = PaginationDTO.CurrentPage,
+                ColumnNameForSorting = PaginationDTO.ColumnNameForSorting,
+                OrderOfSorting = PaginationDTO.OrderOfSorting,
                 TotalItems = count
             };
         }

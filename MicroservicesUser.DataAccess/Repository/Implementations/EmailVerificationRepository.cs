@@ -98,13 +98,6 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                 u.EmailResponseParam.RootElement.TryGetProperty("valid", out JsonElement validProp) &&
                 validProp.GetBoolean()).ToList();
             }
-
-            int count = result.Count;
-            result = result
-            .Skip((paginationVM.CurrentPage - 1) * paginationVM.PageSize)
-            .Take(paginationVM.PageSize)
-            .ToList();
-
             if (paginationVM.ColumnNameForSorting == "CreatedAt")
             {
                 if (paginationVM.OrderOfSorting == "asc")
@@ -116,6 +109,11 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
                     result = result.OrderByDescending(x => x.CreatedAt).ToList();
                 }
             }
+            int count = result.Count;
+            result = result
+            .Skip((paginationVM.CurrentPage - 1) * paginationVM.PageSize)
+            .Take(paginationVM.PageSize)
+            .ToList();
             return (result, count);
         }
     }

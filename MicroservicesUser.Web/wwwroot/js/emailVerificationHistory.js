@@ -1,11 +1,7 @@
-var columnNameForSorting = "";
-var orderOfSorting = "asc";
+var columnNameForSorting = "CreatedAt";
+var orderOfSorting = "desc";
 var columnNameForFilter = ""
 var filterValue = "False";
-
-$(document).ready(function () {
-    fetchEmailVerificationHistoryList(1, 5);
-});
 
 function fetchEmailVerificationHistoryList(page, pageSize) {
     var searchQuery = $('input[name="searchQueryForHistory"]').val();

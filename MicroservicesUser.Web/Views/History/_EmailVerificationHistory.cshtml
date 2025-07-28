@@ -1,4 +1,5 @@
 @using MicroservicesUser.Models.ViewModels.History
+@using Microsoft.AspNetCore.Html
 @{
     int totalPages = (int)Math.Ceiling((double)Model.TotalItems / Model.PageSize);
     int currentPage = Model.CurrentPage;
@@ -6,16 +7,35 @@
     int endPage = Math.Min(totalPages - 1, currentPage + 1);
     int serialNumber = Model.CurrentPage * Model.PageSize - Model.PageSize + 1;
 }
+@{
+    Func<string, IHtmlContent> sortArrow = column =>
+    {
+        if (Model.ColumnNameForSorting != column)
+        {
+            return HtmlString.Empty;
+        }
+        else if (Model.OrderOfSorting == "asc")
+        {
+            return new HtmlString("<i class='bi bi-caret-up-fill ms-1'></i>");
+        }
+        else
+        {
+            return new HtmlString("<i class='bi bi-caret-down-fill ms-1'></i>");
+        }
+    };
+}
 @model EmailVerificationListHistoryVM
-<div class="history-table table-responsive mt-3 table-shadow-custom">
-    <table class="table table table-bordered table-striped m-0">
+<div class="history-table-card table-responsive mt-3">
+    <table class="history-table table m-0">
         <thead class="table-primary border-black">
             <th scope="col" class="text-white">Sr No.</th>
             <th scope="col" class="text-white">Email</th>
             <th scope="col" class="text-white">Response Status</th>
             <th scope="col" class="text-white">Valid</th>
             <th scope="col" class="text-white sort-filter" data-column="CreatedAt" title="Click to sort by CreatedAt">
-                CreatedAt</th>
+                <span>Verified On</span>
+                <span>@sortArrow("CreatedAt") </span>
+            </th>
             <th scope="col" class="text-white">Deliverability</th>
             <th scope="col" class="text-white">OverAllScore</th>
             <th scope="col" class="text-white">View Detail</th>

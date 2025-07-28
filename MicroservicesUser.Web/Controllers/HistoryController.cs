@@ -15,9 +15,11 @@ namespace MicroservicesUser.Web.Controllers
         {
             _emailVerificationServices = emailVerificationServices;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            string token = Request.Cookies["AuthToken"] ?? string.Empty;
+            EmailVerificationListHistoryVM result = await _emailVerificationServices.GetEmailVerificationListHistory(new PaginationDTO(), token);
+            return View(result);
         }
 
         public async Task<IActionResult> GetEmailVerificationHistoryList([FromBody] PaginationDTO paginationVM)
