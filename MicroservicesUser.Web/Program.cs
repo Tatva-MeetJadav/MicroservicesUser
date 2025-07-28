@@ -62,8 +62,7 @@ builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<ILogServices, LogServices>();
 builder.Services.AddScoped<IHelpAndSupportServices, HelpAndSupportServices>();
 builder.Services.AddScoped<IViewRenderService, ViewRenderService>();
-
-
+builder.Services.AddScoped<IExcelExportServices, ExcelExportService>();
 
 //Injecting HttpClientService
 builder.Services.AddHttpClient<GenericAPIClientServices>();

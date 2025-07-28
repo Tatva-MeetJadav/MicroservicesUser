@@ -35,5 +35,10 @@ namespace MicroservicesUser.Web.Controllers
             return View(result);
         }
 
+        public async Task<ActionResult> ExportEmailVerificationDetail(string id)
+        {
+            (byte[] fileContents, string fileName) = await _emailVerificationServices.ExportEmailDetailHistory(id);
+            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        }
     }
 }

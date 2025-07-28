@@ -7,6 +7,21 @@ function renderChart(passedLabels, passedDataPoints) {
     var labels = passedLabels || JSON.parse(chartCanvas.attr('data-labels') || '[]');
     var dataPoints = passedDataPoints || JSON.parse(chartCanvas.attr('data-scans') || '[]');
     var ctx = chartCanvas[0].getContext('2d');
+    if (window.verificationLineChart) {
+        if (window.verificationLineChart.data) {
+            window.verificationLineChart.data.labels = labels;
+            window.verificationLineChart.data.datasets[0].data = dataPoints;
+
+            window.verificationLineChart.update();
+        } else {
+            createNewChart(ctx, labels, dataPoints);
+        }
+    } else {
+        createNewChart(ctx, labels, dataPoints);
+    }
+}
+
+function createNewChart(ctx, labels, dataPoints) {
     window.verificationLineChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -62,6 +77,7 @@ function renderChart(passedLabels, passedDataPoints) {
 }
 
 
+
 $(document).ready(function () {
     renderChart();
     $('.dashboard-dropdown-user-id').each(function () {
@@ -88,11 +104,7 @@ $(document).on('click', '#showResultBtn', function () {
         data: { userIds: selectedUserIds },
         success: function (response) {
             $('.email-verification-dashboard-data').html(response);
-            if (window.verificationLineChart && typeof window.verificationLineChart.destroy === 'function') {
-                window.verificationLineChart.destroy();
-                window.verificationLineChart = null;
-            }
-            renderChart();
+            renderChart(); // Update chart with new data
         },
         error: function (xhr, status, error) {
             console.error('Error:', error);
@@ -252,10 +264,6 @@ $(document).on('change', '.scanned-status-filter, .valid-filter', function () {
 
 
 $(document).on('change', '.chart-time-filter', function () {
-    if (window.verificationLineChart && typeof window.verificationLineChart.destroy === 'function') {
-        window.verificationLineChart.destroy();
-        window.verificationLineChart = null;
-    }
     var range = $(this).val();
     $.ajax({
         url: '/EmailVerification/GetChartData',
@@ -265,7 +273,7 @@ $(document).on('change', '.chart-time-filter', function () {
         success: function (data) {
             var scans = data.map(item => item.emailVerificationCount);
             var labels = data.map(item => item.createdAt);
-            renderChart(labels, scans);
+            renderChart(labels, scans); // Update chart without destroying it
         }
     });
 });

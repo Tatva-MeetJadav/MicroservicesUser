@@ -24,8 +24,9 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         private readonly IEncryptDecryptServices _encryptDecryptServices;
         private readonly IDashboardRepository _dashboardRepository;
         private readonly IMapper _mapper;
+        private readonly IExcelExportServices _excelExportServices;
 
-        public EmailVerificationServices(IGenericAPIClientServices apiClient, IConfiguration configuration, IEmailVerificationRepository emailVerificationRepository, IJwtServices jwtServices, IEncryptDecryptServices encryptDecryptServices, IDashboardRepository dashboardRepository, IMapper mapper)
+        public EmailVerificationServices(IGenericAPIClientServices apiClient, IConfiguration configuration, IEmailVerificationRepository emailVerificationRepository, IJwtServices jwtServices, IEncryptDecryptServices encryptDecryptServices, IDashboardRepository dashboardRepository, IMapper mapper, IExcelExportServices excelExportServices)
         {
             _apiClient = apiClient;
             _configuration = configuration;
@@ -34,6 +35,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             _encryptDecryptServices = encryptDecryptServices;
             _dashboardRepository = dashboardRepository;
             _mapper = mapper;
+            _excelExportServices = excelExportServices;
         }
 
         public async Task<EmailVerificationListHistoryVM> GetEmailVerificationListHistory(PaginationDTO PaginationDTO, string token)
@@ -122,8 +124,6 @@ namespace MicroservicesUser.BusinessLogic.Implementations
         {
             int originalId = _encryptDecryptServices.DecryptId(id);
             EmailVerification emailVerification = await _emailVerificationRepository.GetAsync(originalId);
-
-            //Deserialization
             EmailVerificationResponseVM responseVM = JsonConvert.DeserializeObject<EmailVerificationResponseVM>(emailVerification.EmailResponseParam.RootElement.GetRawText()) ?? new EmailVerificationResponseVM();
             EmailVerificationRequestVM requestVM = emailVerification?.EmailRequestParam.RootElement.Deserialize<EmailVerificationRequestVM>() ?? new EmailVerificationRequestVM();
 
@@ -131,7 +131,8 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             {
                 RequestVM = requestVM,
                 ResponseVM = responseVM,
-                CreatedAt = emailVerification!.CreatedAt
+                CreatedAt = emailVerification!.CreatedAt,
+                Id = id
             };
         }
 
@@ -161,6 +162,26 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             EmailVerification emailVerification = await _emailVerificationRepository.GetAsync(id);
             AdminEmailVerificationDetailVM result = JsonConvert.DeserializeObject<AdminEmailVerificationDetailVM>(emailVerification.EmailResponseParam.RootElement.GetRawText()) ?? new AdminEmailVerificationDetailVM();
             return result;
+        }
+
+        public async Task<(byte[], string)> ExportEmailDetailHistory(string id)
+        {
+            int originalId = _encryptDecryptServices.DecryptId(id);
+            EmailVerification emailVerification = await _emailVerificationRepository.GetAsync(originalId);
+            EmailVerificationResponseVM responseVM = JsonConvert.DeserializeObject<EmailVerificationResponseVM>(emailVerification.EmailResponseParam.RootElement.GetRawText()) ?? new EmailVerificationResponseVM();
+            EmailVerificationRequestVM requestVM = emailVerification?.EmailRequestParam.RootElement.Deserialize<EmailVerificationRequestVM>() ?? new EmailVerificationRequestVM();
+
+            EmailVerificationDetailVM detailVM = new()
+            {
+                RequestVM = requestVM,
+                ResponseVM = responseVM,
+                CreatedAt = emailVerification!.CreatedAt
+            };
+
+            byte[] fileContents = _excelExportServices.GenerateEmailVerificationExcel(detailVM);
+            string currentTime = DateTime.Now.ToString();
+            string fileName = "EmailVerificationDetail_" + currentTime + ".xlsx";
+            return (fileContents, fileName);
         }
     }
 }
