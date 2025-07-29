@@ -86,3 +86,67 @@ $(document).on('change', '.column-filter', function () {
     filterValue = value;
     fetchLogs(1, $(".items-per-page").val());
 });
+
+$(document).ready(function () {
+    const $input = $('#searchQueryForLogs');
+    const $suggestionList = $('#suggestionList');
+
+    // Sample static suggestions array (replace with AJAX if needed)
+    const suggestions = [
+        "ServiceA - Error",
+        "ServiceB - Warning",
+        "Machine123",
+        "ServiceC - Debug",
+        "Error connecting to DB",
+        "ServiceD - Information",
+        "Machine456"
+    ];
+
+    function hideSuggestions() {
+        $suggestionList.removeClass('show');
+        $input.attr('aria-expanded', 'false');
+    }
+
+    function showSuggestions() {
+        $suggestionList.addClass('show');
+        $input.attr('aria-expanded', 'true');
+    }
+
+    $input.on('input', function () {
+        const query = $(this).val().toLowerCase().trim();
+        if (!query) {
+            hideSuggestions();
+            $suggestionList.empty();
+            return;
+        }
+
+        const filtered = suggestions.filter(item => item.toLowerCase().includes(query));
+
+        if (filtered.length === 0) {
+            hideSuggestions();
+            $suggestionList.empty();
+            return;
+        }
+
+        const itemsHtml = filtered.map(item =>
+            `<li><button type="button" class="dropdown-item">${item}</button></li>`
+        ).join('');
+
+        $suggestionList.html(itemsHtml);
+        showSuggestions();
+    });
+
+    // When a suggestion is clicked
+    $suggestionList.on('click', '.dropdown-item', function () {
+        const selectedText = $(this).text();
+        $input.val(selectedText);
+        hideSuggestions();
+    });
+
+    // Hide suggestions on clicking outside
+    $(document).on('click', function (e) {
+        if (!$(e.target).closest($input).length && !$(e.target).closest($suggestionList).length) {
+            hideSuggestions();
+        }
+    });
+});

@@ -204,7 +204,6 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                     return string.Empty;
                 }
             }
-
         }
         public async Task<string> ValidatePasswordResetToken(string token, bool isAdmin)
         {
@@ -232,8 +231,6 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                     return string.Empty;
                 }
             }
-
-
         }
         public async Task<string> ResetPassword(ResetPasswordVM resetPasswordVM)
         {

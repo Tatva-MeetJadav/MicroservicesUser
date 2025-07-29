@@ -75,8 +75,6 @@ function createNewChart(ctx, labels, dataPoints) {
     });
 }
 
-
-
 $(document).ready(function () {
     renderChart();
     $('.dashboard-dropdown-user-id').each(function () {
@@ -112,7 +110,6 @@ $(document).on('click', '#showResultBtn', function () {
             } else {
                 console.log("Chart canvas not found in new content.");
             }
-
         },
         error: function (error) {
             console.error('Error:', error);

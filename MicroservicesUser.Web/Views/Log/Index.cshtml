@@ -11,11 +11,16 @@
     </div>
     <div class="row">
         <div class="col-xxl-4 col-md-8 col-12 mt-lg-3">
-            <div class="d-flex gap-2 mb-3">
+            <div class="d-flex gap-2 mb-3 position-relative">
                 <input type="text" class="form-control"
-                    placeholder="Enter the log message or machine name for search..." name="searchQueryForLogs">
+                    placeholder="Enter the log message or machine name for search..." name="searchQueryForLogs"
+                    id="searchQueryForLogs" autocomplete="off" aria-haspopup="listbox" aria-expanded="false"
+                    aria-controls="suggestionList">
                 <button class="btn btn-primary search-query">Search</button>
+
+                <ul class="dropdown-menu w-100" id="suggestionList" role="listbox"></ul>
             </div>
+
         </div>
         <div class="col-xxl-3 col-md-4 col-12 mt-lg-3 mb-3 mb-lg-0 fw-semibold">
             <div class="input-group">
