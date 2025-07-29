@@ -40,5 +40,14 @@ namespace MicroservicesUser.Web.Controllers
             (byte[] fileContents, string fileName) = await _emailVerificationServices.ExportEmailDetailHistory(id);
             return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
+
+        [HttpPost]
+        public async Task<ActionResult> ExportEmailVerificationHistoryList([FromBody] PaginationDTO paginationDTO)
+        {
+            string token = Request.Cookies["AuthToken"] ?? string.Empty;
+            (byte[] fileContents, string fileName) = await _emailVerificationServices.ExportEmailVerificationHistoryList(paginationDTO, token);
+            string base64String = Convert.ToBase64String(fileContents);
+            return Json(new { fileContents = base64String, fileName });
+        }
     }
 }

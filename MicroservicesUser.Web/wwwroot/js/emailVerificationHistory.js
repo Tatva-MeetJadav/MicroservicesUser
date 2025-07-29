@@ -88,3 +88,35 @@ $(document).on('click', '.valid-email-history-switch', function () {
     var pageSize = $(".items-per-page").val();
     fetchEmailVerificationHistoryList(1, pageSize);
 });
+
+$(document).on("click", ".export-history-list", function () {
+    var searchQuery = $('input[name="searchQueryForHistory"]').val();
+    var totalItems = parseInt($(".pagination-info").data("total-items"));
+    var paginationDTO = {
+        totalItems: totalItems,
+        searchQuery: searchQuery,
+        columnNameForSorting: columnNameForSorting,
+        orderOfSorting: orderOfSorting,
+        columnNameForFilter: columnNameForFilter,
+        filterValue: filterValue
+    };
+
+    $.ajax({
+        url: "/History/ExportEmailVerificationHistoryList",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(paginationDTO),
+        success: function (response) {
+            var byteArray = new Uint8Array(atob(response.fileContents).split("").map(function (c) { return c.charCodeAt(0); }));
+            var blob = new Blob([byteArray], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+            var link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = response.fileName;
+            link.click(); 
+        },
+        error: function (error) {
+            alert("Error exporting data: " + error.responseText);
+        }
+    });
+
+});

@@ -131,7 +131,7 @@
             </div>
         </div>
         <div class="d-flex gap-2 align-items-center">
-            <span class="me-2 pagination-info" data-current-page="@Model.CurrentPage">
+            <span class="me-2 pagination-info" data-current-page="@Model.CurrentPage" data-total-items="@Model.TotalItems">
                 Showing @((Model.CurrentPage - 1) * Model.PageSize + 1)-@((Model.CurrentPage - 1) * Model.PageSize
                                 + Model.EmailVerificationHistoryListVM?.Count()) of @Model.TotalItems
             </span>

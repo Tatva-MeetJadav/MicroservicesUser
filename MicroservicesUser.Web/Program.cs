@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
+using OfficeOpenXml;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -63,6 +64,9 @@ builder.Services.AddScoped<ILogServices, LogServices>();
 builder.Services.AddScoped<IHelpAndSupportServices, HelpAndSupportServices>();
 builder.Services.AddScoped<IViewRenderService, ViewRenderService>();
 builder.Services.AddScoped<IExcelExportServices, ExcelExportService>();
+
+//ExcelPackage configuration
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
 //Injecting HttpClientService
 builder.Services.AddHttpClient<GenericAPIClientServices>();

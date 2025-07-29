@@ -3,6 +3,7 @@ using System.Drawing;
 using MicroservicesUser.Models.ViewModels.History;
 using MicroservicesUser.BusinessLogic.Interfaces;
 using OfficeOpenXml.Style;
+using OfficeOpenXml.ConditionalFormatting.Contracts;
 
 namespace MicroservicesUser.BusinessLogic.Implementations
 {
@@ -10,12 +11,11 @@ namespace MicroservicesUser.BusinessLogic.Implementations
     {
         public byte[] GenerateEmailVerificationExcel(EmailVerificationDetailVM detailVM)
         {
-            using var package = new ExcelPackage();
-            var worksheet = package.Workbook.Worksheets.Add("Verification History");
+            using ExcelPackage package = new();
+            ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Verification History");
 
             // Set default alignment for all cells
             worksheet.Cells.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-
             worksheet.Cells["A1"].Value = "General Details";
             worksheet.Cells["A1:B1"].Merge = true;
             worksheet.Cells["A1"].Style.Font.Bold = true;
@@ -43,8 +43,6 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             worksheet.Cells["B10"].Value = detailVM.ResponseVM?.SmtpScore;
             worksheet.Cells["A11"].Value = "Overall Score";
             worksheet.Cells["B11"].Value = detailVM.ResponseVM?.OverallScore;
-
-            // Email Deliverability
             worksheet.Cells["A12"].Value = "Email Deliverability";
             worksheet.Cells["B12"].Value = detailVM.ResponseVM?.Deliverability;
             worksheet.Cells["A13"].Value = "Fraud Score";
@@ -58,7 +56,6 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             worksheet.Cells["A16"].Style.Font.Bold = true;
             worksheet.Cells["A16"].Style.Fill.PatternType = ExcelFillStyle.Solid;
             worksheet.Cells["A16"].Style.Fill.BackgroundColor.SetColor(Color.LightCoral);
-
             worksheet.Cells["A17"].Value = "Has Valid DNS (Domain Name System)";
             worksheet.Cells["B17"].Value = StatusIcon(detailVM.ResponseVM?.DnsValid);
             worksheet.Cells["A18"].Value = "Honeypot";
@@ -80,7 +77,6 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             worksheet.Cells["A25"].Style.Font.Bold = true;
             worksheet.Cells["A25"].Style.Fill.PatternType = ExcelFillStyle.Solid;
             worksheet.Cells["A25"].Style.Fill.BackgroundColor.SetColor(Color.LightGreen);
-
             worksheet.Cells["A26"].Value = "First Seen";
             worksheet.Cells["B26"].Value = detailVM.ResponseVM?.FirstSeen?.Iso.ToString("dd/MM/yyyy hh:mm tt");
             worksheet.Cells["A27"].Value = "Sanitized Email";
@@ -99,7 +95,7 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             worksheet.Cells[$"A{currentRow}:A{currentRow + detailVM.ResponseVM!.MxRecords!.Count - 1}"].Merge = true;
             worksheet.Cells[$"A{currentRow}:A{currentRow + detailVM.ResponseVM.MxRecords.Count - 1}"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
             worksheet.Cells[$"A{currentRow}:A{currentRow + detailVM.ResponseVM.MxRecords.Count - 1}"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-            foreach (var mxRecord in detailVM.ResponseVM.MxRecords)
+            foreach (string mxRecord in detailVM.ResponseVM.MxRecords)
             {
                 worksheet.Cells[$"B{currentRow}"].Value = mxRecord;
                 currentRow++;
@@ -109,12 +105,11 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             worksheet.Cells[$"A{currentRow}:A{currentRow + detailVM.ResponseVM.ARecords!.Count - 1}"].Merge = true; // 
             worksheet.Cells[$"A{currentRow}:A{currentRow + detailVM.ResponseVM.ARecords.Count - 1}"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
             worksheet.Cells[$"A{currentRow}:A{currentRow + detailVM.ResponseVM.ARecords.Count - 1}"].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-            foreach (var aRecord in detailVM.ResponseVM.ARecords)
+            foreach (string aRecord in detailVM.ResponseVM.ARecords)
             {
                 worksheet.Cells[$"B{currentRow}"].Value = aRecord;
                 currentRow++;
             }
-
             worksheet.Cells.AutoFitColumns();
             return package.GetAsByteArray();
         }
@@ -127,6 +122,80 @@ namespace MicroservicesUser.BusinessLogic.Implementations
                 false => "No",
                 _ => "Unknown"
             };
+        }
+
+        public byte[] GenerateEmailVerificationHistoryListExcel(EmailVerificationListHistoryVM historyListVM)
+        {
+            List<EmailVerificationHistoryVM>? dataToExport = historyListVM.EmailVerificationHistoryListVM ?? new List<EmailVerificationHistoryVM>();
+            using ExcelPackage package = new();
+            ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Email Verification History");
+            worksheet.Cells[1, 1].Value = "Sr No.";
+            worksheet.Cells[1, 2].Value = "Email";
+            worksheet.Cells[1, 3].Value = "Response Status";
+            worksheet.Cells[1, 4].Value = "Valid";
+            worksheet.Cells[1, 5].Value = "Verified On";
+            worksheet.Cells[1, 6].Value = "Deliverability";
+            worksheet.Cells[1, 7].Value = "OverAllScore";
+            using (ExcelRange? headerRange = worksheet.Cells[1, 1, 1, 7])
+            {
+                headerRange.Style.Font.Bold = true;
+                headerRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                headerRange.Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+            }
+            for (int i = 0; i < dataToExport.Count; i++)
+            {
+                EmailVerificationHistoryVM item = dataToExport[i];
+                worksheet.Cells[i + 2, 1].Value = i + 1;
+                worksheet.Cells[i + 2, 2].Value = item.Email;
+                worksheet.Cells[i + 2, 3].Value = item.ResponseStatus;
+                worksheet.Cells[i + 2, 4].Value = item.ResponseStatus != "Failed" ? item.Valid.ToString() : "-";
+                worksheet.Cells[i + 2, 5].Value = item.VerifiedAt.ToString("dd/MM/yyyy hh:mm tt");
+                worksheet.Cells[i + 2, 6].Value = item.ResponseStatus != "Failed" ? item.Deliverability : "-";
+                worksheet.Cells[i + 2, 7].Value = item.ResponseStatus != "Failed" ? item.OverAllScore.ToString() : "-";
+            }
+            SetAllBordersToBlack(worksheet);
+            ExcelRange? validColumnRange = worksheet.Cells[2, 4, dataToExport.Count + 1, 4];
+            ApplyConditionalFormatting(validColumnRange, "True", Color.LightGreen);
+            ApplyConditionalFormatting(validColumnRange, "False", Color.LightCoral);
+            worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+            byte[] byteArray = package.GetAsByteArray();
+            return byteArray;
+        }
+
+        private static void ApplyConditionalFormatting(ExcelRange range, string value, Color color)
+        {
+            IExcelConditionalFormattingEqual? rule = range.Worksheet.ConditionalFormatting.AddEqual(range);
+            rule.Formula = $"\"{value}\"";
+            rule.Style.Fill.PatternType = ExcelFillStyle.Solid;
+            rule.Style.Fill.BackgroundColor.SetColor(color);
+            range.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+            range.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+            range.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+            range.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+        }
+
+        private static void SetAllBordersToBlack(ExcelWorksheet worksheet)
+        {
+            int rowCount = worksheet.Dimension.End.Row;
+            int colCount = worksheet.Dimension.End.Column;
+            for (int row = 1; row <= rowCount; row++)
+            {
+                for (int col = 1; col <= colCount; col++)
+                {
+                    var cell = worksheet.Cells[row, col];
+                    cell.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    cell.Style.Border.Top.Color.SetColor(Color.Black);
+
+                    cell.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    cell.Style.Border.Left.Color.SetColor(Color.Black);
+
+                    cell.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    cell.Style.Border.Right.Color.SetColor(Color.Black);
+
+                    cell.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    cell.Style.Border.Bottom.Color.SetColor(Color.Black);
+                }
+            }
         }
     }
 }

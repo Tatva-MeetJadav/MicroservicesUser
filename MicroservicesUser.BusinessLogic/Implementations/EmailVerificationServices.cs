@@ -183,5 +183,34 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             string fileName = "EmailVerificationDetail_" + currentTime + ".xlsx";
             return (fileContents, fileName);
         }
+
+        public async Task<(byte[], string)> ExportEmailVerificationHistoryList(PaginationDTO paginationDTO, string token)
+        {
+            int id = _jwtServices.GetUserId(token);
+            paginationDTO.PageSize = paginationDTO.TotalItems;
+            paginationDTO.CurrentPage = 1;
+            (List<EmailVerification> emailVerifications, int count) = await _emailVerificationRepository.GetListByUserId(id, paginationDTO);
+            List<EmailVerificationHistoryVM> emailVerificationHistoryListVMs = emailVerifications.Select(ev =>
+            {
+                EmailVerificationResponseVM responseVM = JsonConvert.DeserializeObject<EmailVerificationResponseVM>(
+                ev.EmailResponseParam.RootElement.GetRawText()) ?? new EmailVerificationResponseVM();
+                EmailVerificationRequestVM requestVM = ev?.EmailRequestParam.RootElement.Deserialize<EmailVerificationRequestVM>() ?? new EmailVerificationRequestVM();
+                EmailVerificationHistoryVM emailVerificationHistoryVM = new()
+                {
+                    Valid = responseVM.Valid,
+                    Email = requestVM.Email ?? string.Empty,
+                    VerifiedAt = ev!.CreatedAt,
+                    Deliverability = responseVM.Deliverability ?? string.Empty,
+                    OverAllScore = responseVM.OverallScore,
+                    ResponseStatus = ev?.Status.ToString() ?? string.Empty,
+                };
+                return emailVerificationHistoryVM;
+            }).ToList();
+            EmailVerificationListHistoryVM emailVerificationListHistoryVM = new() { EmailVerificationHistoryListVM = emailVerificationHistoryListVMs };
+            byte[] result = _excelExportServices.GenerateEmailVerificationHistoryListExcel(emailVerificationListHistoryVM);
+            string currentTime = DateTime.Now.ToString();
+            string fileName = "EmailVerificationHistoryList_" + currentTime + ".xlsx";
+            return (result, fileName);
+        }
     }
 }
