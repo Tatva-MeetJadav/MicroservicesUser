@@ -7,11 +7,10 @@ function renderChart(passedLabels, passedDataPoints) {
     var labels = passedLabels || JSON.parse(chartCanvas.attr('data-labels') || '[]');
     var dataPoints = passedDataPoints || JSON.parse(chartCanvas.attr('data-scans') || '[]');
     var ctx = chartCanvas[0].getContext('2d');
-    if (window.verificationLineChart) {
+    if (window.verificationLineChart && window.verificationLineChart.ctx === ctx) {
         if (window.verificationLineChart.data) {
             window.verificationLineChart.data.labels = labels;
             window.verificationLineChart.data.datasets[0].data = dataPoints;
-
             window.verificationLineChart.update();
         } else {
             createNewChart(ctx, labels, dataPoints);
@@ -104,9 +103,18 @@ $(document).on('click', '#showResultBtn', function () {
         data: { userIds: selectedUserIds },
         success: function (response) {
             $('.email-verification-dashboard-data').html(response);
-            renderChart(); // Update chart with new data
+            const chartCanvas = $('#verificationLineChart');
+            if (chartCanvas.length) {
+                if (window.verificationLineChart) {
+                    window.verificationLineChart.destroy();
+                }
+                renderChart();
+            } else {
+                console.log("Chart canvas not found in new content.");
+            }
+
         },
-        error: function (xhr, status, error) {
+        error: function (error) {
             console.error('Error:', error);
             alert('Failed to fetch dashboard data.');
         }
@@ -143,7 +151,6 @@ function fetchEmailVerificationHistoryList(page, pageSize) {
         scannedStatus: scannedStatus,
         valid: valid
     }
-    console.log(emailVerificationHistoryDTO);
     $.ajax({
         url: "/EmailVerification/GetEmailVerificationHistory",
         type: "POST",
