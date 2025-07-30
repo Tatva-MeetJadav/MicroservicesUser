@@ -103,4 +103,5 @@
   overflow-y: auto;
   cursor: pointer;
   margin-top: 38px;
+  overflow-x: hidden;
 }

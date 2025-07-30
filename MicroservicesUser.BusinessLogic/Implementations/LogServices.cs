@@ -31,6 +31,11 @@ namespace MicroservicesUser.BusinessLogic.Implementations
             }
             return logListVM;
         }
+
+        public async Task<List<string>> GetSuggestionMessagesList(string searchQuery)
+        {
+            return await _logRepository.GetSuggestionMessagesList(searchQuery);
+        }
     }
 
 }

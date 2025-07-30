@@ -26,5 +26,10 @@ namespace MicroservicesUser.Web.Controllers
             LogListVM result = await _logServices.GetLogList(paginationDTO);
             return PartialView("_LogList", result);
         }
+
+        public async Task<JsonResult> GetLogList(string searchQuery)
+        {
+            return Json(await _logServices.GetSuggestionMessagesList(searchQuery));
+        }
     }
 }

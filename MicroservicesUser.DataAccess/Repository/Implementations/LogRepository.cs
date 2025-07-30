@@ -36,5 +36,22 @@ namespace MicroservicesUser.DataAccess.Repository.Implementations
             logs = logs.Skip((paginationDTO.CurrentPage - 1) * paginationDTO.PageSize).Take(paginationDTO.PageSize).ToList();
             return (logs, totalCount);
         }
+
+        public async Task<List<string>> GetSuggestionMessagesList(string searchQuery)
+        {
+            List<string?> logs = await _context.Logs.Select(log => log.Message).ToListAsync();
+            var rankedMessages = logs
+                .Select(message => new
+                {
+                    Message = message,
+                    Score = message!.Equals(searchQuery, StringComparison.OrdinalIgnoreCase) ? 100 : message.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ? 50 : 0
+                })
+                .OrderByDescending(x => x.Score)
+                .Select(x => x.Message)
+                .Take(5)
+                .ToList();
+
+            return rankedMessages!;
+        }
     }
 }

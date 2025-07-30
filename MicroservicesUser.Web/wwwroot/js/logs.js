@@ -88,65 +88,62 @@ $(document).on('change', '.column-filter', function () {
 });
 
 $(document).ready(function () {
-    const $input = $('#searchQueryForLogs');
-    const $suggestionList = $('#suggestionList');
-
-    // Sample static suggestions array (replace with AJAX if needed)
-    const suggestions = [
-        "ServiceA - Error",
-        "ServiceB - Warning",
-        "Machine123",
-        "ServiceC - Debug",
-        "Error connecting to DB",
-        "ServiceD - Information",
-        "Machine456"
-    ];
+    var input = $('#searchQueryForLogs');
+    var suggestionList = $('#suggestionList');
 
     function hideSuggestions() {
-        $suggestionList.removeClass('show');
-        $input.attr('aria-expanded', 'false');
+        suggestionList.removeClass('show');
+        input.attr('aria-expanded', 'false');
     }
 
     function showSuggestions() {
-        $suggestionList.addClass('show');
-        $input.attr('aria-expanded', 'true');
+        suggestionList.addClass('show');
+        input.attr('aria-expanded', 'true');
     }
 
-    $input.on('input', function () {
-        const query = $(this).val().toLowerCase().trim();
+    input.on('input', function () {
+        var query = input.val().toLowerCase().trim();
         if (!query) {
             hideSuggestions();
-            $suggestionList.empty();
+            suggestionList.empty();
             return;
         }
 
-        const filtered = suggestions.filter(item => item.toLowerCase().includes(query));
+        $.ajax({
+            url: '/Log/GetLogList',
+            type: 'GET',
+            data: { searchQuery: query },
+            success: function (data) {
+                if (!data || data.length === 0) {
+                    hideSuggestions();
+                    suggestionList.empty();
+                    return;
+                }
 
-        if (filtered.length === 0) {
-            hideSuggestions();
-            $suggestionList.empty();
-            return;
-        }
+                var itemsHtml = data.map(function (item) {
+                    return '<li><button type="button" class="dropdown-item">' + item + '</button></li>';
+                }).join('');
 
-        const itemsHtml = filtered.map(item =>
-            `<li><button type="button" class="dropdown-item">${item}</button></li>`
-        ).join('');
-
-        $suggestionList.html(itemsHtml);
-        showSuggestions();
+                suggestionList.html(itemsHtml);
+                showSuggestions();
+            },
+            error: function () {
+                hideSuggestions();
+                suggestionList.empty();
+            }
+        });
     });
 
-    // When a suggestion is clicked
-    $suggestionList.on('click', '.dropdown-item', function () {
-        const selectedText = $(this).text();
-        $input.val(selectedText);
+    suggestionList.on('click', '.dropdown-item', function () {
+        var selectedText = $(this).text();
+        input.val(selectedText);
         hideSuggestions();
     });
 
-    // Hide suggestions on clicking outside
     $(document).on('click', function (e) {
-        if (!$(e.target).closest($input).length && !$(e.target).closest($suggestionList).length) {
+        if (!$(e.target).closest(input).length && !$(e.target).closest(suggestionList).length) {
             hideSuggestions();
         }
     });
 });
+
