@@ -30,8 +30,6 @@ namespace MicroservicesUser.DataAccess.Data
                .HasConversion<string>();
         }
     }
-
-
 }
 
 //Add-Migration InitialCreate -Project MicroservicesUser.Migrations -StartupProject MicroservicesUser.Web -Context MicroservicesUserDbContext

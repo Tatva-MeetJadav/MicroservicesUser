@@ -23,8 +23,6 @@ namespace MicroservicesUser.DataAccess.Data
             }
         }
     }
-
-
 }
 
 //Add-Migration InitialCreate -Project MicroservicesUser.Migrations -StartupProject MicroservicesUser.Web -Context MicroservicesUserDbContext
